@@ -35,6 +35,7 @@ docker compose -p fms-quickstart -f dockers/compose.yml up -d --build
 ```
 
 - Git Bash · WSL 에서는 macOS · Linux 명령을 그대로 쓰면 됩니다.
+- `migrator` 가 `exit 2` 로 실패했다면 `git pull` 로 최신 코드를 받은 뒤 같은 명령으로 다시 실행하세요. 셸 스크립트 줄바꿈(CRLF) 문제로, 최신 코드에서 고쳐졌습니다.
 - cmd 에서는 `set JWT_SECRET=<32자 이상 임의 문자열>` 을 먼저 실행한 뒤 같은 `docker compose` 명령을 씁니다.
 - 새 창에서 다시 실행하면 새 `JWT_SECRET` 이 만들어져 기존 로그인이 풀립니다. 다시 로그인하면 됩니다.
 

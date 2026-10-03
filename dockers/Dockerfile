@@ -32,6 +32,8 @@ COPY --from=builder /app/servers/api/dist ./servers/api/dist
 COPY --from=builder /app/servers/database-manager/package.json ./servers/database-manager/package.json
 COPY --from=builder /app/servers/database-manager/dist ./servers/database-manager/dist
 COPY dockers/scripts/run-migrations.sh ./dockers/scripts/run-migrations.sh
+# 윈도우 체크아웃(CRLF)이면 sh 가 `set -e\r` 에서 실패하므로 CR 을 지운다.
+RUN sed -i 's/\r$//' ./dockers/scripts/run-migrations.sh
 WORKDIR /app/servers/api
 EXPOSE 4000
 CMD ["node", "dist/app.js"]
