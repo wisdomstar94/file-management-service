@@ -1,0 +1,57 @@
+{
+  "name": "@fms/server-utils",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist",
+    "!dist/tsconfig.tsbuildinfo"
+  ],
+  "scripts": {
+    "build": "EMPTY_OUT_DIR=true vite build",
+    "watch": "vite build --watch",
+    "type:check": "tsc --noEmit",
+    "lint:check": "biome check",
+    "lint:format": "biome check --write"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@fms/biome-config": "workspace:^",
+    "@fms/common-utils": "workspace:^",
+    "@types/node": "26.6.4",
+    "typescript": "7.0.2",
+    "vite": "8.3.2"
+  },
+  "exports": {
+    "./networks/*": {
+      "require": {
+        "types": "./dist/networks/*/index.d.ts",
+        "default": "./dist/networks/*/index.cjs"
+      },
+      "import": {
+        "types": "./dist/networks/*/index.d.ts",
+        "default": "./dist/networks/*/index.mjs"
+      }
+    },
+    "./envs/*": {
+      "require": {
+        "types": "./dist/envs/*/index.d.ts",
+        "default": "./dist/envs/*/index.cjs"
+      },
+      "import": {
+        "types": "./dist/envs/*/index.d.ts",
+        "default": "./dist/envs/*/index.mjs"
+      }
+    },
+    "./access-policies/*": {
+      "require": {
+        "types": "./dist/access-policies/*/index.d.ts",
+        "default": "./dist/access-policies/*/index.cjs"
+      },
+      "import": {
+        "types": "./dist/access-policies/*/index.d.ts",
+        "default": "./dist/access-policies/*/index.mjs"
+      }
+    }
+  }
+}

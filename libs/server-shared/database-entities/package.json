@@ -1,0 +1,50 @@
+{
+  "name": "@fms/database-entities",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist",
+    "!dist/tsconfig.tsbuildinfo"
+  ],
+  "scripts": {
+    "build": "EMPTY_OUT_DIR=true vite build",
+    "watch": "vite build --watch",
+    "type:check": "tsc --noEmit",
+    "lint:check": "biome check",
+    "lint:format": "biome check --write"
+  },
+  "dependencies": {
+    "@fms/common-utils": "workspace:^",
+    "typeorm": "1.1.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@fms/biome-config": "workspace:^",
+    "@types/node": "26.6.4",
+    "typescript": "7.0.2",
+    "vite": "8.3.2"
+  },
+  "exports": {
+    "./entities/*": {
+      "require": {
+        "types": "./dist/entities/*/index.d.ts",
+        "default": "./dist/entities/*/index.cjs"
+      },
+      "import": {
+        "types": "./dist/entities/*/index.d.ts",
+        "default": "./dist/entities/*/index.mjs"
+      }
+    },
+    "./data-sources/*": {
+      "require": {
+        "types": "./dist/data-sources/*/index.d.ts",
+        "default": "./dist/data-sources/*/index.cjs"
+      },
+      "import": {
+        "types": "./dist/data-sources/*/index.d.ts",
+        "default": "./dist/data-sources/*/index.mjs"
+      }
+    }
+  }
+}

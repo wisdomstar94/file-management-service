@@ -1,0 +1,9 @@
+{
+  "root": false,
+  "extends": ["@fms/biome-config/biome.common.json"],
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "name": "@fms/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "type:check": "tsc --noEmit && tsc --noEmit -p ./e2e/tsconfig.json",
+    "lint:check": "biome check",
+    "lint:format": "biome check --write",
+    "build": "rm -rf dist && tsc",
+    "watch": "tsc --watch",
+    "start": "node --env-file-if-exists=../../.env.local ./dist/app.js",
+    "nodemon:start": "nodemon",
+    "dev": "yarn build && concurrently \"yarn nodemon:start\" \"yarn watch\"",
+    "pm2:start": "pm2 start pm2.config.mjs",
+    "pm2:delete": "pm2 delete @fms/api",
+    "e2e": "node --env-file-if-exists=../../.env.local ../../node_modules/jest/bin/jest.js --config ./e2e/jest.config.cjs --runInBand"
+  },
+  "dependencies": {
+    "@fms/api-schemas": "workspace:^",
+    "@fms/common-utils": "workspace:^",
+    "@fms/database-entities": "workspace:^",
+    "@fms/jwt-handler": "workspace:^",
+    "@fms/password-handler": "workspace:^",
+    "@fms/server-utils": "workspace:^",
+    "cors": "2.8.6",
+    "express": "5.2.1",
+    "multer": "2.4.0",
+    "pg": "8.23.1",
+    "reflect-metadata": "0.2.2",
+    "typeorm": "1.1.1",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@fms/biome-config": "workspace:^",
+    "@swc/core": "1.16.13",
+    "@swc/jest": "0.2.39",
+    "@types/cors": "2.8.19",
+    "@types/express": "5.0.6",
+    "@types/jest": "30.0.0",
+    "@types/multer": "2.3.0",
+    "@types/node": "26.6.4",
+    "@types/pg": "8.23.1",
+    "@types/supertest": "7.2.1",
+    "concurrently": "10.0.5",
+    "jest": "30.5.2",
+    "nodemon": "3.1.14",
+    "pm2": "7.0.4",
+    "supertest": "7.3.1",
+    "typescript": "7.0.2"
+  }
+}

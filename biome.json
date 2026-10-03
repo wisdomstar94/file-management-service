@@ -1,0 +1,12 @@
+{
+  "root": true,
+  "extends": ["@fms/biome-config/biome.common.json"],
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": ["**", "!**/*.md"]
+  }
+}

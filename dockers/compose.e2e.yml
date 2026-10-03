@@ -1,0 +1,105 @@
+# e2e 전용 격리 환경. DB 는 tmpfs 라 매번 빈 상태에서 시작한다. 실행은 scripts/run-e2e.sh 로 한다.
+name: fms-e2e
+
+x-api-env: &api-env
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_USER: fms
+  DB_PASSWORD: fms-e2e-password
+  DB_NAME: fms
+  API_PORT: "4000"
+  JWT_SECRET: e2e-jwt-secret-e2e-jwt-secret-e2e-jwt-secret
+  # 러너 · 웹 컨테이너가 X-Forwarded-For 로 요청 IP 를 넘기므로 e2e 네트워크 전체를 신뢰한다.
+  API_TRUST_PROXY: 172.31.250.0/24
+  STORAGE_DIR: /data/storage
+  INITIAL_ADMIN_ID: admin
+  INITIAL_ADMIN_PASSWORD: admin1234!
+
+x-web-env: &web-env
+  API_INTERNAL_URL: http://api:4000
+  JWT_SECRET: e2e-jwt-secret-e2e-jwt-secret-e2e-jwt-secret
+  WEB_TRUSTED_PROXY_HOPS: "0"
+  USER_WEB_ORIGIN: http://user-web:3001
+
+x-healthcheck: &http-healthcheck
+  interval: 2s
+  timeout: 3s
+  retries: 60
+
+networks:
+  e2e:
+    ipam:
+      config:
+        - subnet: 172.31.250.0/24
+
+services:
+  postgres:
+    image: postgres:18.6
+    networks: [e2e]
+    environment: { POSTGRES_USER: fms, POSTGRES_PASSWORD: fms-e2e-password, POSTGRES_DB: fms }
+    tmpfs: [/var/lib/postgresql]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fms -d fms"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  migrator:
+    build: { context: .., dockerfile: dockers/Dockerfile, target: api }
+    networks: [e2e]
+    environment: *api-env
+    command: ["sh", "/app/dockers/scripts/run-migrations.sh"]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  api:
+    build: { context: .., dockerfile: dockers/Dockerfile, target: api }
+    networks: [e2e]
+    environment: *api-env
+    tmpfs: [/data/storage]
+    healthcheck:
+      <<: *http-healthcheck
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4000/api/health').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
+    depends_on:
+      migrator: { condition: service_completed_successfully }
+
+  admin-web:
+    build: { context: .., dockerfile: dockers/Dockerfile, target: admin-web }
+    networks: [e2e]
+    environment: *web-env
+    healthcheck:
+      <<: *http-healthcheck
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/forbidden').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
+    depends_on:
+      api: { condition: service_healthy }
+
+  user-web:
+    build: { context: .., dockerfile: dockers/Dockerfile, target: user-web }
+    networks: [e2e]
+    environment: *web-env
+    healthcheck:
+      <<: *http-healthcheck
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/s/healthcheck').then(()=>process.exit(0),()=>process.exit(1))"]
+    depends_on:
+      api: { condition: service_healthy }
+
+  e2e-servers:
+    profiles: [runner]
+    build: { context: .., dockerfile: dockers/Dockerfile, target: e2e-servers }
+    networks: [e2e]
+    environment:
+      <<: *api-env
+      API_BASE_URL: http://api:4000
+
+  e2e-webs:
+    profiles: [runner]
+    build: { context: .., dockerfile: dockers/Dockerfile, target: e2e-webs }
+    networks: [e2e]
+    ipc: host
+    environment:
+      ADMIN_WEB_URL: http://admin-web:3000
+      USER_WEB_URL: http://user-web:3001
+      API_BASE_URL: http://api:4000
+      INITIAL_ADMIN_ID: admin
+      INITIAL_ADMIN_PASSWORD: admin1234!
+      CI: "true"

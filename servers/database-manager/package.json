@@ -1,0 +1,40 @@
+{
+  "name": "@fms/database-manager",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "type:check": "tsc --noEmit && tsc --noEmit -p ./e2e/tsconfig.json",
+    "lint:check": "biome check",
+    "lint:format": "biome check --write",
+    "build": "rm -rf dist && tsc",
+    "typeorm": "node --env-file-if-exists=../../.env.local ../../node_modules/typeorm/cli.js -d ./dist/data-source/data-source.js",
+    "migration:generate": "yarn build && yarn typeorm migration:generate",
+    "migration:run": "yarn typeorm migration:run",
+    "migration:revert": "yarn typeorm migration:revert",
+    "migration:show": "yarn typeorm migration:show",
+    "seed": "node --env-file-if-exists=../../.env.local ./dist/scripts/run-seed/run-seed.js",
+    "setup": "yarn migration:run && yarn seed",
+    "e2e": "node --env-file-if-exists=../../.env.local ../../node_modules/jest/bin/jest.js --config ./e2e/jest.config.cjs --runInBand"
+  },
+  "dependencies": {
+    "@fms/common-utils": "workspace:^",
+    "@fms/database-entities": "workspace:^",
+    "@fms/password-handler": "workspace:^",
+    "@fms/server-utils": "workspace:^",
+    "pg": "8.23.1",
+    "reflect-metadata": "0.2.2",
+    "typeorm": "1.1.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@fms/biome-config": "workspace:^",
+    "@swc/core": "1.16.13",
+    "@swc/jest": "0.2.39",
+    "@types/jest": "30.0.0",
+    "@types/node": "26.6.4",
+    "@types/pg": "8.23.1",
+    "jest": "30.5.2",
+    "typescript": "7.0.2"
+  }
+}

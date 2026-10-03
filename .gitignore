@@ -1,0 +1,30 @@
+# dependencies
+node_modules
+.yarn/*
+!.yarn/releases
+.pnp.*
+
+# build
+dist
+.next/
+out/
+**/*.tsbuildinfo
+next-env.d.ts
+
+# testing
+coverage
+test-results/
+playwright-report/
+
+# env
+.env*
+!.env*-sample
+
+# misc
+.DS_Store
+*.pem
+logs
+.claude
+
+# uploaded files (local)
+storage/

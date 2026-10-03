@@ -1,0 +1,4 @@
+{
+  "root": false,
+  "extends": ["@fms/biome-config/biome.common.json"]
+}

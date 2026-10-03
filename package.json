@@ -1,0 +1,28 @@
+{
+  "name": "file-management-service",
+  "private": true,
+  "packageManager": "yarn@4.18.0",
+  "workspaces": [
+    "libs/internal/*",
+    "libs/server-shared/*",
+    "libs/web-shared/*",
+    "libs/common-shared/*",
+    "servers/*",
+    "webs/*"
+  ],
+  "scripts": {
+    "lint:check": "biome check",
+    "lint:format": "biome check --write",
+    "libs:build": "yarn workspaces foreach -At --include '@fms/*-utils' --include '@fms/*-handler' --include '@fms/api-schemas' --include '@fms/database-entities' --include '@fms/web-ui' run build",
+    "libs:watch": "yarn workspaces foreach -Apiv -j unlimited --include 'libs/**' run watch",
+    "type:check": "yarn workspaces foreach -A --exclude file-management-service run type:check",
+    "e2e": "sh scripts/run-e2e.sh",
+    "e2e:servers": "sh scripts/run-e2e.sh servers",
+    "e2e:webs": "sh scripts/run-e2e.sh webs",
+    "docker:up": "docker compose -f dockers/compose.yml up -d --build"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@fms/biome-config": "workspace:^"
+  }
+}

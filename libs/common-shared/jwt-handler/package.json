@@ -1,0 +1,39 @@
+{
+  "name": "@fms/jwt-handler",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist",
+    "!dist/tsconfig.tsbuildinfo"
+  ],
+  "scripts": {
+    "build": "EMPTY_OUT_DIR=true vite build",
+    "watch": "vite build --watch",
+    "type:check": "tsc --noEmit",
+    "lint:check": "biome check",
+    "lint:format": "biome check --write"
+  },
+  "dependencies": {
+    "jose": "6.2.12"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@fms/biome-config": "workspace:^",
+    "@types/node": "26.6.4",
+    "typescript": "7.0.2",
+    "vite": "8.3.2"
+  },
+  "exports": {
+    "./tokens/*": {
+      "require": {
+        "types": "./dist/tokens/*/index.d.ts",
+        "default": "./dist/tokens/*/index.cjs"
+      },
+      "import": {
+        "types": "./dist/tokens/*/index.d.ts",
+        "default": "./dist/tokens/*/index.mjs"
+      }
+    }
+  }
+}

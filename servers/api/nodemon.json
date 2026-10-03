@@ -1,0 +1,6 @@
+{
+  "watch": ["dist"],
+  "ext": "js,mjs,json",
+  "exec": "node --env-file-if-exists=../../.env.local ./dist/app.js",
+  "ignore": ["**/logs/**/*", "**/node_modules/**/*"]
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@fms/password-handler",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist",
+    "!dist/tsconfig.tsbuildinfo"
+  ],
+  "scripts": {
+    "build": "EMPTY_OUT_DIR=true vite build",
+    "watch": "vite build --watch",
+    "type:check": "tsc --noEmit",
+    "lint:check": "biome check",
+    "lint:format": "biome check --write"
+  },
+  "dependencies": {
+    "argon2": "0.45.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@fms/biome-config": "workspace:^",
+    "@types/node": "26.6.4",
+    "typescript": "7.0.2",
+    "vite": "8.3.2"
+  },
+  "exports": {
+    "./passwords/*": {
+      "require": {
+        "types": "./dist/passwords/*/index.d.ts",
+        "default": "./dist/passwords/*/index.cjs"
+      },
+      "import": {
+        "types": "./dist/passwords/*/index.d.ts",
+        "default": "./dist/passwords/*/index.mjs"
+      }
+    }
+  }
+}

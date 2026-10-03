@@ -1,0 +1,149 @@
+"use client";
+
+import type { AdminAccountResponse } from "@fms/api-schemas/responses/admin-account-responses";
+import type { AssignableAccountGroupsResponse } from "@fms/api-schemas/responses/option-responses";
+import type { PaginatedResponse } from "@fms/api-schemas/responses/paginated-response";
+import { Button } from "@fms/web-ui/components/button";
+import { formatDate, formatDateTime } from "@fms/web-utils/formats/format-date-time";
+import { useState } from "react";
+import { Card } from "@/components/commons/card";
+import { ConfirmDialog } from "@/components/commons/confirm-dialog";
+import { BodyCell, DataTable, EmptyRow, HeadCell } from "@/components/commons/data-table";
+import { IdentifierText } from "@/components/commons/identifier-text";
+import { PageHeading } from "@/components/commons/page-heading";
+import { Pagination } from "@/components/commons/pagination";
+import { useAsyncAction } from "@/hooks/use-async-action";
+import { useAdminSession } from "@/providers/admin-session-provider";
+import { bffFetch } from "@/utils/bff-fetch";
+import { AccountFormModal } from "./_components/account-form-modal";
+
+const NO_CREATE_PERMISSION = "관리자 계정 생성 권한이 없습니다";
+const NO_DELETE_PERMISSION = "관리자 계정 삭제 권한이 없습니다";
+
+export function AccountsScreen(props: {
+  accounts: PaginatedResponse<AdminAccountResponse>;
+  options: AssignableAccountGroupsResponse;
+}) {
+  const { accounts, options } = props;
+  const { hasPermission } = useAdminSession();
+  const canCreate = hasPermission("account.create");
+  const canDelete = hasPermission("account.delete");
+  const [editing, setEditing] = useState<AdminAccountResponse | "new" | null>(null);
+  const [deleting, setDeleting] = useState<AdminAccountResponse | null>(null);
+  const { isPending, run } = useAsyncAction();
+
+  async function deleteAccount(account: AdminAccountResponse) {
+    await run(() => bffFetch(`accounts/${account.id}`, { method: "DELETE" }), { successMessage: "삭제했습니다" });
+    setDeleting(null);
+  }
+
+  return (
+    <>
+      <PageHeading
+        title="관리자 계정 관리"
+        description="계정마다 권한 그룹과 접근 정책 그룹을 하나씩 지정합니다."
+        actions={
+          <Button
+            variant="primary"
+            icon="ti ti-plus"
+            disabled={!canCreate}
+            title={canCreate ? undefined : NO_CREATE_PERMISSION}
+            onClick={() => setEditing("new")}
+          >
+            새 관리자 계정 생성
+          </Button>
+        }
+      />
+      <Card>
+        <DataTable>
+          <thead>
+            <tr>
+              <HeadCell>계정 식별키</HeadCell>
+              <HeadCell>아이디 · 닉네임</HeadCell>
+              <HeadCell>메모</HeadCell>
+              <HeadCell>권한 그룹</HeadCell>
+              <HeadCell>접근 정책 그룹</HeadCell>
+              <HeadCell>계정 생성일</HeadCell>
+              <HeadCell>최근 접속일</HeadCell>
+              <HeadCell align="right">관리</HeadCell>
+            </tr>
+          </thead>
+          <tbody>
+            {accounts.items.length === 0 && <EmptyRow colSpan={8} message="등록된 관리자 계정이 없습니다." />}
+            {accounts.items.map((account) => (
+              <tr key={account.id}>
+                <BodyCell>
+                  <IdentifierText value={account.id} />
+                </BodyCell>
+                <BodyCell className="whitespace-nowrap">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex size-[30px] items-center justify-center rounded-full bg-chip text-[12px] font-bold text-sub">
+                      {account.nickname.slice(0, 1)}
+                    </div>
+                    <div>
+                      <div className="text-[13.5px] font-semibold">{account.loginId}</div>
+                      <div className="text-[12px] text-faint">{account.nickname}</div>
+                    </div>
+                  </div>
+                </BodyCell>
+                <BodyCell className="max-w-[220px] truncate text-sub">{account.memo || "-"}</BodyCell>
+                <BodyCell className="whitespace-nowrap">
+                  <span className="rounded-full bg-primary-soft px-[9px] py-[3px] text-[12px] font-semibold text-primary">
+                    {account.permissionGroup.name}
+                  </span>
+                </BodyCell>
+                <BodyCell className="whitespace-nowrap">
+                  <span className="inline-flex items-center gap-[5px]">
+                    <i className="ti ti-shield-lock text-[15px] text-faint" aria-hidden />
+                    {account.accessPolicyGroup.name}
+                  </span>
+                </BodyCell>
+                <BodyCell className="whitespace-nowrap text-sub">{formatDate(account.createdAt)}</BodyCell>
+                <BodyCell className="whitespace-nowrap text-sub">
+                  {account.lastAccessedAt ? formatDateTime(account.lastAccessedAt) : "-"}
+                </BodyCell>
+                <BodyCell align="right">
+                  <div className="inline-flex gap-1.5">
+                    <Button size="sm" onClick={() => setEditing(account)}>
+                      상세
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      disabled={!canDelete}
+                      title={canDelete ? undefined : NO_DELETE_PERMISSION}
+                      onClick={() => setDeleting(account)}
+                    >
+                      삭제
+                    </Button>
+                  </div>
+                </BodyCell>
+              </tr>
+            ))}
+          </tbody>
+        </DataTable>
+        <Pagination
+          page={accounts.page}
+          size={accounts.size}
+          total={accounts.total}
+          buildHref={(page) => `/accounts?page=${page}`}
+        />
+      </Card>
+      {editing && (
+        <AccountFormModal
+          account={editing === "new" ? null : editing}
+          options={options}
+          onClose={() => setEditing(null)}
+        />
+      )}
+      {deleting && (
+        <ConfirmDialog
+          message={`'${deleting.loginId}' 계정을 삭제합니다.`}
+          isPending={isPending}
+          onConfirm={() => deleteAccount(deleting)}
+          onClose={() => setDeleting(null)}
+        />
+      )}
+    </>
+  );
+}

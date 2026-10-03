@@ -1,0 +1,120 @@
+"use client";
+
+import type { PermissionGroupSummaryResponse } from "@fms/api-schemas/responses/permission-group-responses";
+import { Button } from "@fms/web-ui/components/button";
+import { ProgressBar } from "@fms/web-ui/components/progress-bar";
+import { formatDate } from "@fms/web-utils/formats/format-date-time";
+import Link from "next/link";
+import { useState } from "react";
+import { Card } from "@/components/commons/card";
+import { ConfirmDialog } from "@/components/commons/confirm-dialog";
+import { BodyCell, DataTable, EmptyRow, HeadCell } from "@/components/commons/data-table";
+import { IdentifierText } from "@/components/commons/identifier-text";
+import { PageHeading } from "@/components/commons/page-heading";
+import { useAsyncAction } from "@/hooks/use-async-action";
+import { useAdminSession } from "@/providers/admin-session-provider";
+import { bffFetch } from "@/utils/bff-fetch";
+
+const NO_CREATE_PERMISSION = "권한 그룹 생성 권한이 없습니다";
+const NO_DELETE_PERMISSION = "권한 그룹 삭제 권한이 없습니다";
+
+export function PermissionGroupsScreen(props: { groups: PermissionGroupSummaryResponse[]; permissionTotal: number }) {
+  const { groups, permissionTotal } = props;
+  const { hasPermission } = useAdminSession();
+  const canCreate = hasPermission("perm.group.create");
+  const canDelete = hasPermission("perm.group.delete");
+  const [deleting, setDeleting] = useState<PermissionGroupSummaryResponse | null>(null);
+  const { isPending, run } = useAsyncAction();
+
+  async function deleteGroup(group: PermissionGroupSummaryResponse) {
+    await run(() => bffFetch(`permission-groups/${group.id}`, { method: "DELETE" }), {
+      successMessage: "삭제했습니다",
+    });
+    setDeleting(null);
+  }
+
+  return (
+    <>
+      <PageHeading
+        title="권한 그룹 관리"
+        description="관리자 계정은 할당된 권한 그룹에 체크된 메뉴와 기능만 이용할 수 있습니다."
+        actions={
+          canCreate ? (
+            <Link
+              href="/permissions/groups/new"
+              className="inline-flex h-[38px] items-center gap-1.5 rounded-lg bg-primary px-4 text-[13.5px] font-semibold text-white"
+            >
+              <i className="ti ti-plus text-[16px]" aria-hidden />새 권한 그룹 생성
+            </Link>
+          ) : (
+            <Button variant="primary" disabled title={NO_CREATE_PERMISSION}>
+              새 권한 그룹 생성
+            </Button>
+          )
+        }
+      />
+      <Card>
+        <DataTable>
+          <thead>
+            <tr>
+              <HeadCell>권한 그룹 식별키</HeadCell>
+              <HeadCell>권한 그룹명</HeadCell>
+              <HeadCell>등록된 권한</HeadCell>
+              <HeadCell>생성일</HeadCell>
+              <HeadCell>수정일</HeadCell>
+              <HeadCell align="right">관리</HeadCell>
+            </tr>
+          </thead>
+          <tbody>
+            {groups.length === 0 && <EmptyRow colSpan={6} message="등록된 권한 그룹이 없습니다." />}
+            {groups.map((group) => (
+              <tr key={group.id}>
+                <BodyCell>
+                  <IdentifierText value={group.id} />
+                </BodyCell>
+                <BodyCell className="whitespace-nowrap !text-[13.5px] font-semibold">{group.name}</BodyCell>
+                <BodyCell className="whitespace-nowrap">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-20">
+                      <ProgressBar value={group.permissionCount} max={permissionTotal} />
+                    </div>
+                    <span className="font-semibold">{group.permissionCount}개</span>
+                  </div>
+                </BodyCell>
+                <BodyCell className="whitespace-nowrap text-sub">{formatDate(group.createdAt)}</BodyCell>
+                <BodyCell className="whitespace-nowrap text-sub">{formatDate(group.updatedAt)}</BodyCell>
+                <BodyCell align="right">
+                  <div className="inline-flex gap-1.5">
+                    <Link
+                      href={`/permissions/groups/${group.id}`}
+                      className="inline-flex h-[30px] items-center rounded-md border border-line-input bg-white px-3 text-[12.5px] font-medium text-ink-2"
+                    >
+                      상세
+                    </Link>
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      disabled={!canDelete}
+                      title={canDelete ? undefined : NO_DELETE_PERMISSION}
+                      onClick={() => setDeleting(group)}
+                    >
+                      삭제
+                    </Button>
+                  </div>
+                </BodyCell>
+              </tr>
+            ))}
+          </tbody>
+        </DataTable>
+      </Card>
+      {deleting && (
+        <ConfirmDialog
+          message={`'${deleting.name}' 권한 그룹을 삭제합니다. 이 그룹이 할당된 계정이 있으면 삭제할 수 없습니다.`}
+          isPending={isPending}
+          onConfirm={() => deleteGroup(deleting)}
+          onClose={() => setDeleting(null)}
+        />
+      )}
+    </>
+  );
+}

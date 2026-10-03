@@ -1,0 +1,60 @@
+# 단독 컨테이너 실행용. postgres 는 compose.postgres.yml 에서 가져온다.
+#   JWT_SECRET=<비밀키> docker compose -f dockers/compose.yml up -d --build
+name: fms
+
+include:
+  - compose.postgres.yml
+
+x-api-env: &api-env
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_USER: ${DB_USER:-fms}
+  DB_PASSWORD: ${DB_PASSWORD:-fms-local-password}
+  DB_NAME: ${DB_NAME:-fms}
+  API_PORT: "4000"
+  JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 을 지정하세요. README 의 도커 절 참고}
+  API_TRUST_PROXY: ${API_TRUST_PROXY:-uniquelocal}
+  STORAGE_DIR: /data/storage
+  INITIAL_ADMIN_ID: ${INITIAL_ADMIN_ID:-admin}
+  INITIAL_ADMIN_PASSWORD: ${INITIAL_ADMIN_PASSWORD:-admin1234!}
+  INITIAL_ADMIN_NICKNAME: ${INITIAL_ADMIN_NICKNAME:-최초 관리자}
+
+x-web-env: &web-env
+  API_INTERNAL_URL: http://api:4000
+  JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 을 지정하세요. README 의 도커 절 참고}
+  WEB_TRUSTED_PROXY_HOPS: ${WEB_TRUSTED_PROXY_HOPS:-0}
+  WEB_SECURE_COOKIE: ${WEB_SECURE_COOKIE:-false}
+  SHARE_LINK_DOWNLOAD_ERROR_COOKIE_MAX_AGE_SECONDS: ${SHARE_LINK_DOWNLOAD_ERROR_COOKIE_MAX_AGE_SECONDS:-10}
+  USER_WEB_ORIGIN: ${USER_WEB_ORIGIN:-http://localhost:3001}
+
+services:
+  migrator:
+    build: { context: .., dockerfile: dockers/Dockerfile, target: api }
+    environment: *api-env
+    command: ["sh", "/app/dockers/scripts/run-migrations.sh"]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  api:
+    build: { context: .., dockerfile: dockers/Dockerfile, target: api }
+    environment: *api-env
+    ports: ["4000:4000"]
+    volumes:
+      - fms-storage:/data/storage
+    depends_on:
+      migrator: { condition: service_completed_successfully }
+
+  admin-web:
+    build: { context: .., dockerfile: dockers/Dockerfile, target: admin-web }
+    environment: *web-env
+    ports: ["3000:3000"]
+    depends_on: [api]
+
+  user-web:
+    build: { context: .., dockerfile: dockers/Dockerfile, target: user-web }
+    environment: *web-env
+    ports: ["3001:3001"]
+    depends_on: [api]
+
+volumes:
+  fms-storage:
