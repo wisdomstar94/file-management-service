@@ -13,7 +13,9 @@ x-api-env: &api-env
   DB_NAME: ${DB_NAME:-fms}
   API_PORT: "4000"
   JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 을 지정하세요. README 의 도커 절 참고}
-  API_TRUST_PROXY: ${API_TRUST_PROXY:-uniquelocal}
+  # web 컨테이너가 넘긴 X-Forwarded-For 만 믿는다. 브라우저가 api 에 직접 보낸 헤더는 무시해야 해서
+  # 사설 대역 전체가 아니라 web 컨테이너의 고정 IP 만 지정한다. (아래 web-api 네트워크 참고)
+  API_TRUST_PROXY: 172.31.240.10, 172.31.240.11
   # 브라우저에서 api 를 직접 호출하는 web 의 origin 을 허용해야 한다.
   API_CORS_ORIGINS: ${API_CORS_ORIGINS:-http://localhost:3000,http://localhost:3001}
   STORAGE_DIR: /data/storage
@@ -43,6 +45,7 @@ services:
   api:
     build: { context: .., dockerfile: dockers/Dockerfile, target: api }
     environment: *api-env
+    networks: [default, web-api]
     ports: ["4000:4000"]
     volumes:
       - fms-storage:/data/storage
@@ -52,14 +55,28 @@ services:
   admin-web:
     build: { context: .., dockerfile: dockers/Dockerfile, target: admin-web }
     environment: *web-env
+    networks:
+      web-api: { ipv4_address: 172.31.240.10 }
     ports: ["3000:3000"]
     depends_on: [api]
 
   user-web:
     build: { context: .., dockerfile: dockers/Dockerfile, target: user-web }
     environment: *web-env
+    networks:
+      web-api: { ipv4_address: 172.31.240.11 }
     ports: ["3001:3001"]
     depends_on: [api]
+
+networks:
+  # web → api 호출 전용. API_TRUST_PROXY 가 가리키는 web 고정 IP 를 여기서 준다.
+  # 자동 할당은 ip_range(.128~)에서만 하게 해 고정 IP 와 겹치지 않게 한다.
+  # postgres 단독 실행(compose.postgres.yml)도 default 네트워크를 쓰므로 그쪽은 건드리지 않는다.
+  web-api:
+    ipam:
+      config:
+        - subnet: 172.31.240.0/24
+          ip_range: 172.31.240.128/25
 
 volumes:
   fms-storage:

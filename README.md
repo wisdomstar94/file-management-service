@@ -134,12 +134,21 @@ JWT_SECRET='<32자 이상 임의 문자열>' yarn docker:up    # postgres + migr
 DB 계정 · 최초 관리자 계정도 실행할 때 덮어쓸 수 있습니다. 넘기지 않은 값은 compose 의 로컬용 기본값을 씁니다.
 
 ```bash
-# 환경변수로 넘기기
 JWT_SECRET='<32자 이상 임의 문자열>' INITIAL_ADMIN_ID=owner INITIAL_ADMIN_PASSWORD='<비밀번호>' yarn docker:up
-
-# env 파일로 넘기기
-docker compose --env-file ./.env.docker -f dockers/compose.yml up -d --build
 ```
+
+값을 env 파일에 모아 두었다면 환경별 명령으로 실행합니다. 각 명령은 저장소 루트의 env 파일을 `--env-file` 로 넘깁니다.
+
+```bash
+yarn docker:up:local          # .env.local
+yarn docker:up:development    # .env.development
+yarn docker:up:production     # .env.production
+```
+
+- env 파일은 저장소에 올라가지 않습니다(`.gitignore`). `.env.development` · `.env.production` 은 `.env.local-sample` 을 복사해 값을 바꿔 만드세요.
+- env 파일 값 중 아래 표의 변수와 `API_CORS_ORIGINS` · `API_PUBLIC_URL` · `SHARE_LINK_DOWNLOAD_ERROR_COOKIE_MAX_AGE_SECONDS` 만 컨테이너에 반영됩니다. `DB_HOST` · `DB_PORT` · `API_PORT` · `API_INTERNAL_URL` · `STORAGE_DIR` · `API_TRUST_PROXY` 는 compose 가 컨테이너용 값으로 고정합니다.
+- `API_TRUST_PROXY` 는 웹 컨테이너의 고정 IP(`172.31.240.10` · `172.31.240.11`)만 신뢰합니다. 웹이 넘긴 `X-Forwarded-For` 만 믿고, 브라우저가 api 에 직접 보낸 헤더는 무시해 IP 정책을 위조로 우회할 수 없게 하기 위해서입니다. 이 대역(`172.31.240.0/24`)이 사내망과 겹치면 `dockers/compose.yml` 의 `web-api` 네트워크와 `API_TRUST_PROXY` 를 함께 바꾸세요.
+- 셸 환경변수가 env 파일보다 우선합니다. 같은 이름의 변수가 셸에 남아 있으면 env 파일 값이 무시됩니다.
 
 PowerShell 에서는 `$env:<변수> = '<값>'` 으로 먼저 지정한 뒤 실행합니다. 지정한 값은 그 창을 닫을 때까지 유지됩니다.
 
@@ -174,6 +183,6 @@ yarn e2e:webs
 ## 운영 시 주의
 
 - 관리자 웹 · 공개 링크 웹은 `X-Forwarded-For` 로 요청 IP 를 판정합니다. 웹을 직접 노출하면 클라이언트가 이 헤더를 위조할 수 있으므로, **헤더를 덮어쓰는 리버스 프록시 뒤에 두고** `WEB_TRUSTED_PROXY_HOPS` 를 그 프록시 수로 지정하세요.
-- api 의 `API_TRUST_PROXY` 에는 웹 서버(같은 네트워크 대역)만 지정하세요.
+- 도커 밖에서 api 를 띄울 때 `API_TRUST_PROXY` 에는 웹 서버의 IP 만 지정하세요. 사설 대역 전체(`uniquelocal` 등)를 넣으면 브라우저가 api 를 직접 호출하며 `X-Forwarded-For` 를 위조할 수 있습니다. 도커에서는 compose 가 정합니다.
 - `dockers/compose*.yml` 의 비밀번호 기본값과 `.env.local-sample` 의 값은 **로컬 개발용이며 이 저장소에 공개된 값**입니다. 운영에서는 반드시 위 방법으로 덮어쓰고, `JWT_SECRET` 에도 `.env.local-sample` 의 값을 쓰지 마세요.
 - 최초 관리자 계정은 같은 아이디의 계정이 DB 에 없을 때만 만들어집니다. 한 번 띄운 뒤에 `INITIAL_ADMIN_*` 을 바꾸면 반영되지 않으니, 관리자 화면에서 바꾸거나 DB 볼륨을 지우고 다시 띄우세요.
