@@ -1,20 +1,31 @@
 "use client";
 
-import type { DocumentDetailResponse, DocumentVersionResponse } from "@fms/api-schemas/responses/document-responses";
+import { ADMIN_TRANSFER_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import type { DOCUMENT_DETAIL_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import { CREATE_DOCUMENT_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import {
+  CREATE_DOCUMENT_VERSION_API,
+  UPDATE_DOCUMENT_VERSION_API,
+} from "@fms/api-schemas/schemas/document-version-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
+import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import { type FormEvent, useState } from "react";
 import { FormField } from "@/components/commons/form-field";
 import { Modal } from "@/components/commons/modal";
-import { useAsyncAction } from "@/hooks/use-async-action";
 import { useToast } from "@/providers/toast-provider";
-import { bffFetch } from "@/utils/bff-fetch";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { FileDropZone } from "./_components/file-drop-zone";
 
 export type VersionUploadMode =
   | { kind: "new-document" }
   | { kind: "new-version"; documentId: string }
-  | { kind: "edit-version"; documentId: string; version: DocumentVersionResponse };
+  | {
+      kind: "edit-version";
+      documentId: string;
+      version: ResBody<typeof DOCUMENT_DETAIL_API>["data"]["versions"][number];
+    };
 
 const TITLES = { "new-document": "새 자료 등록", "new-version": "새 버전 등록", "edit-version": "버전 수정" };
 
@@ -22,30 +33,51 @@ const TITLES = { "new-document": "새 자료 등록", "new-version": "새 버전
 export function VersionUploadModal(props: {
   mode: VersionUploadMode;
   onClose: () => void;
-  onSaved?: (document: DocumentDetailResponse) => void;
+  onSaved?: (document: ResBody<typeof DOCUMENT_DETAIL_API>["data"]) => void;
 }) {
   const { mode, onClose, onSaved } = props;
   const [file, setFile] = useState<File | null>(null);
   const showToast = useToast();
-  const { isPending, run } = useAsyncAction();
+  const updateVersionApi = useCallApiWrapper(UPDATE_DOCUMENT_VERSION_API, { successMessage: "저장했습니다" });
+  const transferTokenApi = useCallApiWrapper(ADMIN_TRANSFER_TOKEN_API, { refreshOnSuccess: false });
+  // 파일은 Next 서버를 거치지 않고 브라우저가 api 로 바로 올린다.
+  const createDocumentApi = useCallApiWrapper(CREATE_DOCUMENT_API, { via: "client", successMessage: "등록했습니다" });
+  const createVersionApi = useCallApiWrapper(CREATE_DOCUMENT_VERSION_API, {
+    via: "client",
+    successMessage: "등록했습니다",
+  });
+  const isPending = [updateVersionApi, transferTokenApi, createDocumentApi, createVersionApi].some(
+    (api) => api.isLoading,
+  );
   const isEdit = mode.kind === "edit-version";
 
-  function submit(form: FormData) {
+  async function submit(form: FormData) {
     const versionName = String(form.get("versionName") ?? "");
     if (mode.kind === "edit-version") {
-      return bffFetch<DocumentDetailResponse>(`documents/${mode.documentId}/versions/${mode.version.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ versionName }),
+      return updateVersionApi.fetchApi({
+        params: { documentId: mode.documentId, versionId: mode.version.id },
+        body: { versionName },
       });
     }
+    const token = await transferTokenApi.fetchApi({
+      body:
+        mode.kind === "new-document"
+          ? { purpose: "UPLOAD_DOCUMENT" }
+          : { purpose: "UPLOAD_DOCUMENT_VERSION", documentId: mode.documentId },
+    });
+    if (isCommonError(token)) {
+      return token;
+    }
+    const headers = { authorization: `Bearer ${token.data.transferToken}` };
     const body = new FormData();
     if (mode.kind === "new-document") {
       body.set("name", String(form.get("name") ?? ""));
     }
     body.set("versionName", versionName);
     body.set("file", file as File);
-    const path = mode.kind === "new-document" ? "documents" : `documents/${mode.documentId}/versions`;
-    return bffFetch<DocumentDetailResponse>(path, { method: "POST", body });
+    return mode.kind === "new-document"
+      ? createDocumentApi.fetchApi({ headers, body })
+      : createVersionApi.fetchApi({ params: { documentId: mode.documentId }, headers, body });
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -54,10 +86,9 @@ export function VersionUploadModal(props: {
       showToast("파일을 선택하세요.", "error");
       return;
     }
-    const form = new FormData(event.currentTarget);
-    const saved = await run(() => submit(form), { successMessage: isEdit ? "저장했습니다" : "등록했습니다" });
-    if (saved) {
-      onSaved?.(saved);
+    const saved = await submit(new FormData(event.currentTarget));
+    if (!isCommonError(saved)) {
+      onSaved?.(saved.data);
       onClose();
     }
   }

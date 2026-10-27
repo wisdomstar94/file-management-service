@@ -1,7 +1,3 @@
-import {
-  createDocumentVersionRequestSchema,
-  updateDocumentVersionRequestSchema,
-} from "@fms/api-schemas/requests/document-request-schemas";
 import { DocumentEntity } from "@fms/database-entities/entities/document-entity";
 import { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 import { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
@@ -16,6 +12,10 @@ import { parseRequest } from "../../../../../utils/parse-request/index.js";
 import { readUuidParam } from "../../../../../utils/read-uuid-param/index.js";
 import { sendVersionFile } from "../../../../../utils/send-version-file/index.js";
 import { storageDriver } from "../../../../../utils/storage-driver/index.js";
+import {
+  createDocumentVersionRequestSchema,
+  updateDocumentVersionRequestSchema,
+} from "../../../../../validators/document-validators/index.js";
 import { findDocumentOrThrow } from "../_services/find-document-or-throw/index.js";
 import { saveUploadedVersion } from "../_services/save-uploaded-version/index.js";
 import { toDocumentDetailResponse } from "../_utils/to-document-detail-response/index.js";

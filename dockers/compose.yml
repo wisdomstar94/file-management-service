@@ -14,13 +14,18 @@ x-api-env: &api-env
   API_PORT: "4000"
   JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 을 지정하세요. README 의 도커 절 참고}
   API_TRUST_PROXY: ${API_TRUST_PROXY:-uniquelocal}
+  # 브라우저에서 api 를 직접 호출하는 web 의 origin 을 허용해야 한다.
+  API_CORS_ORIGINS: ${API_CORS_ORIGINS:-http://localhost:3000,http://localhost:3001}
   STORAGE_DIR: /data/storage
   INITIAL_ADMIN_ID: ${INITIAL_ADMIN_ID:-admin}
   INITIAL_ADMIN_PASSWORD: ${INITIAL_ADMIN_PASSWORD:-admin1234!}
   INITIAL_ADMIN_NICKNAME: ${INITIAL_ADMIN_NICKNAME:-최초 관리자}
 
 x-web-env: &web-env
+  # web 서버가 api 를 호출할 주소. 컨테이너끼리는 도커 서비스 이름으로 닿는다.
   API_INTERNAL_URL: http://api:4000
+  # 브라우저가 api 를 직접 호출할 주소. 호스트 브라우저는 서비스 이름 api 를 모르므로 따로 둔다.
+  API_PUBLIC_URL: ${API_PUBLIC_URL:-http://localhost:4000}
   JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 을 지정하세요. README 의 도커 절 참고}
   WEB_TRUSTED_PROXY_HOPS: ${WEB_TRUSTED_PROXY_HOPS:-0}
   WEB_SECURE_COOKIE: ${WEB_SECURE_COOKIE:-false}

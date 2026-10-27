@@ -1,8 +1,12 @@
 "use client";
 
-import type { AdminAccountResponse } from "@fms/api-schemas/responses/admin-account-responses";
-import type { AssignableAccountGroupsResponse } from "@fms/api-schemas/responses/option-responses";
-import type { PaginatedResponse } from "@fms/api-schemas/responses/paginated-response";
+import type {
+  ADMIN_ACCOUNT_ASSIGNABLE_GROUPS_API,
+  ADMIN_ACCOUNT_DETAIL_API,
+  ADMIN_ACCOUNT_LIST_API,
+} from "@fms/api-schemas/schemas/admin-account-api-schemas";
+import { DELETE_ADMIN_ACCOUNT_API } from "@fms/api-schemas/schemas/admin-account-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { Button } from "@fms/web-ui/components/button";
 import { formatDate, formatDateTime } from "@fms/web-utils/formats/format-date-time";
 import { useState } from "react";
@@ -12,28 +16,27 @@ import { BodyCell, DataTable, EmptyRow, HeadCell } from "@/components/commons/da
 import { IdentifierText } from "@/components/commons/identifier-text";
 import { PageHeading } from "@/components/commons/page-heading";
 import { Pagination } from "@/components/commons/pagination";
-import { useAsyncAction } from "@/hooks/use-async-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
-import { bffFetch } from "@/utils/bff-fetch";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { AccountFormModal } from "./_components/account-form-modal";
 
 const NO_CREATE_PERMISSION = "관리자 계정 생성 권한이 없습니다";
 const NO_DELETE_PERMISSION = "관리자 계정 삭제 권한이 없습니다";
 
 export function AccountsScreen(props: {
-  accounts: PaginatedResponse<AdminAccountResponse>;
-  options: AssignableAccountGroupsResponse;
+  accounts: ResBody<typeof ADMIN_ACCOUNT_LIST_API>["data"];
+  options: ResBody<typeof ADMIN_ACCOUNT_ASSIGNABLE_GROUPS_API>["data"];
 }) {
   const { accounts, options } = props;
   const { hasPermission } = useAdminSession();
   const canCreate = hasPermission("account.create");
   const canDelete = hasPermission("account.delete");
-  const [editing, setEditing] = useState<AdminAccountResponse | "new" | null>(null);
-  const [deleting, setDeleting] = useState<AdminAccountResponse | null>(null);
-  const { isPending, run } = useAsyncAction();
+  const [editing, setEditing] = useState<ResBody<typeof ADMIN_ACCOUNT_DETAIL_API>["data"] | "new" | null>(null);
+  const [deleting, setDeleting] = useState<ResBody<typeof ADMIN_ACCOUNT_DETAIL_API>["data"] | null>(null);
+  const deleteApi = useCallApiWrapper(DELETE_ADMIN_ACCOUNT_API, { successMessage: "삭제했습니다" });
 
-  async function deleteAccount(account: AdminAccountResponse) {
-    await run(() => bffFetch(`accounts/${account.id}`, { method: "DELETE" }), { successMessage: "삭제했습니다" });
+  async function deleteAccount(account: ResBody<typeof ADMIN_ACCOUNT_DETAIL_API>["data"]) {
+    await deleteApi.fetchApi({ params: { id: account.id } });
     setDeleting(null);
   }
 
@@ -139,7 +142,7 @@ export function AccountsScreen(props: {
       {deleting && (
         <ConfirmDialog
           message={`'${deleting.loginId}' 계정을 삭제합니다.`}
-          isPending={isPending}
+          isPending={deleteApi.isLoading}
           onConfirm={() => deleteAccount(deleting)}
           onClose={() => setDeleting(null)}
         />

@@ -3,6 +3,7 @@
 import { BrandMark } from "@fms/web-ui/components/brand-mark";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { logoutAction } from "@/actions/logout-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
 import { ADMIN_NAV_ITEMS, type AdminNavItem } from "../../_consts/admin-nav-items";
 
@@ -35,7 +36,7 @@ export function AdminSidebar() {
   const router = useRouter();
 
   async function logout() {
-    await fetch("/bff/auth/logout", { method: "POST" });
+    await logoutAction();
     router.replace("/login");
     router.refresh();
   }

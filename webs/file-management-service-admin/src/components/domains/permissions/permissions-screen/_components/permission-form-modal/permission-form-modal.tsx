@@ -1,24 +1,26 @@
 "use client";
 
-import type { PermissionResponse } from "@fms/api-schemas/responses/permission-responses";
+import type { PERMISSION_DETAIL_API } from "@fms/api-schemas/schemas/permission-api-schemas";
+import { UPDATE_PERMISSION_API } from "@fms/api-schemas/schemas/permission-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
+import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import type { FormEvent } from "react";
 import { FormField } from "@/components/commons/form-field";
 import { Modal } from "@/components/commons/modal";
 import { TextAreaInput } from "@/components/commons/text-area-input";
-import { useAsyncAction } from "@/hooks/use-async-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
-import { bffFetch } from "@/utils/bff-fetch";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 
 export function PermissionFormModal(props: {
-  permission: PermissionResponse;
+  permission: ResBody<typeof PERMISSION_DETAIL_API>["data"];
   categories: string[];
   onClose: () => void;
 }) {
   const { permission, categories, onClose } = props;
   const isReadOnly = !useAdminSession().hasPermission("perm.update");
-  const { isPending, run } = useAsyncAction();
+  const updateApi = useCallApiWrapper(UPDATE_PERMISSION_API, { successMessage: "저장했습니다" });
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -28,11 +30,8 @@ export function PermissionFormModal(props: {
       name: String(form.get("name") ?? ""),
       description: String(form.get("description") ?? ""),
     };
-    const result = await run(
-      () => bffFetch(`permissions/${permission.id}`, { method: "PATCH", body: JSON.stringify(body) }),
-      { successMessage: "저장했습니다" },
-    );
-    if (result !== undefined) {
+    const result = await updateApi.fetchApi({ params: { id: permission.id }, body });
+    if (!isCommonError(result)) {
       onClose();
     }
   }
@@ -68,7 +67,7 @@ export function PermissionFormModal(props: {
         <div className="flex justify-end gap-2 border-t border-line-soft px-[22px] py-3.5">
           <Button onClick={onClose}>{isReadOnly ? "닫기" : "취소"}</Button>
           {!isReadOnly && (
-            <Button type="submit" variant="primary" disabled={isPending}>
+            <Button type="submit" variant="primary" disabled={updateApi.isLoading}>
               저장
             </Button>
           )}

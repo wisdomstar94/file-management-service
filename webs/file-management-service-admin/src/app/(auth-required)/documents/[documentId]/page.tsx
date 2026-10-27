@@ -1,15 +1,17 @@
-import type { DocumentDetailResponse } from "@fms/api-schemas/responses/document-responses";
-import type { NamedOption } from "@fms/api-schemas/responses/option-responses";
-import type { ShareLinkResponse } from "@fms/api-schemas/responses/share-link-responses";
+import { DOCUMENT_DETAIL_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import {
+  SHARE_LINK_ASSIGNABLE_ACCESS_POLICY_GROUPS_API,
+  SHARE_LINK_LIST_API,
+} from "@fms/api-schemas/schemas/share-link-api-schemas";
 import { DocumentDetailScreen } from "@/components/domains/documents/document-detail-screen";
 import { requirePagePermission } from "@/utils/require-page-permission";
-import { serverApiFetch } from "@/utils/server-api-fetch";
 import { webEnv } from "@/utils/web-env";
+import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
 
 export default async function DocumentDetailPage(props: PageProps<"/documents/[documentId]">) {
   const me = await requirePagePermission("file.detail.access");
   const { documentId } = await props.params;
-  const base = `/api/admin/documents/${encodeURIComponent(documentId)}`;
+  const params = { documentId };
   const canEditLinks = (() => {
     if (me.permissionCodes.includes("file.detail.link.create")) {
       return true;
@@ -20,17 +22,17 @@ export default async function DocumentDetailPage(props: PageProps<"/documents/[d
     return false;
   })();
   const [document, links, policyOptions] = await Promise.all([
-    serverApiFetch<DocumentDetailResponse>(base),
-    serverApiFetch<ShareLinkResponse[]>(`${base}/share-links`),
+    fetchServerWrapper(DOCUMENT_DETAIL_API, { params }),
+    fetchServerWrapper(SHARE_LINK_LIST_API, { params }),
     canEditLinks
-      ? serverApiFetch<NamedOption[]>(`${base}/share-links/assignable-access-policy-groups`)
-      : Promise.resolve([]),
+      ? fetchServerWrapper(SHARE_LINK_ASSIGNABLE_ACCESS_POLICY_GROUPS_API, { params })
+      : Promise.resolve({ data: [] }),
   ]);
   return (
     <DocumentDetailScreen
-      document={document}
-      links={links}
-      policyOptions={policyOptions}
+      document={document.data}
+      links={links.data}
+      policyOptions={policyOptions.data}
       userWebOrigin={webEnv.userWebOrigin}
     />
   );

@@ -15,8 +15,7 @@
     "lint:format": "biome check --write"
   },
   "dependencies": {
-    "@fms/common-utils": "workspace:^",
-    "zod": "4.6.5"
+    "@fms/common-utils": "workspace:^"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
@@ -26,24 +25,24 @@
     "vite": "8.3.2"
   },
   "exports": {
-    "./requests/*": {
+    "./schemas/*": {
       "require": {
-        "types": "./dist/requests/*/index.d.ts",
-        "default": "./dist/requests/*/index.cjs"
+        "types": "./dist/schemas/*/index.d.ts",
+        "default": "./dist/schemas/*/index.cjs"
       },
       "import": {
-        "types": "./dist/requests/*/index.d.ts",
-        "default": "./dist/requests/*/index.mjs"
+        "types": "./dist/schemas/*/index.d.ts",
+        "default": "./dist/schemas/*/index.mjs"
       }
     },
-    "./responses/*": {
+    "./types/*": {
       "require": {
-        "types": "./dist/responses/*/index.d.ts",
-        "default": "./dist/responses/*/index.cjs"
+        "types": "./dist/types/*/index.d.ts",
+        "default": "./dist/types/*/index.cjs"
       },
       "import": {
-        "types": "./dist/responses/*/index.d.ts",
-        "default": "./dist/responses/*/index.mjs"
+        "types": "./dist/types/*/index.d.ts",
+        "default": "./dist/types/*/index.mjs"
       }
     }
   }

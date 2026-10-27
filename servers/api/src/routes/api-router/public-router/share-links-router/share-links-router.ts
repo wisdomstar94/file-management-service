@@ -1,10 +1,9 @@
-import { unlockShareLinkRequestSchema } from "@fms/api-schemas/requests/share-link-request-schemas";
 import type {
-  PublicShareLinkDetailResponse,
-  PublicShareLinkGateResponse,
-  PublicShareLinkUnlockResponse,
-  PublicShareLinkVersion,
-} from "@fms/api-schemas/responses/share-link-responses";
+  PUBLIC_SHARE_LINK_DETAIL_API,
+  PUBLIC_SHARE_LINK_GATE_API,
+  PUBLIC_SHARE_LINK_UNLOCK_API,
+} from "@fms/api-schemas/schemas/public-share-link-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import type { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 import { verifyPassword } from "@fms/password-handler/passwords/verify-password";
@@ -18,6 +17,7 @@ import { readAccessPolicyRequest } from "../../../../utils/read-access-policy-re
 import { readShareLinkAvailability } from "../../../../utils/read-share-link-availability/index.js";
 import { readUuidParam } from "../../../../utils/read-uuid-param/index.js";
 import { sendVersionFile } from "../../../../utils/send-version-file/index.js";
+import { unlockShareLinkRequestSchema } from "../../../../validators/share-link-validators/index.js";
 import { consumeDownload } from "./_services/consume-download/index.js";
 import { findOpenShareLinkOrThrow } from "./_services/find-open-share-link-or-throw/index.js";
 import { resolveShareLinkDefaultVersion } from "./_services/resolve-share-link-default-version/index.js";
@@ -29,7 +29,9 @@ import {
 
 const router = Router();
 
-const toPublicVersion = (version: DocumentVersionEntity): PublicShareLinkVersion => ({
+const toPublicVersion = (
+  version: DocumentVersionEntity,
+): ResBody<typeof PUBLIC_SHARE_LINK_DETAIL_API>["data"]["defaultVersion"] => ({
   id: version.id,
   versionName: version.versionName,
   fileName: version.fileName,
@@ -48,7 +50,9 @@ async function findUnlockedShareLinkOrThrow(req: Request) {
 
 router.get("/:token", async (req, res) => {
   const { link } = await findOpenShareLinkOrThrow(req);
-  const body: PublicShareLinkGateResponse = { state: link.passwordHash === null ? "OPEN" : "PASSWORD_REQUIRED" };
+  const body: ResBody<typeof PUBLIC_SHARE_LINK_GATE_API>["data"] = {
+    state: link.passwordHash === null ? "OPEN" : "PASSWORD_REQUIRED",
+  };
   res.json(generateCommonRes(body));
 });
 
@@ -59,7 +63,7 @@ router.post("/:token/unlock", async (req, res) => {
   if (!isValid) {
     throw new HttpError(401, API_ERROR_CODE.INVALID_CREDENTIALS, "비밀번호가 올바르지 않습니다.");
   }
-  const body: PublicShareLinkUnlockResponse = {
+  const body: ResBody<typeof PUBLIC_SHARE_LINK_UNLOCK_API>["data"] = {
     unlockToken: await signShareLinkUnlockToken(link),
     expiresAt: new Date(Date.now() + apiEnv.shareLinkUnlockExpiresInSeconds * 1000).toISOString(),
   };
@@ -68,7 +72,7 @@ router.post("/:token/unlock", async (req, res) => {
 
 router.get("/:token/detail", async (req, res) => {
   const { link, document, versions, defaultVersion } = await findUnlockedShareLinkOrThrow(req);
-  const body: PublicShareLinkDetailResponse = {
+  const body: ResBody<typeof PUBLIC_SHARE_LINK_DETAIL_API>["data"] = {
     documentName: document.name,
     defaultVersion: toPublicVersion(defaultVersion),
     otherVersions: link.isShowOtherVersions

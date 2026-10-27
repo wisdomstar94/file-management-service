@@ -15,6 +15,7 @@
   "dependencies": {
     "@fms/api-schemas": "workspace:^",
     "@fms/common-utils": "workspace:^",
+    "@fms/error-provider": "workspace:^",
     "@fms/web-ui": "workspace:^",
     "@fms/web-utils": "workspace:^",
     "next": "16.3.8",

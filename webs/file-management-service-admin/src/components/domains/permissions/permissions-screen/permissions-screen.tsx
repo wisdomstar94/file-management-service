@@ -1,6 +1,7 @@
 "use client";
 
-import type { PermissionListResponse, PermissionResponse } from "@fms/api-schemas/responses/permission-responses";
+import type { PERMISSION_DETAIL_API, PERMISSION_LIST_API } from "@fms/api-schemas/schemas/permission-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { Button } from "@fms/web-ui/components/button";
 import { formatDate } from "@fms/web-utils/formats/format-date-time";
 import { useState } from "react";
@@ -9,9 +10,9 @@ import { BodyCell, DataTable, EmptyRow, HeadCell } from "@/components/commons/da
 import { PageHeading } from "@/components/commons/page-heading";
 import { PermissionFormModal } from "./_components/permission-form-modal";
 
-export function PermissionsScreen(props: { permissions: PermissionListResponse }) {
+export function PermissionsScreen(props: { permissions: ResBody<typeof PERMISSION_LIST_API>["data"] }) {
   const { items, codeOnlyPermissionCodes } = props.permissions;
-  const [editing, setEditing] = useState<PermissionResponse | null>(null);
+  const [editing, setEditing] = useState<ResBody<typeof PERMISSION_DETAIL_API>["data"] | null>(null);
   const categories = [...new Set(items.map((item) => item.category))];
 
   return (

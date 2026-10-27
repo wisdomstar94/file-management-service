@@ -1,8 +1,5 @@
-import {
-  createPermissionGroupRequestSchema,
-  updatePermissionGroupRequestSchema,
-} from "@fms/api-schemas/requests/permission-group-request-schemas";
-import type { PermissionGroupSummaryResponse } from "@fms/api-schemas/responses/permission-group-responses";
+import type { PERMISSION_GROUP_LIST_API } from "@fms/api-schemas/schemas/permission-group-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { AdminAccountEntity } from "@fms/database-entities/entities/admin-account-entity";
 import { PermissionEntity } from "@fms/database-entities/entities/permission-entity";
@@ -17,6 +14,10 @@ import { HttpError } from "../../../../utils/http-error/index.js";
 import { notFoundError } from "../../../../utils/not-found-error/index.js";
 import { parseRequest } from "../../../../utils/parse-request/index.js";
 import { readUuidParam } from "../../../../utils/read-uuid-param/index.js";
+import {
+  createPermissionGroupRequestSchema,
+  updatePermissionGroupRequestSchema,
+} from "../../../../validators/permission-group-validators/index.js";
 import { toPermissionResponse } from "../_utils/to-permission-response/index.js";
 import {
   toPermissionGroupDetailResponse,
@@ -44,7 +45,7 @@ async function findPermissionsOrThrow(permissionIds: string[]) {
 
 router.get("/", requirePermission("perm.group.access"), async (_, res) => {
   const groups = await repository().find({ relations: { permissions: true }, order: { createdAt: "ASC" } });
-  const body: PermissionGroupSummaryResponse[] = groups.map((group) =>
+  const body: ResBody<typeof PERMISSION_GROUP_LIST_API>["data"][number][] = groups.map((group) =>
     toPermissionGroupSummaryResponse(group, group.permissions?.length ?? 0),
   );
   res.json(generateCommonRes(body));

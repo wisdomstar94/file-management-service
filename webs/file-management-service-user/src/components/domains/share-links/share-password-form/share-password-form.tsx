@@ -1,32 +1,31 @@
 "use client";
 
-import type { ApiFailBody } from "@fms/common-utils/responses/api-response-body";
+import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
+import { SHARE_LINK_UNLOCK_ROUTE } from "@/api-schemas/share-link-route-schemas";
+import { readCommonErrorMessage } from "@/utils/read-common-error-message";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 
 export function SharePasswordForm(props: { token: string }) {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isPending, setIsPending] = useState(false);
+  const unlockApi = useCallApiWrapper(SHARE_LINK_UNLOCK_ROUTE, { via: "client", refreshOnSuccess: false });
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setIsPending(true);
     setErrorMessage(null);
-    const res = await fetch(`/s/${props.token}/unlock`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ password: new FormData(event.currentTarget).get("password") }),
+    const result = await unlockApi.fetchApi({
+      params: { token: props.token },
+      body: { password: String(new FormData(event.currentTarget).get("password") ?? "") },
     });
-    setIsPending(false);
-    if (res.ok) {
+    if (!isCommonError(result)) {
       router.refresh();
       return;
     }
-    const body = (await res.json().catch(() => null)) as ApiFailBody | null;
-    setErrorMessage(body?.error.message ?? "확인하지 못했습니다.");
+    setErrorMessage(readCommonErrorMessage(result));
   }
 
   return (
@@ -55,7 +54,7 @@ export function SharePasswordForm(props: { token: string }) {
           {errorMessage}
         </p>
       )}
-      <Button type="submit" variant="primary" disabled={isPending} className="!h-11 !text-[14.5px]">
+      <Button type="submit" variant="primary" disabled={unlockApi.isLoading} className="!h-11 !text-[14.5px]">
         확인
       </Button>
     </form>

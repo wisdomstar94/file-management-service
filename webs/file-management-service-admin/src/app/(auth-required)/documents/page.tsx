@@ -1,20 +1,20 @@
-import type { DocumentSummaryResponse } from "@fms/api-schemas/responses/document-responses";
-import type { PaginatedResponse } from "@fms/api-schemas/responses/paginated-response";
+import { DOCUMENT_LIST_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import type { ReqQuery } from "@fms/api-schemas/types/api-schema-utils";
 import { DocumentsScreen } from "@/components/domains/documents/documents-screen";
 import { readPageParam } from "@/utils/read-page-param";
 import { requirePagePermission } from "@/utils/require-page-permission";
-import { serverApiFetch } from "@/utils/server-api-fetch";
+import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
 
 export default async function DocumentsPage(props: PageProps<"/documents">) {
   await requirePagePermission("file.list.access");
   const searchParams = await props.searchParams;
-  const query = new URLSearchParams({ page: String(readPageParam(searchParams.page)), size: "20" });
+  const query: ReqQuery<typeof DOCUMENT_LIST_API> = { page: readPageParam(searchParams.page), size: 20 };
   if (typeof searchParams.keyword === "string" && searchParams.keyword) {
-    query.set("keyword", searchParams.keyword);
+    query.keyword = searchParams.keyword;
   }
   if (searchParams.days === "7" || searchParams.days === "30") {
-    query.set("createdWithinDays", searchParams.days);
+    query.createdWithinDays = Number(searchParams.days);
   }
-  const documents = await serverApiFetch<PaginatedResponse<DocumentSummaryResponse>>(`/api/admin/documents?${query}`);
-  return <DocumentsScreen documents={documents} />;
+  const documents = await fetchServerWrapper(DOCUMENT_LIST_API, { query });
+  return <DocumentsScreen documents={documents.data} />;
 }

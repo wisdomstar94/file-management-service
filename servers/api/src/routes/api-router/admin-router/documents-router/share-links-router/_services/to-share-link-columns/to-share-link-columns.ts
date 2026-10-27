@@ -1,4 +1,5 @@
-import type { UpdateShareLinkRequest } from "@fms/api-schemas/requests/share-link-request-schemas";
+import type { UPDATE_SHARE_LINK_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
+import type { ReqBody } from "@fms/api-schemas/types/api-schema-utils";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
 import type { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
@@ -11,7 +12,7 @@ import type { DocumentWithVersions } from "../../../_services/find-document-or-t
 export async function toShareLinkColumns(
   manager: EntityManager,
   document: DocumentWithVersions,
-  body: UpdateShareLinkRequest,
+  body: ReqBody<typeof UPDATE_SHARE_LINK_API>,
 ): Promise<Partial<ShareLinkEntity>> {
   const { password, availableFrom, availableUntil, ...rest } = body;
   const isForeignVersion =

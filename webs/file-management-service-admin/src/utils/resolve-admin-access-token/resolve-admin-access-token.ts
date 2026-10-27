@@ -1,4 +1,5 @@
-import type { AdminTokenResponse } from "@fms/api-schemas/responses/admin-auth-responses";
+import type { ADMIN_REFRESH_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { verifyAdminAccessToken } from "@fms/jwt-handler/tokens/admin-access-token";
 import { requestAdminTokenRefresh } from "../request-admin-token-refresh";
 import { webEnv } from "../web-env";
@@ -11,7 +12,7 @@ export async function resolveAdminAccessToken(props: {
   incoming: Headers;
   accessToken?: string;
   refreshToken?: string;
-}): Promise<{ accessToken: string | null; refreshed: AdminTokenResponse | null }> {
+}): Promise<{ accessToken: string | null; refreshed: ResBody<typeof ADMIN_REFRESH_TOKEN_API>["data"] | null }> {
   const { incoming, accessToken, refreshToken } = props;
   const isValid = accessToken
     ? (await verifyAdminAccessToken({ token: accessToken, secret: webEnv.jwtSecret })) !== null

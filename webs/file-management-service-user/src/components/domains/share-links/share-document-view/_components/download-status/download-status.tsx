@@ -1,8 +1,9 @@
-import type { PublicShareLinkDetailResponse } from "@fms/api-schemas/responses/share-link-responses";
+import type { PUBLIC_SHARE_LINK_DETAIL_API } from "@fms/api-schemas/schemas/public-share-link-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { ProgressBar } from "@fms/web-ui/components/progress-bar";
 
 export function DownloadStatus(props: {
-  downloadStatus: PublicShareLinkDetailResponse["downloadStatus"];
+  downloadStatus: ResBody<typeof PUBLIC_SHARE_LINK_DETAIL_API>["data"]["downloadStatus"];
   period: string | null;
 }) {
   const { downloadStatus, period } = props;

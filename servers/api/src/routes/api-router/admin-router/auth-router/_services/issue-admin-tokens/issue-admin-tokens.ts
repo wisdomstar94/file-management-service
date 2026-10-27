@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
-import type { AdminTokenResponse } from "@fms/api-schemas/responses/admin-auth-responses";
+import type { ADMIN_LOGIN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { AdminAccountEntity } from "@fms/database-entities/entities/admin-account-entity";
 import { AdminRefreshTokenEntity } from "@fms/database-entities/entities/admin-refresh-token-entity";
 import {
@@ -14,7 +15,10 @@ export function hashRefreshToken(refreshToken: string): string {
 }
 
 /** access token 과 refresh token 을 새로 발급하고 최근 접속일을 갱신한다. refresh token 은 해시만 저장한다. */
-export async function issueAdminTokens(manager: EntityManager, adminAccountId: string): Promise<AdminTokenResponse> {
+export async function issueAdminTokens(
+  manager: EntityManager,
+  adminAccountId: string,
+): Promise<ResBody<typeof ADMIN_LOGIN_API>["data"]> {
   const now = Date.now();
   const refreshToken = randomBytes(32).toString("base64url");
   const refreshTokenExpiresAt = new Date(now + apiEnv.refreshTokenDays * 24 * 60 * 60 * 1000);

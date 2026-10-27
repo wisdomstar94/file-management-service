@@ -1,12 +1,13 @@
 "use client";
 
-import type { AdminMeResponse } from "@fms/api-schemas/responses/admin-auth-responses";
+import type { ADMIN_ME_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import type { PermissionCode } from "@fms/common-utils/permissions/permission-code-registry";
 import { createContext, type ReactNode, useContext } from "react";
 
-const AdminSessionContext = createContext<AdminMeResponse | null>(null);
+const AdminSessionContext = createContext<ResBody<typeof ADMIN_ME_API>["data"] | null>(null);
 
-export function AdminSessionProvider(props: { me: AdminMeResponse; children: ReactNode }) {
+export function AdminSessionProvider(props: { me: ResBody<typeof ADMIN_ME_API>["data"]; children: ReactNode }) {
   return <AdminSessionContext.Provider value={props.me}>{props.children}</AdminSessionContext.Provider>;
 }
 

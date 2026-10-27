@@ -1,5 +1,5 @@
-import { paginationQuerySchema } from "@fms/api-schemas/requests/pagination-query-schema";
 import type { Request } from "express";
+import { paginationQuerySchema } from "../../validators/pagination-query-validators/index.js";
 import { parseRequest } from "../parse-request/index.js";
 
 export function readPagination(req: Request) {

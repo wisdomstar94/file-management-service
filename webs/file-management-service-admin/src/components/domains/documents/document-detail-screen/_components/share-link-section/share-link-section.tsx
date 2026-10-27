@@ -1,22 +1,25 @@
 "use client";
 
-import type { DocumentDetailResponse } from "@fms/api-schemas/responses/document-responses";
-import type { NamedOption } from "@fms/api-schemas/responses/option-responses";
-import type { ShareLinkResponse } from "@fms/api-schemas/responses/share-link-responses";
+import type { DOCUMENT_DETAIL_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import type {
+  SHARE_LINK_ASSIGNABLE_ACCESS_POLICY_GROUPS_API,
+  SHARE_LINK_LIST_API,
+} from "@fms/api-schemas/schemas/share-link-api-schemas";
+import { DELETE_SHARE_LINK_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { Button } from "@fms/web-ui/components/button";
 import { useState } from "react";
 import { Card } from "@/components/commons/card";
 import { ConfirmDialog } from "@/components/commons/confirm-dialog";
-import { useAsyncAction } from "@/hooks/use-async-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
-import { bffFetch } from "@/utils/bff-fetch";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { ShareLinkCard } from "./_components/share-link-card";
 import { ShareLinkFormModal } from "./_components/share-link-form-modal";
 
 export function ShareLinkSection(props: {
-  document: DocumentDetailResponse;
-  links: ShareLinkResponse[];
-  policyOptions: NamedOption[];
+  document: ResBody<typeof DOCUMENT_DETAIL_API>["data"];
+  links: ResBody<typeof SHARE_LINK_LIST_API>["data"][number][];
+  policyOptions: ResBody<typeof SHARE_LINK_ASSIGNABLE_ACCESS_POLICY_GROUPS_API>["data"][number][];
   userWebOrigin: string;
 }) {
   const { document, links, policyOptions, userWebOrigin } = props;
@@ -24,14 +27,12 @@ export function ShareLinkSection(props: {
   const canCreate = hasPermission("file.detail.link.create");
   const canUpdate = hasPermission("file.detail.link.update");
   const canDelete = hasPermission("file.detail.link.delete");
-  const [editing, setEditing] = useState<ShareLinkResponse | "new" | null>(null);
-  const [deleting, setDeleting] = useState<ShareLinkResponse | null>(null);
-  const { isPending, run } = useAsyncAction();
+  const [editing, setEditing] = useState<ResBody<typeof SHARE_LINK_LIST_API>["data"][number] | "new" | null>(null);
+  const [deleting, setDeleting] = useState<ResBody<typeof SHARE_LINK_LIST_API>["data"][number] | null>(null);
+  const deleteApi = useCallApiWrapper(DELETE_SHARE_LINK_API, { successMessage: "삭제했습니다" });
 
-  async function deleteLink(link: ShareLinkResponse) {
-    await run(() => bffFetch(`documents/${document.id}/share-links/${link.id}`, { method: "DELETE" }), {
-      successMessage: "삭제했습니다",
-    });
+  async function deleteLink(link: ResBody<typeof SHARE_LINK_LIST_API>["data"][number]) {
+    await deleteApi.fetchApi({ params: { documentId: document.id, linkId: link.id } });
     setDeleting(null);
   }
 
@@ -82,7 +83,7 @@ export function ShareLinkSection(props: {
       {deleting && (
         <ConfirmDialog
           message="이 링크를 삭제하면 링크를 받은 사용자가 더 이상 접근할 수 없습니다."
-          isPending={isPending}
+          isPending={deleteApi.isLoading}
           onConfirm={() => deleteLink(deleting)}
           onClose={() => setDeleting(null)}
         />

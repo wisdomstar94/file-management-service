@@ -1,41 +1,41 @@
-import type {
-  PublicShareLinkDetailResponse,
-  PublicShareLinkGateResponse,
-} from "@fms/api-schemas/responses/share-link-responses";
-import type { AccessPolicyDeniedDetails } from "@fms/common-utils/errors/api-error-code";
-import type { ApiFailBody, ApiSuccessBody } from "@fms/common-utils/responses/api-response-body";
+import {
+  PUBLIC_SHARE_LINK_DETAIL_API,
+  PUBLIC_SHARE_LINK_GATE_API,
+} from "@fms/api-schemas/schemas/public-share-link-api-schemas";
+import { type AccessPolicyDeniedDetails, API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import type { ApiFailBody } from "@fms/common-utils/responses/api-response-body";
+import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { formatDateTime } from "@fms/web-utils/formats/format-date-time";
 import { cookies } from "next/headers";
 import { ShareDocumentView } from "@/components/domains/share-links/share-document-view";
 import { ShareNoticeCard } from "@/components/domains/share-links/share-notice-card";
 import { SharePageFrame } from "@/components/domains/share-links/share-page-frame";
 import { SharePasswordForm } from "@/components/domains/share-links/share-password-form";
-import { publicApiFetch } from "@/utils/public-api-fetch";
 import { readDownloadErrorCookieName } from "@/utils/share-link-download-error-cookie";
+import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
 
 /** 접근 정책 → 비밀번호 → 자료 순서로 확인한다. 앞 단계를 통과하기 전에는 자료 정보를 받지 않는다. */
 async function readShareState(token: string) {
-  const gate = await publicApiFetch(token);
-  if (gate.status === 403) {
-    const body = (await gate.json()) as ApiFailBody;
-    return { kind: "BLOCKED" as const, details: body.error.details as AccessPolicyDeniedDetails };
-  }
-  if (!gate.ok) {
+  const params = { token };
+  const gate = await fetchServerWrapper(PUBLIC_SHARE_LINK_GATE_API, { params }).catch((error: unknown) => {
+    if (isCommonError(error) && error.errorCode === API_ERROR_CODE.ACCESS_POLICY_DENIED) {
+      const body = error.apiError?.resPayload as ApiFailBody;
+      return { kind: "BLOCKED" as const, details: body.error.details as AccessPolicyDeniedDetails };
+    }
     return { kind: "NOT_FOUND" as const };
+  });
+  if ("kind" in gate) {
+    return gate;
   }
 
-  const { state } = ((await gate.json()) as ApiSuccessBody<PublicShareLinkGateResponse>).data;
-  const detail = await publicApiFetch(token, "/detail");
-  if (detail.status === 401 && state === "PASSWORD_REQUIRED") {
-    return { kind: "PASSWORD_REQUIRED" as const };
-  }
-  if (!detail.ok) {
-    return { kind: "NOT_FOUND" as const };
-  }
-  return {
-    kind: "OPEN" as const,
-    detail: ((await detail.json()) as ApiSuccessBody<PublicShareLinkDetailResponse>).data,
-  };
+  return fetchServerWrapper(PUBLIC_SHARE_LINK_DETAIL_API, { params })
+    .then((detail) => ({ kind: "OPEN" as const, detail: detail.data }))
+    .catch((error: unknown) => {
+      const isPasswordRequired = isCommonError(error) && error.errorCode === API_ERROR_CODE.UNAUTHORIZED;
+      return isPasswordRequired && gate.data.state === "PASSWORD_REQUIRED"
+        ? { kind: "PASSWORD_REQUIRED" as const }
+        : { kind: "NOT_FOUND" as const };
+    });
 }
 
 export default async function SharePage(props: PageProps<"/s/[token]">) {

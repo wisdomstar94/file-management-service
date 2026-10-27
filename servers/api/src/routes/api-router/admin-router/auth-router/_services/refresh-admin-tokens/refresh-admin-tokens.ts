@@ -1,4 +1,5 @@
-import type { AdminTokenResponse } from "@fms/api-schemas/responses/admin-auth-responses";
+import type { ADMIN_LOGIN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { AdminRefreshTokenEntity } from "@fms/database-entities/entities/admin-refresh-token-entity";
 import type { Request } from "express";
@@ -8,7 +9,10 @@ import { HttpError } from "../../../../../../utils/http-error/index.js";
 import { hashRefreshToken, issueAdminTokens } from "../issue-admin-tokens/index.js";
 
 /** 사용한 refresh token 은 지우고 새로 발급한다(재사용 방지). */
-export async function refreshAdminTokens(req: Request, refreshToken: string): Promise<AdminTokenResponse> {
+export async function refreshAdminTokens(
+  req: Request,
+  refreshToken: string,
+): Promise<ResBody<typeof ADMIN_LOGIN_API>["data"]> {
   return appDataSource.transaction(async (manager) => {
     const repository = manager.getRepository(AdminRefreshTokenEntity);
     const stored = await repository.findOne({

@@ -1,8 +1,13 @@
 "use client";
 
-import type { DocumentDetailResponse } from "@fms/api-schemas/responses/document-responses";
-import type { NamedOption } from "@fms/api-schemas/responses/option-responses";
-import type { ShareLinkResponse } from "@fms/api-schemas/responses/share-link-responses";
+import type { DOCUMENT_DETAIL_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import type {
+  SHARE_LINK_ASSIGNABLE_ACCESS_POLICY_GROUPS_API,
+  SHARE_LINK_LIST_API,
+} from "@fms/api-schemas/schemas/share-link-api-schemas";
+import { CREATE_SHARE_LINK_API, UPDATE_SHARE_LINK_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
+import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import { formatDate } from "@fms/web-utils/formats/format-date-time";
@@ -12,9 +17,8 @@ import { FormField } from "@/components/commons/form-field";
 import { Modal } from "@/components/commons/modal";
 import { SelectInput } from "@/components/commons/select-input";
 import { ToggleSwitch } from "@/components/commons/toggle-switch";
-import { useAsyncAction } from "@/hooks/use-async-action";
-import { bffFetch } from "@/utils/bff-fetch";
 import { toKstDateBoundary } from "@/utils/to-kst-date-boundary";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 
 const TOGGLES = [
   {
@@ -37,9 +41,9 @@ const TOGGLES = [
 type ToggleKey = (typeof TOGGLES)[number]["key"];
 
 export function ShareLinkFormModal(props: {
-  document: DocumentDetailResponse;
-  link: ShareLinkResponse | null;
-  policyOptions: NamedOption[];
+  document: ResBody<typeof DOCUMENT_DETAIL_API>["data"];
+  link: ResBody<typeof SHARE_LINK_LIST_API>["data"][number] | null;
+  policyOptions: ResBody<typeof SHARE_LINK_ASSIGNABLE_ACCESS_POLICY_GROUPS_API>["data"][number][];
   onClose: () => void;
 }) {
   const { document, link, policyOptions, onClose } = props;
@@ -50,7 +54,9 @@ export function ShareLinkFormModal(props: {
     isAllowOtherVersionDownload: link?.isAllowOtherVersionDownload ?? false,
     isShowDownloadStatus: link?.isShowDownloadStatus ?? true,
   });
-  const { isPending, run } = useAsyncAction();
+  const createApi = useCallApiWrapper(CREATE_SHARE_LINK_API, { successMessage: "링크를 생성했습니다" });
+  const updateApi = useCallApiWrapper(UPDATE_SHARE_LINK_API, { successMessage: "링크를 저장했습니다" });
+  const isPending = createApi.isLoading || updateApi.isLoading;
   const defaultVersion = document.versions.find((version) => version.isDefault) ?? document.latestVersion;
 
   function readPassword(form: FormData): { password?: string | null } {
@@ -75,13 +81,17 @@ export function ShareLinkFormModal(props: {
       fixedVersionId: mode === "FIXED" ? String(form.get("fixedVersionId") ?? "") : null,
       ...toggles,
       isAllowOtherVersionDownload: toggles.isShowOtherVersions && toggles.isAllowOtherVersionDownload,
-      ...readPassword(form),
     };
-    const path = `documents/${document.id}/share-links${link ? `/${link.id}` : ""}`;
-    const saved = await run(() => bffFetch(path, { method: link ? "PATCH" : "POST", body: JSON.stringify(body) }), {
-      successMessage: link ? "링크를 저장했습니다" : "링크를 생성했습니다",
-    });
-    if (saved !== undefined) {
+    const saved = link
+      ? await updateApi.fetchApi({
+          params: { documentId: document.id, linkId: link.id },
+          body: { ...body, ...readPassword(form) },
+        })
+      : await createApi.fetchApi({
+          params: { documentId: document.id },
+          body: { ...body, password: readPassword(form).password ?? null },
+        });
+    if (!isCommonError(saved)) {
       onClose();
     }
   }

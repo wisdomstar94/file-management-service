@@ -1,8 +1,5 @@
-import {
-  createAccessPolicyGroupRequestSchema,
-  updateAccessPolicyGroupRequestSchema,
-} from "@fms/api-schemas/requests/access-policy-group-request-schemas";
-import type { AccessPolicyGroupDetailResponse } from "@fms/api-schemas/responses/access-policy-group-responses";
+import type { ACCESS_POLICY_GROUP_DETAIL_API } from "@fms/api-schemas/schemas/access-policy-group-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
 import { Router } from "express";
 import { requirePermission } from "../../../../middlewares/require-permission-middleware/index.js";
@@ -12,6 +9,10 @@ import { generateCommonRes } from "../../../../utils/generate-common-res/index.j
 import { notFoundError } from "../../../../utils/not-found-error/index.js";
 import { parseRequest } from "../../../../utils/parse-request/index.js";
 import { readUuidParam } from "../../../../utils/read-uuid-param/index.js";
+import {
+  createAccessPolicyGroupRequestSchema,
+  updateAccessPolicyGroupRequestSchema,
+} from "../../../../validators/access-policy-group-validators/index.js";
 import { countAccessPolicyGroupUsage } from "./_services/count-access-policy-group-usage/index.js";
 import { toAccessPolicyGroupSummaryResponse } from "./_utils/to-access-policy-group-response/index.js";
 
@@ -26,7 +27,9 @@ async function findGroupOrThrow(id: string) {
   return group;
 }
 
-async function toDetailResponse(group: AccessPolicyGroupEntity): Promise<AccessPolicyGroupDetailResponse> {
+async function toDetailResponse(
+  group: AccessPolicyGroupEntity,
+): Promise<ResBody<typeof ACCESS_POLICY_GROUP_DETAIL_API>["data"]> {
   return {
     ...toAccessPolicyGroupSummaryResponse(group),
     ruleTree: group.ruleTree,

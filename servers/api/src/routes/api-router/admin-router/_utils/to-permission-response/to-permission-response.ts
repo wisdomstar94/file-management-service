@@ -1,7 +1,8 @@
-import type { PermissionResponse } from "@fms/api-schemas/responses/permission-responses";
+import type { PERMISSION_DETAIL_API } from "@fms/api-schemas/schemas/permission-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import type { PermissionEntity } from "@fms/database-entities/entities/permission-entity";
 
-export function toPermissionResponse(permission: PermissionEntity): PermissionResponse {
+export function toPermissionResponse(permission: PermissionEntity): ResBody<typeof PERMISSION_DETAIL_API>["data"] {
   return {
     id: permission.id,
     category: permission.category,

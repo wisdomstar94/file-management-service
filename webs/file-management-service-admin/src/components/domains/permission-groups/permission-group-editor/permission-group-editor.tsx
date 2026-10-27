@@ -1,7 +1,13 @@
 "use client";
 
-import type { PermissionGroupDetailResponse } from "@fms/api-schemas/responses/permission-group-responses";
-import type { PermissionResponse } from "@fms/api-schemas/responses/permission-responses";
+import type { PERMISSION_DETAIL_API } from "@fms/api-schemas/schemas/permission-api-schemas";
+import type { PERMISSION_GROUP_DETAIL_API } from "@fms/api-schemas/schemas/permission-group-api-schemas";
+import {
+  CREATE_PERMISSION_GROUP_API,
+  UPDATE_PERMISSION_GROUP_API,
+} from "@fms/api-schemas/schemas/permission-group-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
+import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import Link from "next/link";
@@ -10,21 +16,22 @@ import { useState } from "react";
 import { Card } from "@/components/commons/card";
 import { FormField } from "@/components/commons/form-field";
 import { PageHeading } from "@/components/commons/page-heading";
-import { useAsyncAction } from "@/hooks/use-async-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
-import { bffFetch } from "@/utils/bff-fetch";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { groupPermissionsByCategory } from "./_utils/group-permissions-by-category";
 
 export function PermissionGroupEditor(props: {
-  group: PermissionGroupDetailResponse | null;
-  permissions: PermissionResponse[];
+  group: ResBody<typeof PERMISSION_GROUP_DETAIL_API>["data"] | null;
+  permissions: ResBody<typeof PERMISSION_DETAIL_API>["data"][];
 }) {
   const { group, permissions } = props;
   const router = useRouter();
   const canSave = useAdminSession().hasPermission(group ? "perm.group.update" : "perm.group.create");
   const [name, setName] = useState(group?.name ?? "");
   const [checkedIds, setCheckedIds] = useState(() => new Set(group?.permissions.map((p) => p.id) ?? []));
-  const { isPending, run } = useAsyncAction();
+  const createApi = useCallApiWrapper(CREATE_PERMISSION_GROUP_API, { successMessage: "권한 그룹을 저장했습니다" });
+  const updateApi = useCallApiWrapper(UPDATE_PERMISSION_GROUP_API, { successMessage: "권한 그룹을 저장했습니다" });
+  const isPending = createApi.isLoading || updateApi.isLoading;
   const sections = groupPermissionsByCategory(permissions);
 
   function toggle(ids: string[], isChecked: boolean) {
@@ -42,15 +49,11 @@ export function PermissionGroupEditor(props: {
   }
 
   async function save() {
-    const body = JSON.stringify({ name, permissionIds: [...checkedIds] });
-    const saved = await run(
-      () =>
-        group
-          ? bffFetch(`permission-groups/${group.id}`, { method: "PATCH", body })
-          : bffFetch("permission-groups", { method: "POST", body }),
-      { successMessage: "권한 그룹을 저장했습니다" },
-    );
-    if (saved !== undefined) {
+    const body = { name, permissionIds: [...checkedIds] };
+    const saved = group
+      ? await updateApi.fetchApi({ params: { id: group.id }, body })
+      : await createApi.fetchApi({ body });
+    if (!isCommonError(saved)) {
       router.push("/permissions/groups");
     }
   }

@@ -1,14 +1,15 @@
 import type {
-  PermissionGroupDetailResponse,
-  PermissionGroupSummaryResponse,
-} from "@fms/api-schemas/responses/permission-group-responses";
+  PERMISSION_GROUP_DETAIL_API,
+  PERMISSION_GROUP_LIST_API,
+} from "@fms/api-schemas/schemas/permission-group-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import type { PermissionGroupEntity } from "@fms/database-entities/entities/permission-group-entity";
 import { toPermissionResponse } from "../../../_utils/to-permission-response/index.js";
 
 export function toPermissionGroupSummaryResponse(
   group: PermissionGroupEntity,
   permissionCount: number,
-): PermissionGroupSummaryResponse {
+): ResBody<typeof PERMISSION_GROUP_LIST_API>["data"][number] {
   return {
     id: group.id,
     name: group.name,
@@ -18,7 +19,9 @@ export function toPermissionGroupSummaryResponse(
   };
 }
 
-export function toPermissionGroupDetailResponse(group: PermissionGroupEntity): PermissionGroupDetailResponse {
+export function toPermissionGroupDetailResponse(
+  group: PermissionGroupEntity,
+): ResBody<typeof PERMISSION_GROUP_DETAIL_API>["data"] {
   const permissions = group.permissions ?? [];
   return {
     ...toPermissionGroupSummaryResponse(group, permissions.length),

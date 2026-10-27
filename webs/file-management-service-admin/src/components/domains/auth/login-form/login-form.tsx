@@ -1,12 +1,15 @@
 "use client";
 
-import type { ApiFailBody } from "@fms/common-utils/responses/api-response-body";
+import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { BrandMark } from "@fms/web-ui/components/brand-mark";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
+import { loginAction } from "@/actions/login-action";
 import { FormField } from "@/components/commons/form-field";
+import { readCommonErrorMessage } from "@/utils/read-common-error-message";
 
 export function LoginForm(props: { nextPath: string }) {
   const router = useRouter();
@@ -18,23 +21,21 @@ export function LoginForm(props: { nextPath: string }) {
     const form = new FormData(event.currentTarget);
     setIsPending(true);
     setErrorMessage(null);
-    const res = await fetch("/bff/auth/login", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ loginId: form.get("loginId"), password: form.get("password") }),
+    const result = await loginAction({
+      loginId: String(form.get("loginId") ?? ""),
+      password: String(form.get("password") ?? ""),
     });
     setIsPending(false);
-    if (res.ok) {
+    if (!isCommonError(result)) {
       router.replace(props.nextPath);
       router.refresh();
       return;
     }
-    const body = (await res.json().catch(() => null)) as ApiFailBody | null;
-    if (body?.error.code === "ACCESS_POLICY_DENIED") {
+    if (result.errorCode === API_ERROR_CODE.ACCESS_POLICY_DENIED) {
       setErrorMessage("접근 정책에 의해 차단되었습니다. 허용된 네트워크에서 다시 시도하세요.");
       return;
     }
-    setErrorMessage(body?.error.message ?? "로그인하지 못했습니다.");
+    setErrorMessage(result.apiError ? readCommonErrorMessage(result) : "로그인하지 못했습니다.");
   }
 
   return (

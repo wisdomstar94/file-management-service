@@ -1,11 +1,5 @@
-import {
-  bulkDeleteDocumentsRequestSchema,
-  createDocumentRequestSchema,
-  documentListQuerySchema,
-  updateDocumentRequestSchema,
-} from "@fms/api-schemas/requests/document-request-schemas";
-import type { DocumentSummaryResponse } from "@fms/api-schemas/responses/document-responses";
-import type { PaginatedResponse } from "@fms/api-schemas/responses/paginated-response";
+import type { DOCUMENT_LIST_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { DocumentEntity } from "@fms/database-entities/entities/document-entity";
 import { Router } from "express";
@@ -16,6 +10,12 @@ import { generateCommonRes } from "../../../../utils/generate-common-res/index.j
 import { HttpError } from "../../../../utils/http-error/index.js";
 import { parseRequest } from "../../../../utils/parse-request/index.js";
 import { readUuidParam } from "../../../../utils/read-uuid-param/index.js";
+import {
+  bulkDeleteDocumentsRequestSchema,
+  createDocumentRequestSchema,
+  documentListQuerySchema,
+  updateDocumentRequestSchema,
+} from "../../../../validators/document-validators/index.js";
 import { deleteDocuments } from "./_services/delete-documents/index.js";
 import { findDocumentOrThrow } from "./_services/find-document-or-throw/index.js";
 import { listDocuments } from "./_services/list-documents/index.js";
@@ -30,7 +30,7 @@ const router = Router();
 router.get("/", requirePermission("file.list.access"), async (req, res) => {
   const query = parseRequest(documentListQuerySchema, req.query);
   const { documents, total } = await listDocuments(query);
-  const body: PaginatedResponse<DocumentSummaryResponse> = {
+  const body: ResBody<typeof DOCUMENT_LIST_API>["data"] = {
     items: documents.map(toDocumentSummaryResponse),
     total,
     page: query.page,

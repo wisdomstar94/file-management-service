@@ -2,12 +2,13 @@
 
 import { Button } from "@fms/web-ui/components/button";
 import { useRouter } from "next/navigation";
+import { logoutAction } from "@/actions/logout-action";
 
 export function AccessDeniedActions() {
   const router = useRouter();
 
   async function logout() {
-    await fetch("/bff/auth/logout", { method: "POST" });
+    await logoutAction();
     router.replace("/login");
   }
 

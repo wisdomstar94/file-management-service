@@ -1,5 +1,5 @@
-import { updatePermissionRequestSchema } from "@fms/api-schemas/requests/permission-request-schemas";
-import type { PermissionListResponse } from "@fms/api-schemas/responses/permission-responses";
+import type { PERMISSION_LIST_API } from "@fms/api-schemas/schemas/permission-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { PERMISSION_CODES } from "@fms/common-utils/permissions/permission-code-registry";
 import { PermissionEntity } from "@fms/database-entities/entities/permission-entity";
 import { Router } from "express";
@@ -9,6 +9,7 @@ import { generateCommonRes } from "../../../../utils/generate-common-res/index.j
 import { notFoundError } from "../../../../utils/not-found-error/index.js";
 import { parseRequest } from "../../../../utils/parse-request/index.js";
 import { readUuidParam } from "../../../../utils/read-uuid-param/index.js";
+import { updatePermissionRequestSchema } from "../../../../validators/permission-validators/index.js";
 import { toPermissionResponse } from "../_utils/to-permission-response/index.js";
 
 const router = Router();
@@ -25,7 +26,7 @@ async function findPermissionOrThrow(id: string) {
 router.get("/", requirePermission("perm.access"), async (_, res) => {
   const permissions = await repository().find({ order: { category: "ASC", createdAt: "ASC" } });
   const storedCodes = new Set(permissions.map((permission) => permission.code));
-  const body: PermissionListResponse = {
+  const body: ResBody<typeof PERMISSION_LIST_API>["data"] = {
     items: permissions.map(toPermissionResponse),
     codeOnlyPermissionCodes: PERMISSION_CODES.filter((code) => !storedCodes.has(code)),
   };

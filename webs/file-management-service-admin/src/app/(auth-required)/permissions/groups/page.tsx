@@ -1,14 +1,16 @@
-import type { PermissionGroupSummaryResponse } from "@fms/api-schemas/responses/permission-group-responses";
-import type { PermissionResponse } from "@fms/api-schemas/responses/permission-responses";
+import {
+  PERMISSION_GROUP_ASSIGNABLE_PERMISSIONS_API,
+  PERMISSION_GROUP_LIST_API,
+} from "@fms/api-schemas/schemas/permission-group-api-schemas";
 import { PermissionGroupsScreen } from "@/components/domains/permission-groups/permission-groups-screen";
 import { requirePagePermission } from "@/utils/require-page-permission";
-import { serverApiFetch } from "@/utils/server-api-fetch";
+import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
 
 export default async function PermissionGroupsPage() {
   await requirePagePermission("perm.group.access");
   const [groups, permissions] = await Promise.all([
-    serverApiFetch<PermissionGroupSummaryResponse[]>("/api/admin/permission-groups"),
-    serverApiFetch<PermissionResponse[]>("/api/admin/permission-groups/assignable-permissions"),
+    fetchServerWrapper(PERMISSION_GROUP_LIST_API, {}),
+    fetchServerWrapper(PERMISSION_GROUP_ASSIGNABLE_PERMISSIONS_API, {}),
   ]);
-  return <PermissionGroupsScreen groups={groups} permissionTotal={permissions.length} />;
+  return <PermissionGroupsScreen groups={groups.data} permissionTotal={permissions.data.length} />;
 }

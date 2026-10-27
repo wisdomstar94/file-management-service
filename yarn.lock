@@ -550,6 +550,7 @@ __metadata:
     "@fms/api-schemas": "workspace:^"
     "@fms/biome-config": "workspace:^"
     "@fms/common-utils": "workspace:^"
+    "@fms/error-provider": "workspace:^"
     "@fms/jwt-handler": "workspace:^"
     "@fms/web-ui": "workspace:^"
     "@fms/web-utils": "workspace:^"
@@ -576,7 +577,6 @@ __metadata:
     "@types/node": "npm:26.6.4"
     typescript: "npm:7.0.2"
     vite: "npm:8.3.2"
-    zod: "npm:4.6.5"
   languageName: unknown
   linkType: soft
 
@@ -672,6 +672,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fms/error-provider@workspace:^, @fms/error-provider@workspace:libs/common-shared/error-provider":
+  version: 0.0.0-use.local
+  resolution: "@fms/error-provider@workspace:libs/common-shared/error-provider"
+  dependencies:
+    "@biomejs/biome": "npm:2.5.15"
+    "@fms/biome-config": "workspace:^"
+    "@types/node": "npm:26.6.4"
+    typescript: "npm:7.0.2"
+    vite: "npm:8.3.2"
+  languageName: unknown
+  linkType: soft
+
 "@fms/jwt-handler@workspace:^, @fms/jwt-handler@workspace:libs/common-shared/jwt-handler":
   version: 0.0.0-use.local
   resolution: "@fms/jwt-handler@workspace:libs/common-shared/jwt-handler"
@@ -719,6 +731,7 @@ __metadata:
     "@fms/api-schemas": "workspace:^"
     "@fms/biome-config": "workspace:^"
     "@fms/common-utils": "workspace:^"
+    "@fms/error-provider": "workspace:^"
     "@fms/web-ui": "workspace:^"
     "@fms/web-utils": "workspace:^"
     "@playwright/test": "npm:1.63.0"

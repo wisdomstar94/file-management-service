@@ -1,7 +1,8 @@
-import type { AdminAccountResponse } from "@fms/api-schemas/responses/admin-account-responses";
+import type { ADMIN_ACCOUNT_DETAIL_API } from "@fms/api-schemas/schemas/admin-account-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import type { AdminAccountEntity } from "@fms/database-entities/entities/admin-account-entity";
 
-export function toAdminAccountResponse(account: AdminAccountEntity): AdminAccountResponse {
+export function toAdminAccountResponse(account: AdminAccountEntity): ResBody<typeof ADMIN_ACCOUNT_DETAIL_API>["data"] {
   return {
     id: account.id,
     loginId: account.loginId,

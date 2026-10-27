@@ -1,4 +1,5 @@
-import type { AdminTokenResponse } from "@fms/api-schemas/responses/admin-auth-responses";
+import type { ADMIN_LOGIN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { webEnv } from "../web-env";
 
 export const ACCESS_TOKEN_COOKIE = "fms_admin_at";
@@ -11,7 +12,7 @@ type CookieWriter = {
 
 const baseOptions = () => ({ httpOnly: true, sameSite: "lax" as const, secure: webEnv.isSecureCookie, path: "/" });
 
-export function writeAdminTokenCookies(cookies: CookieWriter, tokens: AdminTokenResponse): void {
+export function writeAdminTokenCookies(cookies: CookieWriter, tokens: ResBody<typeof ADMIN_LOGIN_API>["data"]): void {
   cookies.set(ACCESS_TOKEN_COOKIE, tokens.accessToken, {
     ...baseOptions(),
     expires: new Date(tokens.accessTokenExpiresAt),

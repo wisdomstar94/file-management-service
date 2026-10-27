@@ -11,12 +11,16 @@ x-api-env: &api-env
   JWT_SECRET: e2e-jwt-secret-e2e-jwt-secret-e2e-jwt-secret
   # 러너 · 웹 컨테이너가 X-Forwarded-For 로 요청 IP 를 넘기므로 e2e 네트워크 전체를 신뢰한다.
   API_TRUST_PROXY: 172.31.250.0/24
+  # Playwright 브라우저가 api 를 직접 호출하는 web 의 origin 을 허용한다.
+  API_CORS_ORIGINS: http://admin-web:3000,http://user-web:3001
   STORAGE_DIR: /data/storage
   INITIAL_ADMIN_ID: admin
   INITIAL_ADMIN_PASSWORD: admin1234!
 
 x-web-env: &web-env
   API_INTERNAL_URL: http://api:4000
+  # Playwright 브라우저도 e2e 네트워크 안에 있어 web 서버와 같은 주소로 닿는다.
+  API_PUBLIC_URL: http://api:4000
   JWT_SECRET: e2e-jwt-secret-e2e-jwt-secret-e2e-jwt-secret
   WEB_TRUSTED_PROXY_HOPS: "0"
   USER_WEB_ORIGIN: http://user-web:3001

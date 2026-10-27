@@ -1,6 +1,8 @@
 "use client";
 
-import type { AccessPolicyGroupSummaryResponse } from "@fms/api-schemas/responses/access-policy-group-responses";
+import type { ACCESS_POLICY_GROUP_LIST_API } from "@fms/api-schemas/schemas/access-policy-group-api-schemas";
+import { DELETE_ACCESS_POLICY_GROUP_API } from "@fms/api-schemas/schemas/access-policy-group-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { Button } from "@fms/web-ui/components/button";
 import { formatDate } from "@fms/web-utils/formats/format-date-time";
 import Link from "next/link";
@@ -10,24 +12,23 @@ import { ConfirmDialog } from "@/components/commons/confirm-dialog";
 import { BodyCell, DataTable, EmptyRow, HeadCell } from "@/components/commons/data-table";
 import { IdentifierText } from "@/components/commons/identifier-text";
 import { PageHeading } from "@/components/commons/page-heading";
-import { useAsyncAction } from "@/hooks/use-async-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
-import { bffFetch } from "@/utils/bff-fetch";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 
 const NO_CREATE_PERMISSION = "접근 정책 그룹 생성 권한이 없습니다";
 const NO_DELETE_PERMISSION = "접근 정책 그룹 삭제 권한이 없습니다";
 
-export function AccessPolicyGroupsScreen(props: { groups: AccessPolicyGroupSummaryResponse[] }) {
+export function AccessPolicyGroupsScreen(props: {
+  groups: ResBody<typeof ACCESS_POLICY_GROUP_LIST_API>["data"][number][];
+}) {
   const { hasPermission } = useAdminSession();
   const canCreate = hasPermission("policy.create");
   const canDelete = hasPermission("policy.delete");
-  const [deleting, setDeleting] = useState<AccessPolicyGroupSummaryResponse | null>(null);
-  const { isPending, run } = useAsyncAction();
+  const [deleting, setDeleting] = useState<ResBody<typeof ACCESS_POLICY_GROUP_LIST_API>["data"][number] | null>(null);
+  const deleteApi = useCallApiWrapper(DELETE_ACCESS_POLICY_GROUP_API, { successMessage: "삭제했습니다" });
 
-  async function deleteGroup(group: AccessPolicyGroupSummaryResponse) {
-    await run(() => bffFetch(`access-policy-groups/${group.id}`, { method: "DELETE" }), {
-      successMessage: "삭제했습니다",
-    });
+  async function deleteGroup(group: ResBody<typeof ACCESS_POLICY_GROUP_LIST_API>["data"][number]) {
+    await deleteApi.fetchApi({ params: { id: group.id } });
     setDeleting(null);
   }
 
@@ -99,7 +100,7 @@ export function AccessPolicyGroupsScreen(props: { groups: AccessPolicyGroupSumma
       {deleting && (
         <ConfirmDialog
           message={`'${deleting.name}' 접근 정책 그룹을 삭제합니다. 이 그룹이 할당된 계정이나 공개 링크가 있으면 삭제할 수 없습니다.`}
-          isPending={isPending}
+          isPending={deleteApi.isLoading}
           onConfirm={() => deleteGroup(deleting)}
           onClose={() => setDeleting(null)}
         />

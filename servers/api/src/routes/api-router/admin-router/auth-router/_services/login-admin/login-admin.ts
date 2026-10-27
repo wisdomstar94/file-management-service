@@ -1,5 +1,5 @@
-import type { AdminLoginRequest } from "@fms/api-schemas/requests/admin-auth-request-schemas";
-import type { AdminTokenResponse } from "@fms/api-schemas/responses/admin-auth-responses";
+import type { ADMIN_LOGIN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import type { ReqBody, ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { AdminAccountEntity } from "@fms/database-entities/entities/admin-account-entity";
 import { verifyPassword } from "@fms/password-handler/passwords/verify-password";
@@ -9,7 +9,10 @@ import { assertAccessPolicy } from "../../../../../../utils/assert-access-policy
 import { HttpError } from "../../../../../../utils/http-error/index.js";
 import { issueAdminTokens } from "../issue-admin-tokens/index.js";
 
-export async function loginAdmin(req: Request, body: AdminLoginRequest): Promise<AdminTokenResponse> {
+export async function loginAdmin(
+  req: Request,
+  body: ReqBody<typeof ADMIN_LOGIN_API>,
+): Promise<ResBody<typeof ADMIN_LOGIN_API>["data"]> {
   const account = await appDataSource.getRepository(AdminAccountEntity).findOne({
     where: { loginId: body.loginId },
     relations: { accessPolicyGroup: true },

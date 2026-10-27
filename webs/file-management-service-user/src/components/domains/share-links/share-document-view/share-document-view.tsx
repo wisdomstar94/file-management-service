@@ -1,7 +1,6 @@
-import type {
-  PublicShareLinkDetailResponse,
-  ShareLinkAvailability,
-} from "@fms/api-schemas/responses/share-link-responses";
+import type { PUBLIC_SHARE_LINK_DETAIL_API } from "@fms/api-schemas/schemas/public-share-link-api-schemas";
+import type { SHARE_LINK_LIST_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { readFileIcon } from "@fms/web-utils/files/read-file-icon";
 import { formatDate } from "@fms/web-utils/formats/format-date-time";
 import { formatFileSize } from "@fms/web-utils/formats/format-file-size";
@@ -9,7 +8,10 @@ import { DismissDownloadError } from "./_components/dismiss-download-error";
 import { DownloadLink } from "./_components/download-link";
 import { DownloadStatus } from "./_components/download-status";
 
-const UNAVAILABLE_MESSAGES: Record<Exclude<ShareLinkAvailability, "ACTIVE">, string> = {
+const UNAVAILABLE_MESSAGES: Record<
+  Exclude<ResBody<typeof SHARE_LINK_LIST_API>["data"][number]["availability"], "ACTIVE">,
+  string
+> = {
   SCHEDULED: "아직 다운로드 가능 기간이 시작되지 않았습니다.",
   EXPIRED: "다운로드 가능 기간이 지났습니다.",
   EXHAUSTED: "다운로드 허용 횟수를 모두 사용했습니다.",
@@ -20,7 +22,7 @@ const DOWNLOAD_ERROR_MESSAGES: Record<string, string> = {
   NOT_FOUND: "받을 수 없는 버전입니다.",
 };
 
-function readPeriod(detail: PublicShareLinkDetailResponse) {
+function readPeriod(detail: ResBody<typeof PUBLIC_SHARE_LINK_DETAIL_API>["data"]) {
   if (!detail.availableFrom && !detail.availableUntil) {
     return null;
   }
@@ -31,7 +33,7 @@ function readPeriod(detail: PublicShareLinkDetailResponse) {
 
 export function ShareDocumentView(props: {
   token: string;
-  detail: PublicShareLinkDetailResponse;
+  detail: ResBody<typeof PUBLIC_SHARE_LINK_DETAIL_API>["data"];
   downloadError?: string;
 }) {
   const { token, detail, downloadError } = props;

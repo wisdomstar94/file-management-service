@@ -1,6 +1,7 @@
 "use client";
 
-import type { DocumentDetailResponse } from "@fms/api-schemas/responses/document-responses";
+import type { DOCUMENT_DETAIL_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { VersionBadge } from "@fms/web-ui/components/version-badge";
 import { formatDateTime } from "@fms/web-utils/formats/format-date-time";
 import { SelectInput } from "@/components/commons/select-input";
@@ -9,7 +10,7 @@ import { useToast } from "@/providers/toast-provider";
 const LATEST = "latest";
 
 export function DocumentInfoCards(props: {
-  document: DocumentDetailResponse;
+  document: ResBody<typeof DOCUMENT_DETAIL_API>["data"];
   name: string;
   defaultVersionId: string | null;
   isEditable: boolean;

@@ -1,26 +1,30 @@
 "use client";
 
-import type { ShareLinkAvailability, ShareLinkResponse } from "@fms/api-schemas/responses/share-link-responses";
+import type { SHARE_LINK_LIST_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { Button } from "@fms/web-ui/components/button";
 import { ProgressBar } from "@fms/web-ui/components/progress-bar";
 import { formatDate } from "@fms/web-utils/formats/format-date-time";
 import { useToast } from "@/providers/toast-provider";
 
-const AVAILABILITY_LABELS: Record<ShareLinkAvailability, { label: string; className: string }> = {
+const AVAILABILITY_LABELS: Record<
+  ResBody<typeof SHARE_LINK_LIST_API>["data"][number]["availability"],
+  { label: string; className: string }
+> = {
   ACTIVE: { label: "활성", className: "bg-success-soft text-success" },
   SCHEDULED: { label: "시작 전", className: "bg-warn-soft text-warn" },
   EXPIRED: { label: "만료", className: "bg-chip text-muted" },
   EXHAUSTED: { label: "소진", className: "bg-chip text-muted" },
 };
 
-function readPeriod(link: ShareLinkResponse) {
+function readPeriod(link: ResBody<typeof SHARE_LINK_LIST_API>["data"][number]) {
   if (!link.availableFrom && !link.availableUntil) {
     return "제한 없음";
   }
   return `${link.availableFrom ? formatDate(link.availableFrom) : "제한 없음"} ~ ${link.availableUntil ? formatDate(link.availableUntil) : "제한 없음"}`;
 }
 
-function readOthers(link: ShareLinkResponse) {
+function readOthers(link: ResBody<typeof SHARE_LINK_LIST_API>["data"][number]) {
   if (!link.isShowOtherVersions) {
     return "숨김";
   }
@@ -28,7 +32,7 @@ function readOthers(link: ShareLinkResponse) {
 }
 
 export function ShareLinkCard(props: {
-  link: ShareLinkResponse;
+  link: ResBody<typeof SHARE_LINK_LIST_API>["data"][number];
   url: string;
   canUpdate: boolean;
   canDelete: boolean;

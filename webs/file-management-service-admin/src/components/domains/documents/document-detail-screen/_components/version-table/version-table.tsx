@@ -1,6 +1,13 @@
 "use client";
 
-import type { DocumentDetailResponse, DocumentVersionResponse } from "@fms/api-schemas/responses/document-responses";
+import { ADMIN_TRANSFER_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import type { DOCUMENT_DETAIL_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import {
+  DELETE_DOCUMENT_VERSION_API,
+  DOWNLOAD_DOCUMENT_VERSION_API,
+} from "@fms/api-schemas/schemas/document-version-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
+import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { readFileIcon } from "@fms/web-utils/files/read-file-icon";
 import { formatDateTime } from "@fms/web-utils/formats/format-date-time";
@@ -9,26 +16,45 @@ import { useState } from "react";
 import { Card } from "@/components/commons/card";
 import { ConfirmDialog } from "@/components/commons/confirm-dialog";
 import { BodyCell, DataTable, HeadCell } from "@/components/commons/data-table";
-import { useAsyncAction } from "@/hooks/use-async-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
-import { bffFetch } from "@/utils/bff-fetch";
+import { usePublicEnv } from "@/providers/public-env-provider";
+import { buildClientApiUrl } from "@/wrappers/fetch-client-wrapper";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { VersionUploadModal, type VersionUploadMode } from "../../../version-upload-modal";
 
-export function VersionTable(props: { document: DocumentDetailResponse }) {
+export function VersionTable(props: { document: ResBody<typeof DOCUMENT_DETAIL_API>["data"] }) {
   const { document } = props;
   const { hasPermission } = useAdminSession();
   const canCreate = hasPermission("file.detail.version.create");
   const canUpdate = hasPermission("file.detail.version.update");
   const [uploadMode, setUploadMode] = useState<VersionUploadMode | null>(null);
-  const [deleting, setDeleting] = useState<DocumentVersionResponse | null>(null);
-  const { isPending, run } = useAsyncAction();
+  const [deleting, setDeleting] = useState<ResBody<typeof DOCUMENT_DETAIL_API>["data"]["versions"][number] | null>(
+    null,
+  );
+  const { apiPublicUrl } = usePublicEnv();
+  const deleteApi = useCallApiWrapper(DELETE_DOCUMENT_VERSION_API, { successMessage: "삭제했습니다" });
+  const transferTokenApi = useCallApiWrapper(ADMIN_TRANSFER_TOKEN_API, { refreshOnSuccess: false });
   const isLastVersion = document.versions.length === 1;
 
-  async function deleteVersion(version: DocumentVersionResponse) {
-    await run(() => bffFetch(`documents/${document.id}/versions/${version.id}`, { method: "DELETE" }), {
-      successMessage: "삭제했습니다",
-    });
+  async function deleteVersion(version: ResBody<typeof DOCUMENT_DETAIL_API>["data"]["versions"][number]) {
+    await deleteApi.fetchApi({ params: { documentId: document.id, versionId: version.id } });
     setDeleting(null);
+  }
+
+  /** 파일은 브라우저가 api 에서 바로 받는다. 이 버전에만 쓸 수 있는 단기 토큰을 먼저 받는다. */
+  async function download(version: ResBody<typeof DOCUMENT_DETAIL_API>["data"]["versions"][number]) {
+    const params = { documentId: document.id, versionId: version.id };
+    const token = await transferTokenApi.fetchApi({ body: { purpose: "DOWNLOAD_DOCUMENT_VERSION", ...params } });
+    if (isCommonError(token)) {
+      return;
+    }
+    window.location.assign(
+      buildClientApiUrl(
+        DOWNLOAD_DOCUMENT_VERSION_API,
+        { params, query: { transferToken: token.data.transferToken } },
+        { baseUrl: apiPublicUrl },
+      ),
+    );
   }
 
   return (
@@ -97,12 +123,9 @@ export function VersionTable(props: { document: DocumentDetailResponse }) {
                 <BodyCell className="whitespace-nowrap text-sub">{formatDateTime(version.updatedAt)}</BodyCell>
                 <BodyCell align="right" className="!px-[22px]">
                   <div className="inline-flex gap-1.5">
-                    <a
-                      href={`/bff/documents/${document.id}/versions/${version.id}/download`}
-                      className="inline-flex h-[30px] items-center rounded-md border border-line-input bg-white px-3 text-[12.5px] font-medium text-ink-2"
-                    >
+                    <Button size="sm" disabled={transferTokenApi.isLoading} onClick={() => download(version)}>
                       다운로드
-                    </a>
+                    </Button>
                     <Button
                       size="sm"
                       disabled={!canUpdate}
@@ -131,7 +154,7 @@ export function VersionTable(props: { document: DocumentDetailResponse }) {
       {deleting && (
         <ConfirmDialog
           message={`${deleting.versionName} (${deleting.fileName}) 버전을 삭제합니다. 외부 링크에서 이 버전을 기본으로 지정한 경우 자료 설정을 따르도록 바뀝니다.`}
-          isPending={isPending}
+          isPending={deleteApi.isLoading}
           onConfirm={() => deleteVersion(deleting)}
           onClose={() => setDeleting(null)}
         />

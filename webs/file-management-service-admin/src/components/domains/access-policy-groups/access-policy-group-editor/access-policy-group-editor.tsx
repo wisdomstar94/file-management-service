@@ -1,8 +1,14 @@
 "use client";
 
-import { ACCESS_POLICY_TREE_MAX_DEPTH } from "@fms/api-schemas/requests/access-policy-group-request-schemas";
-import type { AccessPolicyGroupDetailResponse } from "@fms/api-schemas/responses/access-policy-group-responses";
+import type { ACCESS_POLICY_GROUP_DETAIL_API } from "@fms/api-schemas/schemas/access-policy-group-api-schemas";
+import {
+  CREATE_ACCESS_POLICY_GROUP_API,
+  UPDATE_ACCESS_POLICY_GROUP_API,
+} from "@fms/api-schemas/schemas/access-policy-group-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
+import { ACCESS_POLICY_TREE_MAX_DEPTH } from "@fms/common-utils/access-policies/access-policy-node";
 import { describeAccessPolicyNode } from "@fms/common-utils/access-policies/describe-access-policy-node";
+import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import Link from "next/link";
@@ -10,31 +16,34 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormField } from "@/components/commons/form-field";
 import { PageHeading } from "@/components/commons/page-heading";
-import { useAsyncAction } from "@/hooks/use-async-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
-import { bffFetch } from "@/utils/bff-fetch";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { PolicyGroupBlock } from "./_components/policy-group-block";
 import { fromPolicyTree, toPolicyTree } from "./_utils/convert-policy-tree";
 
-export function AccessPolicyGroupEditor(props: { group: AccessPolicyGroupDetailResponse | null }) {
+export function AccessPolicyGroupEditor(props: {
+  group: ResBody<typeof ACCESS_POLICY_GROUP_DETAIL_API>["data"] | null;
+}) {
   const { group } = props;
   const router = useRouter();
   const canSave = useAdminSession().hasPermission(group ? "policy.update" : "policy.create");
   const [name, setName] = useState(group?.name ?? "");
   const [root, setRoot] = useState(() => fromPolicyTree(group?.ruleTree ?? null));
-  const { isPending, run } = useAsyncAction();
+  const createApi = useCallApiWrapper(CREATE_ACCESS_POLICY_GROUP_API, {
+    successMessage: "접근 정책 그룹을 저장했습니다",
+  });
+  const updateApi = useCallApiWrapper(UPDATE_ACCESS_POLICY_GROUP_API, {
+    successMessage: "접근 정책 그룹을 저장했습니다",
+  });
+  const isPending = createApi.isLoading || updateApi.isLoading;
   const tree = toPolicyTree(root);
 
   async function save() {
-    const body = JSON.stringify({ name, ruleTree: tree });
-    const saved = await run(
-      () =>
-        group
-          ? bffFetch(`access-policy-groups/${group.id}`, { method: "PATCH", body })
-          : bffFetch("access-policy-groups", { method: "POST", body }),
-      { successMessage: "접근 정책 그룹을 저장했습니다" },
-    );
-    if (saved !== undefined) {
+    const body = { name, ruleTree: tree };
+    const saved = group
+      ? await updateApi.fetchApi({ params: { id: group.id }, body })
+      : await createApi.fetchApi({ body });
+    if (!isCommonError(saved)) {
       router.push("/access-policy-groups");
     }
   }

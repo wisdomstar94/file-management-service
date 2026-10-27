@@ -1,10 +1,14 @@
-import type { ShareLinkResponse } from "@fms/api-schemas/responses/share-link-responses";
+import type { SHARE_LINK_LIST_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import type { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
 import { readShareLinkAvailability } from "../../../../../../../utils/read-share-link-availability/index.js";
 import { resolveDefaultVersion } from "../../../../../../../utils/resolve-default-version/index.js";
 import type { DocumentWithVersions } from "../../../_services/find-document-or-throw/index.js";
 
-export function toShareLinkResponse(link: ShareLinkEntity, document: DocumentWithVersions): ShareLinkResponse {
+export function toShareLinkResponse(
+  link: ShareLinkEntity,
+  document: DocumentWithVersions,
+): ResBody<typeof SHARE_LINK_LIST_API>["data"][number] {
   const fixedVersion = document.versions.find((version) => version.id === link.fixedVersionId) ?? null;
   const effective =
     link.defaultVersionMode === "FIXED" && fixedVersion

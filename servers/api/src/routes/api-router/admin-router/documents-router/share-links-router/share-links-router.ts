@@ -1,9 +1,6 @@
 import { randomBytes } from "node:crypto";
-import {
-  createShareLinkRequestSchema,
-  updateShareLinkRequestSchema,
-} from "@fms/api-schemas/requests/share-link-request-schemas";
-import type { NamedOption } from "@fms/api-schemas/responses/option-responses";
+import type { SHARE_LINK_ASSIGNABLE_ACCESS_POLICY_GROUPS_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
 import { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
 import { type Request, Router } from "express";
@@ -14,6 +11,10 @@ import { generateCommonRes } from "../../../../../utils/generate-common-res/inde
 import { notFoundError } from "../../../../../utils/not-found-error/index.js";
 import { parseRequest } from "../../../../../utils/parse-request/index.js";
 import { readUuidParam } from "../../../../../utils/read-uuid-param/index.js";
+import {
+  createShareLinkRequestSchema,
+  updateShareLinkRequestSchema,
+} from "../../../../../validators/share-link-validators/index.js";
 import { findDocumentOrThrow } from "../_services/find-document-or-throw/index.js";
 import { toShareLinkColumns } from "./_services/to-share-link-columns/index.js";
 import { toShareLinkResponse } from "./_utils/to-share-link-response/index.js";
@@ -49,7 +50,7 @@ router.get(
   "/assignable-access-policy-groups",
   requireAnyPermission(["file.detail.link.create", "file.detail.link.update"]),
   async (_, res) => {
-    const groups: NamedOption[] = await appDataSource
+    const groups: ResBody<typeof SHARE_LINK_ASSIGNABLE_ACCESS_POLICY_GROUPS_API>["data"][number][] = await appDataSource
       .getRepository(AccessPolicyGroupEntity)
       .find({ select: { id: true, name: true }, order: { createdAt: "ASC" } });
     res.json(generateCommonRes(groups));

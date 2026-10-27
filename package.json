@@ -13,13 +13,16 @@
   "scripts": {
     "lint:check": "biome check",
     "lint:format": "biome check --write",
-    "libs:build": "yarn workspaces foreach -At --include '@fms/*-utils' --include '@fms/*-handler' --include '@fms/api-schemas' --include '@fms/database-entities' --include '@fms/web-ui' run build",
+    "libs:build": "yarn workspaces foreach -At --include '@fms/*-utils' --include '@fms/*-handler' --include '@fms/api-schemas' --include '@fms/error-provider' --include '@fms/database-entities' --include '@fms/web-ui' run build",
     "libs:watch": "yarn workspaces foreach -Apiv -j unlimited --include 'libs/**' run watch",
     "type:check": "yarn workspaces foreach -A --exclude file-management-service run type:check",
     "e2e": "sh scripts/run-e2e.sh",
     "e2e:servers": "sh scripts/run-e2e.sh servers",
     "e2e:webs": "sh scripts/run-e2e.sh webs",
-    "docker:up": "docker compose -f dockers/compose.yml up -d --build"
+    "docker:up": "docker compose -f dockers/compose.yml up -d --build",
+    "docker:up:local": "docker compose --env-file .env.local -f dockers/compose.yml up -d --build",
+    "docker:up:development": "docker compose --env-file .env.development -f dockers/compose.yml up -d --build",
+    "docker:up:production": "docker compose --env-file .env.production -f dockers/compose.yml up -d --build"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",

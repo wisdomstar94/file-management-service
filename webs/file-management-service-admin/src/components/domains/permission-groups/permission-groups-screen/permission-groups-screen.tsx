@@ -1,6 +1,8 @@
 "use client";
 
-import type { PermissionGroupSummaryResponse } from "@fms/api-schemas/responses/permission-group-responses";
+import type { PERMISSION_GROUP_LIST_API } from "@fms/api-schemas/schemas/permission-group-api-schemas";
+import { DELETE_PERMISSION_GROUP_API } from "@fms/api-schemas/schemas/permission-group-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { Button } from "@fms/web-ui/components/button";
 import { ProgressBar } from "@fms/web-ui/components/progress-bar";
 import { formatDate } from "@fms/web-utils/formats/format-date-time";
@@ -11,25 +13,25 @@ import { ConfirmDialog } from "@/components/commons/confirm-dialog";
 import { BodyCell, DataTable, EmptyRow, HeadCell } from "@/components/commons/data-table";
 import { IdentifierText } from "@/components/commons/identifier-text";
 import { PageHeading } from "@/components/commons/page-heading";
-import { useAsyncAction } from "@/hooks/use-async-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
-import { bffFetch } from "@/utils/bff-fetch";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 
 const NO_CREATE_PERMISSION = "권한 그룹 생성 권한이 없습니다";
 const NO_DELETE_PERMISSION = "권한 그룹 삭제 권한이 없습니다";
 
-export function PermissionGroupsScreen(props: { groups: PermissionGroupSummaryResponse[]; permissionTotal: number }) {
+export function PermissionGroupsScreen(props: {
+  groups: ResBody<typeof PERMISSION_GROUP_LIST_API>["data"][number][];
+  permissionTotal: number;
+}) {
   const { groups, permissionTotal } = props;
   const { hasPermission } = useAdminSession();
   const canCreate = hasPermission("perm.group.create");
   const canDelete = hasPermission("perm.group.delete");
-  const [deleting, setDeleting] = useState<PermissionGroupSummaryResponse | null>(null);
-  const { isPending, run } = useAsyncAction();
+  const [deleting, setDeleting] = useState<ResBody<typeof PERMISSION_GROUP_LIST_API>["data"][number] | null>(null);
+  const deleteApi = useCallApiWrapper(DELETE_PERMISSION_GROUP_API, { successMessage: "삭제했습니다" });
 
-  async function deleteGroup(group: PermissionGroupSummaryResponse) {
-    await run(() => bffFetch(`permission-groups/${group.id}`, { method: "DELETE" }), {
-      successMessage: "삭제했습니다",
-    });
+  async function deleteGroup(group: ResBody<typeof PERMISSION_GROUP_LIST_API>["data"][number]) {
+    await deleteApi.fetchApi({ params: { id: group.id } });
     setDeleting(null);
   }
 
@@ -110,7 +112,7 @@ export function PermissionGroupsScreen(props: { groups: PermissionGroupSummaryRe
       {deleting && (
         <ConfirmDialog
           message={`'${deleting.name}' 권한 그룹을 삭제합니다. 이 그룹이 할당된 계정이 있으면 삭제할 수 없습니다.`}
-          isPending={isPending}
+          isPending={deleteApi.isLoading}
           onConfirm={() => deleteGroup(deleting)}
           onClose={() => setDeleting(null)}
         />

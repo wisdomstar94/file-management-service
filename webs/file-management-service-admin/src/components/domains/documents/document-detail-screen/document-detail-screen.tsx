@@ -1,24 +1,28 @@
 "use client";
 
-import type { DocumentDetailResponse } from "@fms/api-schemas/responses/document-responses";
-import type { NamedOption } from "@fms/api-schemas/responses/option-responses";
-import type { ShareLinkResponse } from "@fms/api-schemas/responses/share-link-responses";
+import type { DOCUMENT_DETAIL_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import { DELETE_DOCUMENT_API, UPDATE_DOCUMENT_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import type {
+  SHARE_LINK_ASSIGNABLE_ACCESS_POLICY_GROUPS_API,
+  SHARE_LINK_LIST_API,
+} from "@fms/api-schemas/schemas/share-link-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
+import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ConfirmDialog } from "@/components/commons/confirm-dialog";
 import { PageHeading } from "@/components/commons/page-heading";
-import { useAsyncAction } from "@/hooks/use-async-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
-import { bffFetch } from "@/utils/bff-fetch";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { DocumentInfoCards } from "./_components/document-info-cards";
 import { ShareLinkSection } from "./_components/share-link-section";
 import { VersionTable } from "./_components/version-table";
 
 export function DocumentDetailScreen(props: {
-  document: DocumentDetailResponse;
-  links: ShareLinkResponse[];
-  policyOptions: NamedOption[];
+  document: ResBody<typeof DOCUMENT_DETAIL_API>["data"];
+  links: ResBody<typeof SHARE_LINK_LIST_API>["data"][number][];
+  policyOptions: ResBody<typeof SHARE_LINK_ASSIGNABLE_ACCESS_POLICY_GROUPS_API>["data"][number][];
   userWebOrigin: string;
 }) {
   const { document, links, policyOptions, userWebOrigin } = props;
@@ -29,21 +33,19 @@ export function DocumentDetailScreen(props: {
   const [name, setName] = useState(document.name);
   const [defaultVersionId, setDefaultVersionId] = useState(document.defaultVersionId);
   const [isDeleting, setIsDeleting] = useState(false);
-  const { isPending, run } = useAsyncAction();
+  const updateApi = useCallApiWrapper(UPDATE_DOCUMENT_API, { successMessage: "변경사항을 저장했습니다" });
+  // 지운 자료 화면을 다시 불러오면 404 가 나므로 목록으로 이동만 한다.
+  const deleteApi = useCallApiWrapper(DELETE_DOCUMENT_API, { successMessage: "삭제했습니다", refreshOnSuccess: false });
+  const isPending = updateApi.isLoading || deleteApi.isLoading;
 
   async function save() {
-    await run(
-      () => bffFetch(`documents/${document.id}`, { method: "PATCH", body: JSON.stringify({ name, defaultVersionId }) }),
-      { successMessage: "변경사항을 저장했습니다" },
-    );
+    await updateApi.fetchApi({ params: { documentId: document.id }, body: { name, defaultVersionId } });
   }
 
   async function deleteDocument() {
-    const deleted = await run(() => bffFetch(`documents/${document.id}`, { method: "DELETE" }), {
-      successMessage: "삭제했습니다",
-    });
+    const deleted = await deleteApi.fetchApi({ params: { documentId: document.id } });
     setIsDeleting(false);
-    if (deleted !== undefined) {
+    if (!isCommonError(deleted)) {
       router.push("/documents");
     }
   }

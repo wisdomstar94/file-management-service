@@ -1,7 +1,12 @@
 "use client";
 
-import type { AdminAccountResponse } from "@fms/api-schemas/responses/admin-account-responses";
-import type { AssignableAccountGroupsResponse } from "@fms/api-schemas/responses/option-responses";
+import type {
+  ADMIN_ACCOUNT_ASSIGNABLE_GROUPS_API,
+  ADMIN_ACCOUNT_DETAIL_API,
+} from "@fms/api-schemas/schemas/admin-account-api-schemas";
+import { CREATE_ADMIN_ACCOUNT_API, UPDATE_ADMIN_ACCOUNT_API } from "@fms/api-schemas/schemas/admin-account-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
+import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import { formatDateTime } from "@fms/web-utils/formats/format-date-time";
@@ -10,9 +15,8 @@ import { FormField } from "@/components/commons/form-field";
 import { Modal } from "@/components/commons/modal";
 import { SelectInput } from "@/components/commons/select-input";
 import { TextAreaInput } from "@/components/commons/text-area-input";
-import { useAsyncAction } from "@/hooks/use-async-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
-import { bffFetch } from "@/utils/bff-fetch";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 
 const readOptional = (form: FormData, name: string) => {
   const value = String(form.get(name) ?? "");
@@ -21,14 +25,16 @@ const readOptional = (form: FormData, name: string) => {
 
 /** `account` 가 없으면 생성, 있으면 상세(수정) 모달 */
 export function AccountFormModal(props: {
-  account: AdminAccountResponse | null;
-  options: AssignableAccountGroupsResponse;
+  account: ResBody<typeof ADMIN_ACCOUNT_DETAIL_API>["data"] | null;
+  options: ResBody<typeof ADMIN_ACCOUNT_ASSIGNABLE_GROUPS_API>["data"];
   onClose: () => void;
 }) {
   const { account, options, onClose } = props;
   const { hasPermission } = useAdminSession();
   const isReadOnly = !hasPermission(account ? "account.update" : "account.create");
-  const { isPending, run } = useAsyncAction();
+  const createApi = useCallApiWrapper(CREATE_ADMIN_ACCOUNT_API, { successMessage: "관리자 계정을 생성했습니다" });
+  const updateApi = useCallApiWrapper(UPDATE_ADMIN_ACCOUNT_API, { successMessage: "관리자 계정을 저장했습니다" });
+  const isPending = createApi.isLoading || updateApi.isLoading;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -40,17 +46,12 @@ export function AccountFormModal(props: {
       accessPolicyGroupId: String(form.get("accessPolicyGroupId") ?? ""),
       password: readOptional(form, "password"),
     };
-    const result = await run(
-      () =>
-        account
-          ? bffFetch(`accounts/${account.id}`, { method: "PATCH", body: JSON.stringify(body) })
-          : bffFetch("accounts", {
-              method: "POST",
-              body: JSON.stringify({ ...body, loginId: String(form.get("loginId") ?? "") }),
-            }),
-      { successMessage: account ? "관리자 계정을 저장했습니다" : "관리자 계정을 생성했습니다" },
-    );
-    if (result !== undefined) {
+    const result = account
+      ? await updateApi.fetchApi({ params: { id: account.id }, body })
+      : await createApi.fetchApi({
+          body: { ...body, loginId: String(form.get("loginId") ?? ""), password: body.password ?? "" },
+        });
+    if (!isCommonError(result)) {
       onClose();
     }
   }

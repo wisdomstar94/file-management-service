@@ -1,10 +1,11 @@
-import type { DocumentVersionResponse } from "@fms/api-schemas/responses/document-responses";
+import type { DOCUMENT_DETAIL_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import type { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 
 export function toDocumentVersionResponse(
   version: DocumentVersionEntity,
   props: { latestVersionId: string; defaultVersionId: string },
-): DocumentVersionResponse {
+): ResBody<typeof DOCUMENT_DETAIL_API>["data"]["versions"][number] {
   return {
     id: version.id,
     seq: version.seq,

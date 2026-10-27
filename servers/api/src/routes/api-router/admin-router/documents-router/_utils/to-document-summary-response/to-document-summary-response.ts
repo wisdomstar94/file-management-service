@@ -1,11 +1,14 @@
-import type { DocumentSummaryResponse } from "@fms/api-schemas/responses/document-responses";
+import type { DOCUMENT_LIST_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import type { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 import { findLatestVersion } from "../../../../../../utils/resolve-default-version/index.js";
 import type { DocumentWithVersions } from "../../_services/find-document-or-throw/index.js";
 
 const toSummary = (version: DocumentVersionEntity) => ({ id: version.id, versionName: version.versionName });
 
-export function toDocumentSummaryResponse(document: DocumentWithVersions): DocumentSummaryResponse {
+export function toDocumentSummaryResponse(
+  document: DocumentWithVersions,
+): ResBody<typeof DOCUMENT_LIST_API>["data"]["items"][number] {
   const latest = findLatestVersion(document.versions);
   const fixed = document.versions.find((version) => version.id === document.defaultVersionId);
   return {

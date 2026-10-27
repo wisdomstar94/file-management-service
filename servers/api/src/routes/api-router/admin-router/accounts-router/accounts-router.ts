@@ -1,10 +1,8 @@
-import {
-  createAdminAccountRequestSchema,
-  updateAdminAccountRequestSchema,
-} from "@fms/api-schemas/requests/admin-account-request-schemas";
-import type { AdminAccountResponse } from "@fms/api-schemas/responses/admin-account-responses";
-import type { AssignableAccountGroupsResponse } from "@fms/api-schemas/responses/option-responses";
-import type { PaginatedResponse } from "@fms/api-schemas/responses/paginated-response";
+import type {
+  ADMIN_ACCOUNT_ASSIGNABLE_GROUPS_API,
+  ADMIN_ACCOUNT_LIST_API,
+} from "@fms/api-schemas/schemas/admin-account-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
 import { AdminAccountEntity } from "@fms/database-entities/entities/admin-account-entity";
 import { PermissionGroupEntity } from "@fms/database-entities/entities/permission-group-entity";
@@ -19,6 +17,10 @@ import { parseRequest } from "../../../../utils/parse-request/index.js";
 import { readAdmin } from "../../../../utils/read-admin/index.js";
 import { readPagination } from "../../../../utils/read-pagination/index.js";
 import { readUuidParam } from "../../../../utils/read-uuid-param/index.js";
+import {
+  createAdminAccountRequestSchema,
+  updateAdminAccountRequestSchema,
+} from "../../../../validators/admin-account-validators/index.js";
 import { toAdminAccountResponse } from "./_utils/to-admin-account-response/index.js";
 import { assertAssignableGroups } from "./_validators/assert-assignable-groups/index.js";
 
@@ -37,7 +39,7 @@ async function findAccountOrThrow(id: string) {
 router.get("/", requirePermission("account.access"), async (req, res) => {
   const { page, size, skip, take } = readPagination(req);
   const [accounts, total] = await repository().findAndCount({ relations, order: { createdAt: "DESC" }, skip, take });
-  const body: PaginatedResponse<AdminAccountResponse> = {
+  const body: ResBody<typeof ADMIN_ACCOUNT_LIST_API>["data"] = {
     items: accounts.map(toAdminAccountResponse),
     total,
     page,
@@ -61,7 +63,7 @@ router.post("/", requirePermission("account.create"), async (req, res) => {
 router.get("/assignable-groups", requirePermission("account.access"), async (_, res) => {
   const select = { id: true, name: true } as const;
   const order = { createdAt: "ASC" } as const;
-  const body: AssignableAccountGroupsResponse = {
+  const body: ResBody<typeof ADMIN_ACCOUNT_ASSIGNABLE_GROUPS_API>["data"] = {
     permissionGroups: await appDataSource.getRepository(PermissionGroupEntity).find({ select, order }),
     accessPolicyGroups: await appDataSource.getRepository(AccessPolicyGroupEntity).find({ select, order }),
   };

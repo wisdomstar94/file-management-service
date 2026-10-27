@@ -1,7 +1,8 @@
 "use client";
 
-import type { DocumentSummaryResponse } from "@fms/api-schemas/responses/document-responses";
-import type { PaginatedResponse } from "@fms/api-schemas/responses/paginated-response";
+import type { DOCUMENT_LIST_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import { BULK_DELETE_DOCUMENTS_API } from "@fms/api-schemas/schemas/document-api-schemas";
+import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { Button } from "@fms/web-ui/components/button";
 import { VersionBadge } from "@fms/web-ui/components/version-badge";
 import { readFileIcon } from "@fms/web-utils/files/read-file-icon";
@@ -14,13 +15,12 @@ import { ConfirmDialog } from "@/components/commons/confirm-dialog";
 import { BodyCell, DataTable, EmptyRow, HeadCell } from "@/components/commons/data-table";
 import { PageHeading } from "@/components/commons/page-heading";
 import { Pagination } from "@/components/commons/pagination";
-import { useAsyncAction } from "@/hooks/use-async-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
-import { bffFetch } from "@/utils/bff-fetch";
+import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { VersionUploadModal } from "../version-upload-modal";
 import { DocumentsToolbar } from "./_components/documents-toolbar";
 
-export function DocumentsScreen(props: { documents: PaginatedResponse<DocumentSummaryResponse> }) {
+export function DocumentsScreen(props: { documents: ResBody<typeof DOCUMENT_LIST_API>["data"] }) {
   const { documents } = props;
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -30,7 +30,7 @@ export function DocumentsScreen(props: { documents: PaginatedResponse<DocumentSu
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isCreating, setIsCreating] = useState(false);
   const [deleting, setDeleting] = useState<{ ids: string[]; message: string } | null>(null);
-  const { isPending, run } = useAsyncAction();
+  const bulkDeleteApi = useCallApiWrapper(BULK_DELETE_DOCUMENTS_API, { successMessage: "삭제했습니다" });
   const isAllChecked = documents.items.length > 0 && documents.items.every((item) => selectedIds.has(item.id));
 
   function toggle(id: string) {
@@ -44,9 +44,7 @@ export function DocumentsScreen(props: { documents: PaginatedResponse<DocumentSu
   }
 
   async function deleteDocuments(ids: string[]) {
-    await run(() => bffFetch("documents", { method: "DELETE", body: JSON.stringify({ ids }) }), {
-      successMessage: "삭제했습니다",
-    });
+    await bulkDeleteApi.fetchApi({ body: { ids } });
     setSelectedIds(new Set());
     setDeleting(null);
   }
@@ -188,7 +186,7 @@ export function DocumentsScreen(props: { documents: PaginatedResponse<DocumentSu
       {deleting && (
         <ConfirmDialog
           message={deleting.message}
-          isPending={isPending}
+          isPending={bulkDeleteApi.isLoading}
           onConfirm={() => deleteDocuments(deleting.ids)}
           onClose={() => setDeleting(null)}
         />
