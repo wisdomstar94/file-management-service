@@ -80,7 +80,7 @@ export function AccountsScreen(props: {
                 </BodyCell>
                 <BodyCell className="whitespace-nowrap">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex size-[30px] items-center justify-center rounded-full bg-chip text-[12px] font-bold text-sub">
+                    <div className="flex size-7.5 items-center justify-center rounded-full bg-chip text-[12px] font-bold text-sub">
                       {account.nickname.slice(0, 1)}
                     </div>
                     <div>
@@ -89,14 +89,14 @@ export function AccountsScreen(props: {
                     </div>
                   </div>
                 </BodyCell>
-                <BodyCell className="max-w-[220px] truncate text-sub">{account.memo || "-"}</BodyCell>
+                <BodyCell className="max-w-55 truncate text-sub">{account.memo || "-"}</BodyCell>
                 <BodyCell className="whitespace-nowrap">
-                  <span className="rounded-full bg-primary-soft px-[9px] py-[3px] text-[12px] font-semibold text-primary">
+                  <span className="rounded-full bg-primary-soft px-2.25 py-0.75 text-[12px] font-semibold text-primary">
                     {account.permissionGroup.name}
                   </span>
                 </BodyCell>
                 <BodyCell className="whitespace-nowrap">
-                  <span className="inline-flex items-center gap-[5px]">
+                  <span className="inline-flex items-center gap-1.25">
                     <i className="ti ti-shield-lock text-[15px] text-faint" aria-hidden />
                     {account.accessPolicyGroup.name}
                   </span>

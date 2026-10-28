@@ -96,7 +96,7 @@ export function VersionUploadModal(props: {
   return (
     <Modal title={TITLES[mode.kind]} onClose={onClose}>
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-4 px-[22px] py-5">
+        <div className="flex flex-col gap-4 px-5.5 py-5">
           {mode.kind === "new-document" && (
             <FormField label="자료명">
               <TextInput name="name" required placeholder="예: 2026 하반기 브랜드 가이드라인" />
@@ -124,7 +124,7 @@ export function VersionUploadModal(props: {
               : "같은 주제의 파일인지는 시스템에서 확인하지 않습니다. 등록 전 내용을 확인해 주세요."}
           </div>
         </div>
-        <div className="flex justify-end gap-2 border-t border-line-soft px-[22px] py-3.5">
+        <div className="flex justify-end gap-2 border-t border-line-soft px-5.5 py-3.5">
           <Button onClick={onClose}>취소</Button>
           <Button type="submit" variant="primary" disabled={isPending}>
             {isEdit ? "저장" : "등록"}

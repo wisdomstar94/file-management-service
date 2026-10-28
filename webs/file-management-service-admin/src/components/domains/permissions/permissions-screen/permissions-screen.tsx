@@ -50,8 +50,8 @@ export function PermissionsScreen(props: { permissions: ResBody<typeof PERMISSIO
             {items.length === 0 && <EmptyRow colSpan={5} message="등록된 권한이 없습니다." />}
             {items.map((permission) => (
               <tr key={permission.id}>
-                <BodyCell className="whitespace-nowrap font-mono !text-[12.5px] text-sub">{permission.code}</BodyCell>
-                <BodyCell className="whitespace-nowrap !text-[13.5px]">
+                <BodyCell className="whitespace-nowrap font-mono text-[12.5px]! text-sub">{permission.code}</BodyCell>
+                <BodyCell className="whitespace-nowrap text-[13.5px]!">
                   <span className="text-faint">{permission.category} – </span>
                   <span className="font-semibold">{permission.name}</span>
                 </BodyCell>

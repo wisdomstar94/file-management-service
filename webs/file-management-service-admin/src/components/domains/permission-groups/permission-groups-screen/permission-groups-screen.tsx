@@ -44,7 +44,7 @@ export function PermissionGroupsScreen(props: {
           canCreate ? (
             <Link
               href="/permissions/groups/new"
-              className="inline-flex h-[38px] items-center gap-1.5 rounded-lg bg-primary px-4 text-[13.5px] font-semibold text-white"
+              className="inline-flex h-9.5 items-center gap-1.5 rounded-lg bg-primary px-4 text-[13.5px] font-semibold text-white"
             >
               <i className="ti ti-plus text-[16px]" aria-hidden />새 권한 그룹 생성
             </Link>
@@ -74,7 +74,7 @@ export function PermissionGroupsScreen(props: {
                 <BodyCell>
                   <IdentifierText value={group.id} />
                 </BodyCell>
-                <BodyCell className="whitespace-nowrap !text-[13.5px] font-semibold">{group.name}</BodyCell>
+                <BodyCell className="whitespace-nowrap text-[13.5px]! font-semibold">{group.name}</BodyCell>
                 <BodyCell className="whitespace-nowrap">
                   <div className="flex items-center gap-2.5">
                     <div className="w-20">
@@ -89,7 +89,7 @@ export function PermissionGroupsScreen(props: {
                   <div className="inline-flex gap-1.5">
                     <Link
                       href={`/permissions/groups/${group.id}`}
-                      className="inline-flex h-[30px] items-center rounded-md border border-line-input bg-white px-3 text-[12.5px] font-medium text-ink-2"
+                      className="inline-flex h-7.5 items-center rounded-md border border-line-input bg-white px-3 text-[12.5px] font-medium text-ink-2"
                     >
                       상세
                     </Link>

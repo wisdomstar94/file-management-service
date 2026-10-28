@@ -59,13 +59,13 @@ export function AccountFormModal(props: {
   return (
     <Modal title={account ? "관리자 계정 상세" : "새 관리자 계정 생성"} onClose={onClose}>
       <form onSubmit={handleSubmit}>
-        <fieldset disabled={isReadOnly} className="m-0 grid grid-cols-2 gap-3.5 border-0 px-[22px] py-5">
+        <fieldset disabled={isReadOnly} className="m-0 grid grid-cols-2 gap-3.5 border-0 px-5.5 py-5">
           {account && (
             <FormField label="계정 식별키" className="col-span-2">
               <TextInput
                 disabled
                 value={account.id}
-                className="!border-line-table !bg-field font-mono !text-[13px] !text-muted"
+                className="border-line-table! bg-field! font-mono text-[13px]! text-muted!"
               />
             </FormField>
           )}
@@ -123,7 +123,7 @@ export function AccountFormModal(props: {
             </dl>
           )}
         </fieldset>
-        <div className="flex justify-end gap-2 border-t border-line-soft px-[22px] py-3.5">
+        <div className="flex justify-end gap-2 border-t border-line-soft px-5.5 py-3.5">
           <Button onClick={onClose}>{isReadOnly ? "닫기" : "취소"}</Button>
           {!isReadOnly && (
             <Button type="submit" variant="primary" disabled={isPending}>

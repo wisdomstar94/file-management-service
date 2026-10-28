@@ -67,7 +67,7 @@ export function PermissionGroupEditor(props: {
           <>
             <Link
               href="/permissions/groups"
-              className="inline-flex h-[38px] items-center rounded-lg border border-line-input bg-white px-3.5 text-[13.5px] font-medium text-ink-2"
+              className="inline-flex h-9.5 items-center rounded-lg border border-line-input bg-white px-3.5 text-[13.5px] font-medium text-ink-2"
             >
               취소
             </Link>
@@ -82,12 +82,12 @@ export function PermissionGroupEditor(props: {
           </>
         }
       />
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 rounded-xl border border-line bg-white px-[22px] py-5">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 rounded-xl border border-line bg-white px-5.5 py-5">
         <FormField label="권한 그룹 식별키">
           <TextInput
             disabled
             value={group?.id ?? "저장 시 자동 생성"}
-            className="!h-[38px] !border-line-table !bg-field font-mono !text-[13px] !text-muted"
+            className="h-9.5! border-line-table! bg-field! font-mono text-[13px]! text-muted!"
           />
         </FormField>
         <FormField label="권한 그룹명">
@@ -96,12 +96,12 @@ export function PermissionGroupEditor(props: {
             onChange={(event) => setName(event.target.value)}
             placeholder="예: 자료 운영자"
             disabled={!canSave}
-            className="!h-[38px] !text-[13.5px]"
+            className="h-9.5! text-[13.5px]!"
           />
         </FormField>
       </div>
       <Card>
-        <div className="flex items-center border-b border-line-soft px-[22px] py-4">
+        <div className="flex items-center border-b border-line-soft px-5.5 py-4">
           <div className="flex-1 text-[15px] font-bold">권한 선택</div>
           <span className="text-[13px] font-semibold text-primary">
             {checkedIds.size} / {permissions.length}개 선택됨
@@ -113,12 +113,12 @@ export function PermissionGroupEditor(props: {
           return (
             <div
               key={section.category}
-              className="grid grid-cols-[220px_minmax(0,1fr)] gap-4 border-b border-line-row px-[22px] py-4"
+              className="grid grid-cols-[220px_minmax(0,1fr)] gap-4 border-b border-line-row px-5.5 py-4"
             >
               <label className="flex cursor-pointer items-center gap-2.5 self-start text-[13.5px] font-semibold">
                 <input
                   type="checkbox"
-                  className="size-[15px] accent-primary"
+                  className="size-3.75 accent-primary"
                   checked={isAllChecked}
                   disabled={!canSave}
                   onChange={(event) => toggle(ids, event.target.checked)}
@@ -133,7 +133,7 @@ export function PermissionGroupEditor(props: {
                   >
                     <input
                       type="checkbox"
-                      className="mt-0.5 size-[15px] accent-primary"
+                      className="mt-0.5 size-3.75 accent-primary"
                       checked={checkedIds.has(item.id)}
                       disabled={!canSave}
                       onChange={(event) => toggle([item.id], event.target.checked)}

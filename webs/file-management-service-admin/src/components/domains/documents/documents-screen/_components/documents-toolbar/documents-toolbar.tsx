@@ -38,7 +38,7 @@ export function DocumentsToolbar(props: { selectedCount: number; canDelete: bool
     <div className="flex flex-wrap items-center gap-2.5 border-b border-line-soft px-4 py-3.5">
       <form
         onSubmit={handleSearch}
-        className="flex h-9 w-[260px] items-center gap-2 rounded-lg border border-line-input px-3 text-faint"
+        className="flex h-9 w-65 items-center gap-2 rounded-lg border border-line-input px-3 text-faint"
       >
         <i className="ti ti-search text-[15px]" aria-hidden />
         <input

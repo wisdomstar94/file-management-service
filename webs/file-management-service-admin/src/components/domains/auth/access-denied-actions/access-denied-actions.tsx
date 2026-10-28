@@ -16,10 +16,10 @@ export function AccessDeniedActions() {
 
   return (
     <div className="mt-1.5 flex gap-2">
-      <Button onClick={logout} className="!h-10">
+      <Button onClick={logout} className="h-10!">
         로그아웃
       </Button>
-      <Button variant="primary" className="!h-10" onClick={() => window.location.assign("/")}>
+      <Button variant="primary" className="h-10!" onClick={() => window.location.assign("/")}>
         다시 시도
       </Button>
     </div>

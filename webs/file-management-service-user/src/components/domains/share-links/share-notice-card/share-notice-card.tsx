@@ -9,9 +9,9 @@ export function ShareNoticeCard(props: {
 }) {
   const { icon, tone, title, children } = props;
   return (
-    <div className="flex w-[460px] max-w-full flex-col items-center gap-3 rounded-2xl border border-line bg-white px-8 py-10 text-center">
+    <div className="flex w-115 max-w-full flex-col items-center gap-3 rounded-2xl border border-line bg-white px-8 py-10 text-center">
       <div
-        className={`flex size-[52px] items-center justify-center rounded-full text-[26px] ${tone === "danger" ? "bg-danger-soft text-danger" : "bg-chip text-sub"}`}
+        className={`flex size-13 items-center justify-center rounded-full text-[26px] ${tone === "danger" ? "bg-danger-soft text-danger" : "bg-chip text-sub"}`}
       >
         <i className={`ti ${icon}`} aria-hidden />
       </div>

@@ -7,7 +7,7 @@ export function VersionBadge(props: { children: string; tone?: "primary" | "warn
   }[tone];
   return (
     <span
-      className={`inline-block whitespace-nowrap rounded-md px-2 py-[3px] font-mono text-[12.5px] font-medium ${toneClassName}`}
+      className={`inline-block whitespace-nowrap rounded-md px-2 py-0.75 font-mono text-[12.5px] font-medium ${toneClassName}`}
     >
       {children}
     </span>

@@ -86,11 +86,11 @@ export function DocumentsScreen(props: { documents: ResBody<typeof DOCUMENT_LIST
         <DataTable>
           <thead>
             <tr>
-              <HeadCell className="w-11 !pr-0">
+              <HeadCell className="w-11 pr-0!">
                 <input
                   type="checkbox"
                   aria-label="전체 선택"
-                  className="size-[15px] accent-primary"
+                  className="size-3.75 accent-primary"
                   checked={isAllChecked}
                   onChange={() =>
                     setSelectedIds(isAllChecked ? new Set() : new Set(documents.items.map((item) => item.id)))
@@ -109,18 +109,18 @@ export function DocumentsScreen(props: { documents: ResBody<typeof DOCUMENT_LIST
             {documents.items.length === 0 && <EmptyRow colSpan={7} message="등록된 자료가 없습니다." />}
             {documents.items.map((document) => (
               <tr key={document.id} className={selectedIds.has(document.id) ? "bg-primary-row" : "bg-white"}>
-                <BodyCell className="!pr-0">
+                <BodyCell className="pr-0!">
                   <input
                     type="checkbox"
                     aria-label={`${document.name} 선택`}
-                    className="size-[15px] accent-primary"
+                    className="size-3.75 accent-primary"
                     checked={selectedIds.has(document.id)}
                     onChange={() => toggle(document.id)}
                   />
                 </BodyCell>
-                <BodyCell className="!text-[13.5px]">
+                <BodyCell className="text-[13.5px]!">
                   <Link href={`/documents/${document.id}`} className="flex items-center gap-2.5 text-ink">
-                    <div className="flex size-[30px] shrink-0 items-center justify-center rounded-[7px] bg-chip text-sub">
+                    <div className="flex size-7.5 shrink-0 items-center justify-center rounded-[7px] bg-chip text-sub">
                       <i
                         className={`ti ${readFileIcon(document.latestVersionFileName).icon} text-[16px]`}
                         aria-hidden
@@ -150,7 +150,7 @@ export function DocumentsScreen(props: { documents: ResBody<typeof DOCUMENT_LIST
                   <div className="inline-flex gap-1.5">
                     <Link
                       href={`/documents/${document.id}`}
-                      className="inline-flex h-[30px] items-center rounded-md border border-line-input bg-white px-3 text-[12.5px] font-medium text-ink-2"
+                      className="inline-flex h-7.5 items-center rounded-md border border-line-input bg-white px-3 text-[12.5px] font-medium text-ink-2"
                     >
                       상세
                     </Link>

@@ -10,7 +10,7 @@ export function PageHeading(props: {
   const { title, description, back, actions } = props;
   return (
     <div className="flex flex-wrap items-end gap-4">
-      <div className="min-w-[240px] flex-1">
+      <div className="min-w-60 flex-1">
         {back && (
           <Link href={back.href} className="mb-2 inline-flex items-center gap-1 text-[13px] text-muted">
             <i className="ti ti-arrow-left text-[15px]" aria-hidden />

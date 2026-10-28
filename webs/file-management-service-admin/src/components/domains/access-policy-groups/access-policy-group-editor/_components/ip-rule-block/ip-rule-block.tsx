@@ -28,7 +28,7 @@ export function IpRuleBlock(props: { block: IpBlock; isDisabled: boolean; onChan
     onChange({ ...block, cidrs: block.cidrs.map((cidr, i) => (i === index ? value : cidr)) });
 
   return (
-    <div className="flex flex-col gap-4 px-[22px] py-[18px]">
+    <div className="flex flex-col gap-4 px-5.5 py-4.5">
       <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2.5">
         {MODES.map((item) => (
           <ChoiceCard
@@ -38,7 +38,7 @@ export function IpRuleBlock(props: { block: IpBlock; isDisabled: boolean; onChan
             onSelect={() => !isDisabled && onChange({ ...block, mode: item.mode })}
           >
             <span className="block text-[13.5px] font-semibold">{item.title}</span>
-            <span className="mt-[3px] block text-[12.5px] text-muted">{item.description}</span>
+            <span className="mt-0.75 block text-[12.5px] text-muted">{item.description}</span>
           </ChoiceCard>
         ))}
       </div>
@@ -73,7 +73,7 @@ export function IpRuleBlock(props: { block: IpBlock; isDisabled: boolean; onChan
           <button
             type="button"
             onClick={() => onChange({ ...block, cidrs: [...block.cidrs, ""] })}
-            className="mt-1 inline-flex cursor-pointer items-center gap-[5px] self-start text-[13px] font-semibold text-primary"
+            className="mt-1 inline-flex cursor-pointer items-center gap-1.25 self-start text-[13px] font-semibold text-primary"
           >
             <i className="ti ti-plus text-[15px]" aria-hidden />
             IP 추가

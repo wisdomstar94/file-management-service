@@ -26,7 +26,7 @@ export function HeaderRuleBlock(props: {
     onChange({ ...block, rows: block.rows.map((row) => (row.key === key ? { ...row, ...patch } : row)) });
 
   return (
-    <div className="flex flex-col gap-2.5 px-[22px] py-[18px]">
+    <div className="flex flex-col gap-2.5 px-5.5 py-4.5">
       <div className={`${GRID_CLASS_NAME} text-[12px] font-semibold text-faint`}>
         <span>헤더명</span>
         <span>조건</span>
@@ -84,7 +84,7 @@ export function HeaderRuleBlock(props: {
               rows: [...block.rows, { key: createKey(), name: "", matchType: "EQUALS", value: "" }],
             })
           }
-          className="mt-1 inline-flex cursor-pointer items-center gap-[5px] self-start text-[13px] font-semibold text-primary"
+          className="mt-1 inline-flex cursor-pointer items-center gap-1.25 self-start text-[13px] font-semibold text-primary"
         >
           <i className="ti ti-plus text-[15px]" aria-hidden />
           헤더 조건 추가

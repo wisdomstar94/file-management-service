@@ -29,7 +29,7 @@ export function DocumentInfoCards(props: {
 
   return (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(340px,1fr))] gap-5">
-      <section className="rounded-xl border border-line bg-white px-[22px] py-5">
+      <section className="rounded-xl border border-line bg-white px-5.5 py-5">
         <h2 className="m-0 mb-4 text-[15px] font-bold">기본 정보</h2>
         <div className="grid grid-cols-[110px_minmax(0,1fr)] items-center gap-x-3 gap-y-3.5 text-[13.5px]">
           <span className="text-muted">자료 식별키</span>
@@ -57,7 +57,7 @@ export function DocumentInfoCards(props: {
           </div>
         </div>
       </section>
-      <section className="flex flex-col rounded-xl border border-line bg-white px-[22px] py-5">
+      <section className="flex flex-col rounded-xl border border-line bg-white px-5.5 py-5">
         <h2 className="m-0 mb-1.5 text-[15px] font-bold">기본 버전 설정</h2>
         <p className="mt-0 mb-4 text-[13px] leading-[1.55] text-muted">
           자료를 열었을 때 기본으로 보여질 버전입니다. 최신 버전을 선택하면 새 버전 등록 시 자동으로 바뀝니다.

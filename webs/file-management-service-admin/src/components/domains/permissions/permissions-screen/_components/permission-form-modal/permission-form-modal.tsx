@@ -39,7 +39,7 @@ export function PermissionFormModal(props: {
   return (
     <Modal title="권한 상세" onClose={onClose}>
       <form onSubmit={handleSubmit}>
-        <fieldset disabled={isReadOnly} className="m-0 flex flex-col gap-4 border-0 px-[22px] py-5">
+        <fieldset disabled={isReadOnly} className="m-0 flex flex-col gap-4 border-0 px-5.5 py-5">
           <FormField label="권한 식별키" hint="권한 식별키는 바꿀 수 없습니다.">
             <TextInput name="code" disabled defaultValue={permission.code} className="font-mono" />
           </FormField>
@@ -64,7 +64,7 @@ export function PermissionFormModal(props: {
             <TextAreaInput name="description" rows={3} defaultValue={permission.description} />
           </FormField>
         </fieldset>
-        <div className="flex justify-end gap-2 border-t border-line-soft px-[22px] py-3.5">
+        <div className="flex justify-end gap-2 border-t border-line-soft px-5.5 py-3.5">
           <Button onClick={onClose}>{isReadOnly ? "닫기" : "취소"}</Button>
           {!isReadOnly && (
             <Button type="submit" variant="primary" disabled={updateApi.isLoading}>

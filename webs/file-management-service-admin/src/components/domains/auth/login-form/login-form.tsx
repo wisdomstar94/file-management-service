@@ -49,7 +49,7 @@ export function LoginForm(props: { nextPath: string }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex w-[400px] max-w-full flex-col gap-[18px] rounded-2xl border border-line bg-white px-8 py-9"
+      className="flex w-100 max-w-full flex-col gap-4.5 rounded-2xl border border-line bg-white px-8 py-9"
     >
       <div className="flex items-center gap-2.5">
         <BrandMark size={34} />
@@ -60,17 +60,17 @@ export function LoginForm(props: { nextPath: string }) {
         <p className="mt-1.5 mb-0 text-[13.5px] text-muted">아이디와 비밀번호를 입력하세요.</p>
       </div>
       <FormField label="아이디">
-        <TextInput name="loginId" autoComplete="username" required className="!h-[42px]" />
+        <TextInput name="loginId" autoComplete="username" required className="h-10.5!" />
       </FormField>
       <FormField label="비밀번호">
-        <TextInput name="password" type="password" autoComplete="current-password" required className="!h-[42px]" />
+        <TextInput name="password" type="password" autoComplete="current-password" required className="h-10.5!" />
       </FormField>
       {errorMessage && (
         <p role="alert" className="m-0 text-[13px] text-danger">
           {errorMessage}
         </p>
       )}
-      <Button type="submit" variant="primary" disabled={isPending} className="!h-11 !text-[14.5px]">
+      <Button type="submit" variant="primary" disabled={isPending} className="h-11! text-[14.5px]!">
         로그인
       </Button>
       <div className="flex gap-2 rounded-lg bg-field p-3 text-[12.5px] leading-normal text-muted">

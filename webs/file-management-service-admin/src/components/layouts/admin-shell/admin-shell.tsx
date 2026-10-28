@@ -8,7 +8,7 @@ export function AdminShell(props: { children: ReactNode }) {
       <AdminSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <AdminHeader />
-        <main className="flex flex-col gap-5 px-8 pt-7 pb-[120px]">{props.children}</main>
+        <main className="flex flex-col gap-5 px-8 pt-7 pb-30">{props.children}</main>
       </div>
     </div>
   );

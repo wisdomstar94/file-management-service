@@ -15,7 +15,7 @@ export function DownloadLink(props: {
     return (
       <span
         aria-disabled="true"
-        className={`${className} cursor-not-allowed !border-line-table !bg-disabled-bg !text-disabled`}
+        className={`${className} cursor-not-allowed border-line-table! bg-disabled-bg! text-disabled!`}
       >
         {children}
       </span>

@@ -59,7 +59,7 @@ export function VersionTable(props: { document: ResBody<typeof DOCUMENT_DETAIL_A
 
   return (
     <Card>
-      <div className="flex items-center gap-3 border-b border-line-soft px-[22px] py-4">
+      <div className="flex items-center gap-3 border-b border-line-soft px-5.5 py-4">
         <div className="flex-1">
           <div className="text-[15px] font-bold">버전 관리</div>
           <div className="mt-0.5 text-[12.5px] text-faint">새 파일을 올리면 기존 버전은 이력으로 남습니다.</div>
@@ -67,7 +67,7 @@ export function VersionTable(props: { document: ResBody<typeof DOCUMENT_DETAIL_A
         <Button
           variant="primary"
           icon="ti ti-upload"
-          className="!h-9"
+          className="h-9!"
           disabled={!canCreate}
           title={canCreate ? undefined : "새 버전 등록 권한이 없습니다"}
           onClick={() => setUploadMode({ kind: "new-version", documentId: document.id })}
@@ -78,11 +78,11 @@ export function VersionTable(props: { document: ResBody<typeof DOCUMENT_DETAIL_A
       <DataTable>
         <thead>
           <tr>
-            <HeadCell className="!px-[22px]">버전명</HeadCell>
+            <HeadCell className="px-5.5!">버전명</HeadCell>
             <HeadCell>파일명</HeadCell>
             <HeadCell>등록일</HeadCell>
             <HeadCell>수정일</HeadCell>
-            <HeadCell align="right" className="!px-[22px]">
+            <HeadCell align="right" className="px-5.5!">
               관리
             </HeadCell>
           </tr>
@@ -97,22 +97,22 @@ export function VersionTable(props: { document: ResBody<typeof DOCUMENT_DETAIL_A
                 : undefined;
             return (
               <tr key={version.id}>
-                <BodyCell className="whitespace-nowrap !px-[22px]">
+                <BodyCell className="whitespace-nowrap px-5.5!">
                   <div className="flex items-center gap-1.5">
                     <span className="font-mono text-[13px] font-semibold">{version.versionName}</span>
                     {version.isLatest && (
-                      <span className="rounded-full bg-primary-soft px-[7px] py-0.5 text-[11px] font-semibold text-primary">
+                      <span className="rounded-full bg-primary-soft px-1.75 py-0.5 text-[11px] font-semibold text-primary">
                         최신
                       </span>
                     )}
                     {version.isDefault && (
-                      <span className="rounded-full bg-success-soft px-[7px] py-0.5 text-[11px] font-semibold text-success">
+                      <span className="rounded-full bg-success-soft px-1.75 py-0.5 text-[11px] font-semibold text-success">
                         기본
                       </span>
                     )}
                   </div>
                 </BodyCell>
-                <BodyCell className="whitespace-nowrap !text-[13.5px]">
+                <BodyCell className="whitespace-nowrap text-[13.5px]!">
                   <div className="flex items-center gap-2">
                     <i className={`ti ${fileIcon.icon} text-[17px]`} style={{ color: fileIcon.color }} aria-hidden />
                     {version.fileName}
@@ -121,7 +121,7 @@ export function VersionTable(props: { document: ResBody<typeof DOCUMENT_DETAIL_A
                 </BodyCell>
                 <BodyCell className="whitespace-nowrap text-sub">{formatDateTime(version.createdAt)}</BodyCell>
                 <BodyCell className="whitespace-nowrap text-sub">{formatDateTime(version.updatedAt)}</BodyCell>
-                <BodyCell align="right" className="!px-[22px]">
+                <BodyCell align="right" className="px-5.5!">
                   <div className="inline-flex gap-1.5">
                     <Button size="sm" disabled={shortTimeTokenApi.isLoading} onClick={() => download(version)}>
                       다운로드

@@ -22,9 +22,9 @@ function NavLink(props: { item: AdminNavItem; isChild?: boolean; isParentActive?
   return (
     <Link
       href={item.href}
-      className={`flex h-10 items-center gap-2.5 rounded-lg pr-3 text-[14px] ${isChild ? "pl-[22px]" : "pl-3"} ${colorClassName}`}
+      className={`flex h-10 items-center gap-2.5 rounded-lg pr-3 text-[14px] ${isChild ? "pl-5.5" : "pl-3"} ${colorClassName}`}
     >
-      <i className={`ti ${isChild ? "ti-point" : item.icon} w-[18px] text-[18px]`} aria-hidden />
+      <i className={`ti ${isChild ? "ti-point" : item.icon} w-4.5 text-[18px]`} aria-hidden />
       <span className="flex-1">{item.label}</span>
       {hasCaret && <i className="ti ti-chevron-down text-[15px] text-faint-2" aria-hidden />}
     </Link>
@@ -44,7 +44,7 @@ export function AdminSidebar() {
   }
 
   return (
-    <aside className="sticky top-0 flex h-screen w-[244px] shrink-0 flex-col border-r border-line bg-white">
+    <aside className="sticky top-0 flex h-screen w-61 shrink-0 flex-col border-r border-line bg-white">
       <div className="flex h-16 items-center gap-2.5 border-b border-line-soft px-5">
         <BrandMark />
         <div className="flex flex-col leading-[1.2]">
@@ -77,7 +77,7 @@ export function AdminSidebar() {
         })}
       </nav>
       <div className="flex items-center gap-2.5 border-t border-line-soft p-4">
-        <div className="flex size-[34px] items-center justify-center rounded-full bg-primary-soft text-[13px] font-bold text-primary">
+        <div className="flex size-8.5 items-center justify-center rounded-full bg-primary-soft text-[13px] font-bold text-primary">
           {me.nickname.slice(0, 1)}
         </div>
         <div className="min-w-0 flex-1 leading-[1.3]">

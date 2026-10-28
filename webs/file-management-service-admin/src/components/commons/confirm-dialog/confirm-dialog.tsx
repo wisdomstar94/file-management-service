@@ -19,13 +19,13 @@ export function ConfirmDialog(props: {
       footer={
         <>
           <Button onClick={onClose}>취소</Button>
-          <Button variant="primary" className="!bg-danger hover:!bg-[#c03b3b]" disabled={isPending} onClick={onConfirm}>
+          <Button variant="primary" className="bg-danger! hover:bg-[#c03b3b]!" disabled={isPending} onClick={onConfirm}>
             {confirmLabel}
           </Button>
         </>
       }
     >
-      <div className="flex gap-3.5 px-[22px] py-6">
+      <div className="flex gap-3.5 px-5.5 py-6">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-danger-soft text-danger">
           <i className="ti ti-alert-triangle text-[20px]" aria-hidden />
         </div>

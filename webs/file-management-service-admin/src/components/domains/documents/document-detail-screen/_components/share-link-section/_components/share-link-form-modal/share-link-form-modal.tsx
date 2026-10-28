@@ -99,7 +99,7 @@ export function ShareLinkFormModal(props: {
   return (
     <Modal title={link ? "외부 공개 링크 수정" : "외부 공개 링크 생성"} width={600} onClose={onClose}>
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-[18px] px-[22px] py-5">
+        <div className="flex flex-col gap-4.5 px-5.5 py-5">
           <div className="grid grid-cols-2 gap-3.5">
             <FormField label="접근 정책 그룹" className="col-span-2">
               <SelectInput name="accessPolicyGroupId" defaultValue={link?.accessPolicyGroup?.id ?? ""}>
@@ -195,7 +195,7 @@ export function ShareLinkFormModal(props: {
             })}
           </div>
         </div>
-        <div className="flex justify-end gap-2 border-t border-line-soft px-[22px] py-3.5">
+        <div className="flex justify-end gap-2 border-t border-line-soft px-5.5 py-3.5">
           <Button onClick={onClose}>취소</Button>
           <Button type="submit" variant="primary" disabled={isPending}>
             {link ? "저장" : "생성"}

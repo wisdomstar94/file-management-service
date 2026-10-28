@@ -30,7 +30,7 @@ export function SharePasswordForm(props: { shareLinkKey: string; onUnlocked: () 
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex w-[420px] max-w-full flex-col gap-4 rounded-2xl border border-line bg-white px-8 py-9"
+      className="flex w-105 max-w-full flex-col gap-4 rounded-2xl border border-line bg-white px-8 py-9"
     >
       <div className="flex size-12 items-center justify-center rounded-xl bg-primary-soft text-[24px] text-primary">
         <i className="ti ti-lock" aria-hidden />
@@ -46,14 +46,14 @@ export function SharePasswordForm(props: { shareLinkKey: string; onUnlocked: () 
         placeholder="비밀번호"
         required
         autoFocus
-        className="!h-11 !px-3.5"
+        className="h-11! px-3.5!"
       />
       {errorMessage && (
         <p role="alert" className="m-0 text-[13px] text-danger">
           {errorMessage}
         </p>
       )}
-      <Button type="submit" variant="primary" disabled={unlockApi.isLoading} className="!h-11 !text-[14.5px]">
+      <Button type="submit" variant="primary" disabled={unlockApi.isLoading} className="h-11! text-[14.5px]!">
         확인
       </Button>
     </form>

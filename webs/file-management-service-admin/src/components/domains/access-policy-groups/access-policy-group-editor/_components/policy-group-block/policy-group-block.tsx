@@ -54,7 +54,7 @@ export function PolicyGroupBlock(props: {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-3.5 rounded-xl border border-line bg-white px-[22px] py-5">
+      <div className="flex flex-col gap-3.5 rounded-xl border border-line bg-white px-5.5 py-5">
         <div>
           <div className="text-[15px] font-bold">제한 조건 결합 방식</div>
           <div className="mt-0.5 text-[12.5px] text-faint">아래 조건들을 어떻게 조합해 접근을 허용할지 정합니다.</div>
@@ -82,7 +82,7 @@ export function PolicyGroupBlock(props: {
         const meta = BLOCK_META[child.kind];
         return (
           <div key={child.key} className="overflow-hidden rounded-xl border border-line bg-white">
-            <div className="flex items-center gap-3 border-b border-line-soft px-[22px] py-4">
+            <div className="flex items-center gap-3 border-b border-line-soft px-5.5 py-4">
               <div className="flex size-8 items-center justify-center rounded-lg bg-primary-soft text-primary">
                 <i className={`ti ${meta.icon} text-[17px]`} aria-hidden />
               </div>
@@ -112,7 +112,7 @@ export function PolicyGroupBlock(props: {
               />
             )}
             {child.kind === "GROUP" && (
-              <div className="border-l-[3px] border-primary-soft bg-surface-sub px-[22px] py-[18px]">
+              <div className="border-l-[3px] border-primary-soft bg-surface-sub px-5.5 py-4.5">
                 <PolicyGroupBlock
                   group={child}
                   depth={depth + 1}

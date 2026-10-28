@@ -41,7 +41,7 @@ export function AccessPolicyGroupsScreen(props: {
           canCreate ? (
             <Link
               href="/access-policy-groups/new"
-              className="inline-flex h-[38px] items-center gap-1.5 rounded-lg bg-primary px-4 text-[13.5px] font-semibold text-white"
+              className="inline-flex h-9.5 items-center gap-1.5 rounded-lg bg-primary px-4 text-[13.5px] font-semibold text-white"
             >
               <i className="ti ti-plus text-[16px]" aria-hidden />새 접근 정책 그룹 생성
             </Link>
@@ -70,14 +70,14 @@ export function AccessPolicyGroupsScreen(props: {
                 <BodyCell>
                   <IdentifierText value={group.id} />
                 </BodyCell>
-                <BodyCell className="whitespace-nowrap !text-[13.5px] font-semibold">{group.name}</BodyCell>
+                <BodyCell className="whitespace-nowrap text-[13.5px]! font-semibold">{group.name}</BodyCell>
                 <BodyCell className="whitespace-nowrap text-sub">{formatDate(group.createdAt)}</BodyCell>
                 <BodyCell className="whitespace-nowrap text-sub">{formatDate(group.updatedAt)}</BodyCell>
                 <BodyCell align="right">
                   <div className="inline-flex gap-1.5">
                     <Link
                       href={`/access-policy-groups/${group.id}`}
-                      className="inline-flex h-[30px] items-center rounded-md border border-line-input bg-white px-3 text-[12.5px] font-medium text-ink-2"
+                      className="inline-flex h-7.5 items-center rounded-md border border-line-input bg-white px-3 text-[12.5px] font-medium text-ink-2"
                     >
                       상세
                     </Link>

@@ -35,7 +35,7 @@ export default async function AccessDeniedPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
-      <div className="flex w-[480px] max-w-full flex-col items-center gap-3.5 text-center">
+      <div className="flex w-120 max-w-full flex-col items-center gap-3.5 text-center">
         <div className="rounded-full bg-danger-soft px-2.5 py-1 font-mono text-[13px] font-medium text-danger">
           403 FORBIDDEN
         </div>

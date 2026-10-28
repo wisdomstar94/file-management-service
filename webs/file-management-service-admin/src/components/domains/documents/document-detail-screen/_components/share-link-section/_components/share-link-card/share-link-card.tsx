@@ -60,9 +60,9 @@ export function ShareLinkCard(props: {
   }
 
   return (
-    <div className="flex flex-col gap-3.5 border-b border-line-soft px-[22px] py-[18px] last:border-b-0">
+    <div className="flex flex-col gap-3.5 border-b border-line-soft px-5.5 py-4.5 last:border-b-0">
       <div className="flex flex-wrap items-center gap-2.5">
-        <span className={`rounded-full px-2 py-[3px] text-[11.5px] font-semibold ${availability.className}`}>
+        <span className={`rounded-full px-2 py-0.75 text-[11.5px] font-semibold ${availability.className}`}>
           {availability.label}
         </span>
         <span className="font-mono text-[13px] text-ink">{url}</span>
@@ -73,7 +73,7 @@ export function ShareLinkCard(props: {
           href={url}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-[3px] text-[12.5px] text-primary"
+          className="inline-flex items-center gap-0.75 text-[12.5px] text-primary"
         >
           미리보기
           <i className="ti ti-external-link text-[13px]" aria-hidden />
@@ -113,7 +113,7 @@ export function ShareLinkCard(props: {
         ))}
         <div className="flex flex-col gap-1">
           <span className="text-[12px] text-faint">비밀번호</span>
-          <span className="flex items-center gap-[5px] text-[13.5px]">
+          <span className="flex items-center gap-1.25 text-[13.5px]">
             <i className={`ti ${link.hasPassword ? "ti-lock" : "ti-lock-open"} text-[15px] text-muted`} aria-hidden />
             {link.hasPassword ? "설정됨" : "없음"}
           </span>

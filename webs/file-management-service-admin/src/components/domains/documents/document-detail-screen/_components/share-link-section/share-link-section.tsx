@@ -38,7 +38,7 @@ export function ShareLinkSection(props: {
 
   return (
     <Card>
-      <div className="flex items-center gap-3 border-b border-line-soft px-[22px] py-4">
+      <div className="flex items-center gap-3 border-b border-line-soft px-5.5 py-4">
         <div className="flex-1">
           <div className="text-[15px] font-bold">
             외부 공개 링크 <span className="font-medium text-faint">{links.length}</span>
@@ -50,7 +50,7 @@ export function ShareLinkSection(props: {
         <Button
           variant="primary"
           icon="ti ti-link-plus"
-          className="!h-9"
+          className="h-9!"
           disabled={!canCreate}
           title={canCreate ? undefined : "외부 공개 링크 생성 권한이 없습니다"}
           onClick={() => setEditing("new")}
@@ -59,7 +59,7 @@ export function ShareLinkSection(props: {
         </Button>
       </div>
       {links.length === 0 && (
-        <div className="px-[22px] py-10 text-center text-[13.5px] text-faint">생성된 링크가 없습니다.</div>
+        <div className="px-5.5 py-10 text-center text-[13.5px] text-faint">생성된 링크가 없습니다.</div>
       )}
       {links.map((link) => (
         <ShareLinkCard

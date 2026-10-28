@@ -57,7 +57,7 @@ export function AccessPolicyGroupEditor(props: {
           <>
             <Link
               href="/access-policy-groups"
-              className="inline-flex h-[38px] items-center rounded-lg border border-line-input bg-white px-3.5 text-[13.5px] font-medium text-ink-2"
+              className="inline-flex h-9.5 items-center rounded-lg border border-line-input bg-white px-3.5 text-[13.5px] font-medium text-ink-2"
             >
               취소
             </Link>
@@ -74,12 +74,12 @@ export function AccessPolicyGroupEditor(props: {
       />
       <div className="flex flex-wrap items-start gap-5">
         <div className="flex min-w-0 flex-[1_1_520px] flex-col gap-5">
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 rounded-xl border border-line bg-white px-[22px] py-5">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 rounded-xl border border-line bg-white px-5.5 py-5">
             <FormField label="접근 정책 그룹 식별키">
               <TextInput
                 disabled
                 value={group?.id ?? "저장 시 자동 생성"}
-                className="!h-[38px] !border-line-table !bg-field font-mono !text-[13px] !text-muted"
+                className="h-9.5! border-line-table! bg-field! font-mono text-[13px]! text-muted!"
               />
             </FormField>
             <FormField label="접근 정책 그룹명">
@@ -88,7 +88,7 @@ export function AccessPolicyGroupEditor(props: {
                 disabled={!canSave}
                 onChange={(event) => setName(event.target.value)}
                 placeholder="예: 사내망 전용"
-                className="!h-[38px] !text-[13.5px]"
+                className="h-9.5! text-[13.5px]!"
               />
             </FormField>
           </div>

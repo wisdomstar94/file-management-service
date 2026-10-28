@@ -24,7 +24,7 @@ export function ToastProvider(props: { children: ReactNode }) {
       {toast && (
         <div
           role="status"
-          className="fixed top-6 left-1/2 z-[60] flex -translate-x-1/2 items-center gap-2 rounded-[9px] bg-ink px-4 py-2.5 text-[13.5px] text-white shadow-[0_8px_24px_rgba(0,0,0,.18)]"
+          className="fixed top-6 left-1/2 z-60 flex -translate-x-1/2 items-center gap-2 rounded-[9px] bg-ink px-4 py-2.5 text-[13.5px] text-white shadow-[0_8px_24px_rgba(0,0,0,.18)]"
         >
           <i
             className={`ti ${toast.tone === "error" ? "ti-alert-circle text-[#ff8a8a]" : "ti-circle-check text-[#5fd3a0]"} text-[17px]`}

@@ -56,7 +56,7 @@ export function ShareDocumentView(props: {
     (detail.availability !== "ACTIVE" ? UNAVAILABLE_MESSAGES[detail.availability] : null);
 
   return (
-    <div className="flex w-[640px] max-w-full flex-col gap-4">
+    <div className="flex w-160 max-w-full flex-col gap-4">
       <section className="flex flex-col gap-5 rounded-2xl border border-line bg-white p-7">
         <div>
           <div className="mb-1.5 text-[12.5px] text-faint">공유된 자료</div>
@@ -79,14 +79,14 @@ export function ShareDocumentView(props: {
           >
             <i className={`ti ${fileIcon.icon}`} aria-hidden />
           </div>
-          <div className="min-w-[180px] flex-1">
+          <div className="min-w-45 flex-1">
             <div className="flex items-center gap-1.5">
               <span className="font-mono text-[13px] font-semibold">{detail.defaultVersion.versionName}</span>
-              <span className="rounded-full bg-success-soft px-[7px] py-0.5 text-[11px] font-semibold text-success">
+              <span className="rounded-full bg-success-soft px-1.75 py-0.5 text-[11px] font-semibold text-success">
                 기본 버전
               </span>
             </div>
-            <div className="mt-[3px] text-[13.5px] text-sub">
+            <div className="mt-0.75 text-[13.5px] text-sub">
               {detail.defaultVersion.fileName} · {formatFileSize(detail.defaultVersion.fileSize)}
             </div>
           </div>
@@ -94,7 +94,7 @@ export function ShareDocumentView(props: {
             href={downloadHref(detail.defaultVersion.id)}
             isDisabled={!isAvailable}
             onDownload={onDownload}
-            className="inline-flex h-11 items-center gap-[7px] rounded-[9px] border border-transparent bg-primary px-[18px] text-[14px] font-semibold text-white"
+            className="inline-flex h-11 items-center gap-1.75 rounded-[9px] border border-transparent bg-primary px-4.5 text-[14px] font-semibold text-white"
           >
             <i className="ti ti-download text-[17px]" aria-hidden />
             {detail.defaultVersion.versionName} 다운로드
@@ -103,11 +103,11 @@ export function ShareDocumentView(props: {
       </section>
       {detail.otherVersions && detail.otherVersions.length > 0 && (
         <section className="overflow-hidden rounded-2xl border border-line bg-white">
-          <h2 className="m-0 border-b border-line-soft px-[22px] py-4 text-[15px] font-bold">버전 목록</h2>
+          <h2 className="m-0 border-b border-line-soft px-5.5 py-4 text-[15px] font-bold">버전 목록</h2>
           {detail.otherVersions.map((version) => (
             <div
               key={version.id}
-              className="flex items-center gap-3.5 border-b border-line-row px-[22px] py-[13px] last:border-b-0"
+              className="flex items-center gap-3.5 border-b border-line-row px-5.5 py-3.25 last:border-b-0"
             >
               <span className="w-14 font-mono text-[13px] font-semibold">{version.versionName}</span>
               <span className="min-w-0 flex-1 truncate text-[13.5px] text-sub">{version.fileName}</span>
@@ -117,7 +117,7 @@ export function ShareDocumentView(props: {
                   href={downloadHref(version.id)}
                   isDisabled={!isAvailable}
                   onDownload={onDownload}
-                  className="inline-flex h-8 items-center gap-[5px] rounded-[7px] border border-line-input bg-white px-3 text-[12.5px] font-medium text-ink-2"
+                  className="inline-flex h-8 items-center gap-1.25 rounded-[7px] border border-line-input bg-white px-3 text-[12.5px] font-medium text-ink-2"
                 >
                   <i className="ti ti-download text-[15px]" aria-hidden />
                   다운로드

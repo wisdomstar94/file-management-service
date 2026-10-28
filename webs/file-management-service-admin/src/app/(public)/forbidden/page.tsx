@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function ForbiddenPage() {
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
-      <div className="flex w-[440px] max-w-full flex-col items-center gap-3.5 text-center">
+      <div className="flex w-110 max-w-full flex-col items-center gap-3.5 text-center">
         <div className="rounded-full bg-chip px-2.5 py-1 font-mono text-[13px] font-medium text-sub">
           PERMISSION DENIED
         </div>

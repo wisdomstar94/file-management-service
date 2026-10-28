@@ -7,7 +7,7 @@ import { readBreadcrumbs } from "../../_utils/read-breadcrumbs";
 export function AdminHeader() {
   const crumbs = readBreadcrumbs(usePathname());
   return (
-    <header className="sticky top-0 z-[5] flex h-16 items-center gap-4 border-b border-line bg-white px-8">
+    <header className="sticky top-0 z-5 flex h-16 items-center gap-4 border-b border-line bg-white px-8">
       <nav aria-label="현재 위치" className="flex items-center gap-2 text-[13.5px] text-faint">
         <span>관리자</span>
         {crumbs.map((crumb) => (

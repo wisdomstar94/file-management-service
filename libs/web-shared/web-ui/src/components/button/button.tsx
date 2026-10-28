@@ -11,8 +11,8 @@ const VARIANT_CLASS_NAMES: Record<ButtonVariant, string> = {
 };
 
 const SIZE_CLASS_NAMES: Record<ButtonSize, string> = {
-  md: "h-[38px] px-4 text-[13.5px] font-semibold rounded-lg gap-1.5",
-  sm: "h-[30px] px-3 text-[12.5px] font-medium rounded-md gap-1",
+  md: "h-9.5 px-4 text-[13.5px] font-semibold rounded-lg gap-1.5",
+  sm: "h-7.5 px-3 text-[12.5px] font-medium rounded-md gap-1",
 };
 
 const DISABLED_CLASS_NAMES =
