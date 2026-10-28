@@ -2,7 +2,7 @@ import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import type { PermissionCode } from "@fms/common-utils/permissions/permission-code-registry";
 import type { NextFunction, Request, Response } from "express";
 import { HttpError } from "#/classes/http-error/index.js";
-import { readAdmin } from "#/utils/read-admin/index.js";
+import { readAdmin } from "#/utils/domains/admin-auth/read-admin/index.js";
 
 /** 레지스트리에 있는 권한 코드만 받는다. 권한 그룹에 그 코드가 없으면 403. */
 export function requirePermission(code: PermissionCode) {

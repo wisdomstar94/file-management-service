@@ -5,8 +5,9 @@ import { AdminRefreshTokenEntity } from "@fms/database-entities/entities/admin-r
 import type { Request } from "express";
 import { HttpError } from "#/classes/http-error/index.js";
 import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
-import { assertAccessPolicy } from "#/utils/assert-access-policy/index.js";
-import { hashRefreshToken, issueAdminTokens } from "../issue-admin-tokens/index.js";
+import { assertAccessPolicy } from "#/utils/domains/access-policy/assert-access-policy/index.js";
+import { hashRefreshToken } from "../../_utils/hash-refresh-token/index.js";
+import { issueAdminTokens } from "../issue-admin-tokens/index.js";
 
 /** 사용한 refresh token 은 지우고 새로 발급한다(재사용 방지). */
 export async function refreshAdminTokens(

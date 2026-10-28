@@ -17,8 +17,8 @@ import { FormField } from "@/components/commons/form-field";
 import { Modal } from "@/components/commons/modal";
 import { SelectInput } from "@/components/commons/select-input";
 import { ToggleSwitch } from "@/components/commons/toggle-switch";
-import { toKstDateBoundary } from "@/utils/to-kst-date-boundary";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
+import { toKstDateBoundary } from "./_utils/to-kst-date-boundary";
 
 const TOGGLES = [
   {

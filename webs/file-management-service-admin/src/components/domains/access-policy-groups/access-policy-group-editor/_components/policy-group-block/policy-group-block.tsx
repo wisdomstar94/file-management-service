@@ -1,9 +1,10 @@
 "use client";
 
 import { ChoiceCard } from "@/components/commons/choice-card";
-import { createKey, type EditorBlock, type EditorGroup } from "../../_utils/convert-policy-tree";
+import type { EditorBlock, EditorGroup } from "../../_types/editor-block";
 import { HeaderRuleBlock } from "../header-rule-block";
 import { IpRuleBlock } from "../ip-rule-block";
+import { createBlock } from "./_utils/create-block";
 
 const OPERATORS = [
   { operator: "AND" as const, title: "모두 통과", description: "모든 제한을 통과해야 접근을 허용합니다." },
@@ -22,16 +23,6 @@ const BLOCK_META = {
     title: "하위 조건 그룹",
     description: "괄호로 묶은 조건입니다. 결합 방식을 따로 정합니다.",
   },
-};
-
-const createBlock = (kind: EditorBlock["kind"]): EditorBlock => {
-  if (kind === "IP") {
-    return { kind, key: createKey(), mode: "DENY_ALL_EXCEPT", cidrs: [""] };
-  }
-  if (kind === "HEADERS") {
-    return { kind, key: createKey(), rows: [{ key: createKey(), name: "", matchType: "EQUALS", value: "" }] };
-  }
-  return { kind, key: createKey(), operator: "AND", children: [] };
 };
 
 /** 조건 그룹 하나. 하위 그룹도 같은 컴포넌트로 들여써서 그린다. */

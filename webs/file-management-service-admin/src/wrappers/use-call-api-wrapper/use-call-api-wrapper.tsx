@@ -9,8 +9,8 @@ import { useState } from "react";
 import { DEFAULT_ERROR_MESSAGE } from "@/consts/default-error-message";
 import { usePublicEnv } from "@/providers/public-env-provider";
 import { useToast } from "@/providers/toast-provider";
-import { readCommonErrorMessage } from "@/utils/read-common-error-message";
-import { createOtherCommonError } from "../_utils/create-common-error";
+import { createOtherCommonError } from "@/utils/commons/create-other-common-error";
+import { readCommonErrorMessage } from "@/utils/commons/read-common-error-message";
 import { callApiActionWrapper } from "../call-api-action-wrapper";
 import { fetchClientWrapper } from "../fetch-client-wrapper";
 

@@ -1,4 +1,4 @@
-import { createDatabaseManagerDataSource } from "#/utils/create-database-manager-data-source/index.js";
+import { createDatabaseManagerDataSource } from "#/utils/commons/create-database-manager-data-source/index.js";
 import { seedDefaultAccessPolicyGroup } from "./_utils/seed-default-access-policy-group/index.js";
 import { seedDefaultPermissionGroup } from "./_utils/seed-default-permission-group/index.js";
 import { seedInitialAdmin } from "./_utils/seed-initial-admin/index.js";

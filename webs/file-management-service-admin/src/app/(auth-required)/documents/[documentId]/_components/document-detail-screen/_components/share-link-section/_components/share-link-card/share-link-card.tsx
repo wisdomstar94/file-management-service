@@ -6,6 +6,8 @@ import { Button } from "@fms/web-ui/components/button";
 import { ProgressBar } from "@fms/web-ui/components/progress-bar";
 import { formatDate } from "@fms/web-utils/formats/format-date-time";
 import { useToast } from "@/providers/toast-provider";
+import { readOthers } from "./_utils/read-others";
+import { readPeriod } from "./_utils/read-period";
 
 const AVAILABILITY_LABELS: Record<
   ResBody<typeof SHARE_LINK_LIST_API>["data"][number]["availability"],
@@ -16,20 +18,6 @@ const AVAILABILITY_LABELS: Record<
   EXPIRED: { label: "만료", className: "bg-chip text-muted" },
   EXHAUSTED: { label: "소진", className: "bg-chip text-muted" },
 };
-
-function readPeriod(link: ResBody<typeof SHARE_LINK_LIST_API>["data"][number]) {
-  if (!link.availableFrom && !link.availableUntil) {
-    return "제한 없음";
-  }
-  return `${link.availableFrom ? formatDate(link.availableFrom) : "제한 없음"} ~ ${link.availableUntil ? formatDate(link.availableUntil) : "제한 없음"}`;
-}
-
-function readOthers(link: ResBody<typeof SHARE_LINK_LIST_API>["data"][number]) {
-  if (!link.isShowOtherVersions) {
-    return "숨김";
-  }
-  return link.isAllowOtherVersionDownload ? "표시 · 다운로드 허용" : "표시 · 다운로드 불가";
-}
 
 export function ShareLinkCard(props: {
   link: ResBody<typeof SHARE_LINK_LIST_API>["data"][number];

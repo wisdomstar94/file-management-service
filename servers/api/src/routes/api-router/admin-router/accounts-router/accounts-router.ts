@@ -4,41 +4,36 @@ import type {
 } from "@fms/api-schemas/schemas/admin-account-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
-import { AdminAccountEntity } from "@fms/database-entities/entities/admin-account-entity";
 import { PermissionGroupEntity } from "@fms/database-entities/entities/permission-group-entity";
 import { hashPassword } from "@fms/password-handler/passwords/hash-password";
 import { Router } from "express";
 import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
 import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
-import { conflictError } from "#/utils/conflict-error/index.js";
-import { generateCommonRes } from "#/utils/generate-common-res/index.js";
-import { notFoundError } from "#/utils/not-found-error/index.js";
-import { parseRequest } from "#/utils/parse-request/index.js";
-import { readAdmin } from "#/utils/read-admin/index.js";
-import { readPagination } from "#/utils/read-pagination/index.js";
-import { readUuidParam } from "#/utils/read-uuid-param/index.js";
+import { conflictError } from "#/utils/commons/conflict-error/index.js";
+import { generateCommonRes } from "#/utils/commons/generate-common-res/index.js";
+import { parseRequest } from "#/utils/commons/parse-request/index.js";
+import { readUuidParam } from "#/utils/commons/read-uuid-param/index.js";
+import { readAdmin } from "#/utils/domains/admin-auth/read-admin/index.js";
 import {
   createAdminAccountRequestSchema,
   updateAdminAccountRequestSchema,
 } from "#/validators/admin-account-validators/index.js";
+import { ADMIN_ACCOUNT_RELATIONS } from "./_consts/admin-account-relations/index.js";
+import { findAccountOrThrow } from "./_services/find-account-or-throw/index.js";
+import { getAdminAccountRepository } from "./_utils/get-admin-account-repository/index.js";
+import { readPagination } from "./_utils/read-pagination/index.js";
 import { toAdminAccountResponse } from "./_utils/to-admin-account-response/index.js";
 import { assertAssignableGroups } from "./_validators/assert-assignable-groups/index.js";
 
 const router = Router();
-const relations = { permissionGroup: true, accessPolicyGroup: true };
-const repository = () => appDataSource.getRepository(AdminAccountEntity);
-
-async function findAccountOrThrow(id: string) {
-  const account = await repository().findOne({ where: { id }, relations });
-  if (!account) {
-    throw notFoundError("관리자 계정");
-  }
-  return account;
-}
-
 router.get("/", requirePermission("account.access"), async (req, res) => {
   const { page, size, skip, take } = readPagination(req);
-  const [accounts, total] = await repository().findAndCount({ relations, order: { createdAt: "DESC" }, skip, take });
+  const [accounts, total] = await getAdminAccountRepository().findAndCount({
+    relations: ADMIN_ACCOUNT_RELATIONS,
+    order: { createdAt: "DESC" },
+    skip,
+    take,
+  });
   const body: ResBody<typeof ADMIN_ACCOUNT_LIST_API>["data"] = {
     items: accounts.map(toAdminAccountResponse),
     total,
@@ -51,11 +46,13 @@ router.get("/", requirePermission("account.access"), async (req, res) => {
 router.post("/", requirePermission("account.create"), async (req, res) => {
   const { password, ...body } = parseRequest(createAdminAccountRequestSchema, req.body);
   await assertAssignableGroups(appDataSource.manager, body);
-  if (await repository().exists({ where: { loginId: body.loginId } })) {
+  if (await getAdminAccountRepository().exists({ where: { loginId: body.loginId } })) {
     throw conflictError("이미 사용 중인 아이디입니다.");
   }
 
-  const saved = await repository().save(repository().create({ ...body, passwordHash: await hashPassword(password) }));
+  const saved = await getAdminAccountRepository().save(
+    getAdminAccountRepository().create({ ...body, passwordHash: await hashPassword(password) }),
+  );
   res.status(201).json(generateCommonRes(toAdminAccountResponse(await findAccountOrThrow(saved.id))));
 });
 
@@ -80,7 +77,10 @@ router.patch("/:id", requirePermission("account.update"), async (req, res) => {
   await findAccountOrThrow(id);
   await assertAssignableGroups(appDataSource.manager, body);
 
-  await repository().update(id, { ...body, ...(password ? { passwordHash: await hashPassword(password) } : {}) });
+  await getAdminAccountRepository().update(id, {
+    ...body,
+    ...(password ? { passwordHash: await hashPassword(password) } : {}),
+  });
   res.json(generateCommonRes(toAdminAccountResponse(await findAccountOrThrow(id))));
 });
 
@@ -90,7 +90,7 @@ router.delete("/:id", requirePermission("account.delete"), async (req, res) => {
     throw conflictError("로그인한 계정은 삭제할 수 없습니다.");
   }
   await findAccountOrThrow(id);
-  await repository().delete(id);
+  await getAdminAccountRepository().delete(id);
   res.status(204).end();
 });
 

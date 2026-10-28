@@ -1,5 +1,5 @@
 import { PERMISSION_LIST_API } from "@fms/api-schemas/schemas/permission-api-schemas";
-import { requirePagePermission } from "@/utils/require-page-permission";
+import { requirePagePermission } from "@/utils/domains/permission/require-page-permission";
 import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
 import { PermissionsScreen } from "./_components/permissions-screen";
 

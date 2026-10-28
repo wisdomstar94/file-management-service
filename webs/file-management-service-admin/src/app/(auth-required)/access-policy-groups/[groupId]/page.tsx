@@ -1,6 +1,6 @@
 import { ACCESS_POLICY_GROUP_DETAIL_API } from "@fms/api-schemas/schemas/access-policy-group-api-schemas";
 import { AccessPolicyGroupEditor } from "@/components/domains/access-policy-groups/access-policy-group-editor";
-import { requirePagePermission } from "@/utils/require-page-permission";
+import { requirePagePermission } from "@/utils/domains/permission/require-page-permission";
 import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
 
 export default async function AccessPolicyGroupDetailPage(props: PageProps<"/access-policy-groups/[groupId]">) {

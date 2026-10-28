@@ -1,7 +1,8 @@
 "use client";
 
 import type { AccessPolicyHeaderMatchType } from "@fms/common-utils/access-policies/access-policy-node";
-import { createKey, type EditorBlock, type HeaderRow } from "../../_utils/convert-policy-tree";
+import type { EditorBlock, HeaderRow } from "../../_types/editor-block";
+import { createKey } from "../../_utils/create-key";
 
 type HeadersBlock = Extract<EditorBlock, { kind: "HEADERS" }>;
 

@@ -7,9 +7,9 @@ import { HttpError } from "#/classes/http-error/index.js";
 import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
 import { uploadFileMiddleware } from "#/middlewares/upload-file-middleware/index.js";
 import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
-import { generateCommonRes } from "#/utils/generate-common-res/index.js";
-import { parseRequest } from "#/utils/parse-request/index.js";
-import { readUuidParam } from "#/utils/read-uuid-param/index.js";
+import { generateCommonRes } from "#/utils/commons/generate-common-res/index.js";
+import { parseRequest } from "#/utils/commons/parse-request/index.js";
+import { readUuidParam } from "#/utils/commons/read-uuid-param/index.js";
 import {
   bulkDeleteDocumentsRequestSchema,
   createDocumentRequestSchema,

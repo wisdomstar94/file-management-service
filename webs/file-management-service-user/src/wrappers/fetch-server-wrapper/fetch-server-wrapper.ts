@@ -3,8 +3,8 @@ import type { ApiRequest, ResBody } from "@fms/api-schemas/types/api-schema-util
 import { buildApiForwardHeaders } from "@fms/web-utils/requests/build-api-forward-headers";
 import { headers } from "next/headers";
 import { webEnv } from "@/consts/web-env";
-import { buildApiUrl } from "../_utils/build-api-url";
-import { createApiCommonError } from "../_utils/create-common-error";
+import { buildApiUrl } from "@/utils/commons/build-api-url";
+import { createApiCommonError } from "../_utils/create-api-common-error";
 import { toRequestBody } from "../_utils/to-request-body";
 
 /**

@@ -11,8 +11,8 @@ import { type FormEvent, useState } from "react";
 import { FormField } from "@/components/commons/form-field";
 import { DEFAULT_ERROR_MESSAGE } from "@/consts/default-error-message";
 import { usePublicEnv } from "@/providers/public-env-provider";
-import { readCommonErrorMessage } from "@/utils/read-common-error-message";
-import { createOtherCommonError } from "@/wrappers/_utils/create-common-error";
+import { createOtherCommonError } from "@/utils/commons/create-other-common-error";
+import { readCommonErrorMessage } from "@/utils/commons/read-common-error-message";
 import { fetchClientWrapper } from "@/wrappers/fetch-client-wrapper";
 
 export function LoginForm(props: { nextPath: string }) {

@@ -1,7 +1,7 @@
 import type { DocumentEntity } from "@fms/database-entities/entities/document-entity";
 import type { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 import type { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
-import { resolveDefaultVersion } from "#/utils/resolve-default-version/index.js";
+import { resolveDefaultVersion } from "#/utils/domains/document-version/resolve-default-version/index.js";
 
 export function resolveShareLinkDefaultVersion(
   link: ShareLinkEntity,

@@ -6,12 +6,11 @@ import { requirePermission } from "#/middlewares/require-permission-middleware/i
 import { uploadFileMiddleware } from "#/middlewares/upload-file-middleware/index.js";
 import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
 import { storageDriver } from "#/singleton-classes/storage-driver/index.js";
-import { conflictError } from "#/utils/conflict-error/index.js";
-import { generateCommonRes } from "#/utils/generate-common-res/index.js";
-import { notFoundError } from "#/utils/not-found-error/index.js";
-import { parseRequest } from "#/utils/parse-request/index.js";
-import { readUuidParam } from "#/utils/read-uuid-param/index.js";
-import { sendVersionFile } from "#/utils/send-version-file/index.js";
+import { conflictError } from "#/utils/commons/conflict-error/index.js";
+import { generateCommonRes } from "#/utils/commons/generate-common-res/index.js";
+import { parseRequest } from "#/utils/commons/parse-request/index.js";
+import { readUuidParam } from "#/utils/commons/read-uuid-param/index.js";
+import { sendVersionFile } from "#/utils/domains/document-version/send-version-file/index.js";
 import {
   createDocumentVersionRequestSchema,
   updateDocumentVersionRequestSchema,
@@ -19,18 +18,9 @@ import {
 import { findDocumentOrThrow } from "../_services/find-document-or-throw/index.js";
 import { saveUploadedVersion } from "../_services/save-uploaded-version/index.js";
 import { toDocumentDetailResponse } from "../_utils/to-document-detail-response/index.js";
+import { findDocumentVersionOrThrow } from "./_services/find-document-version-or-throw/index.js";
 
 const router = Router({ mergeParams: true });
-
-async function findTargetOrThrow(req: Parameters<typeof readUuidParam>[0]) {
-  const document = await findDocumentOrThrow(appDataSource.manager, readUuidParam(req, "documentId"));
-  const versionId = readUuidParam(req, "versionId");
-  const version = document.versions.find((item) => item.id === versionId);
-  if (!version) {
-    throw notFoundError("버전");
-  }
-  return { document, version };
-}
 
 router.post("/", requirePermission("file.detail.version.create"), uploadFileMiddleware, async (req, res) => {
   const { versionName } = parseRequest(createDocumentVersionRequestSchema, req.body);
@@ -46,13 +36,13 @@ router.post("/", requirePermission("file.detail.version.create"), uploadFileMidd
 
 router.patch("/:versionId", requirePermission("file.detail.version.update"), async (req, res) => {
   const { versionName } = parseRequest(updateDocumentVersionRequestSchema, req.body);
-  const { document, version } = await findTargetOrThrow(req);
+  const { document, version } = await findDocumentVersionOrThrow(req);
   await appDataSource.getRepository(DocumentVersionEntity).update(version.id, { versionName });
   res.json(generateCommonRes(toDocumentDetailResponse(await findDocumentOrThrow(appDataSource.manager, document.id))));
 });
 
 router.delete("/:versionId", requirePermission("file.detail.version.update"), async (req, res) => {
-  const { document, version } = await findTargetOrThrow(req);
+  const { document, version } = await findDocumentVersionOrThrow(req);
   if (document.versions.length === 1) {
     throw conflictError("자료에는 버전이 1개 이상 있어야 합니다. 자료를 삭제하세요.");
   }
@@ -70,7 +60,7 @@ router.delete("/:versionId", requirePermission("file.detail.version.update"), as
 });
 
 router.get("/:versionId/download", requirePermission("file.detail.access"), async (req, res) => {
-  const { version } = await findTargetOrThrow(req);
+  const { version } = await findDocumentVersionOrThrow(req);
   sendVersionFile(res, version);
 });
 

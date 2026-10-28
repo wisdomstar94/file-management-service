@@ -2,8 +2,8 @@ import { DocumentVersionEntity } from "@fms/database-entities/entities/document-
 import { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
 import type { Request } from "express";
 import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
-import { assertAccessPolicy } from "#/utils/assert-access-policy/index.js";
-import { notFoundError } from "#/utils/not-found-error/index.js";
+import { notFoundError } from "#/utils/commons/not-found-error/index.js";
+import { assertAccessPolicy } from "#/utils/domains/access-policy/assert-access-policy/index.js";
 
 /** 공유 링크 키로 링크 · 자료 · 버전(최신순)을 읽고, 링크에 접근 정책이 있으면 통과해야 한다. */
 export async function findOpenShareLinkOrThrow(req: Request) {

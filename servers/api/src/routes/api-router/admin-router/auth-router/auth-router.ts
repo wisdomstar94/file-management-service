@@ -19,19 +19,20 @@ import { apiEnv } from "#/consts/api-env/index.js";
 import { accessPolicyMiddleware } from "#/middlewares/access-policy-middleware/index.js";
 import { adminAuthMiddleware } from "#/middlewares/admin-auth-middleware/index.js";
 import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
-import { generateCommonRes } from "#/utils/generate-common-res/index.js";
-import { parseRequest } from "#/utils/parse-request/index.js";
-import { readAdmin } from "#/utils/read-admin/index.js";
-import { readCookie } from "#/utils/read-cookie/index.js";
+import { generateCommonRes } from "#/utils/commons/generate-common-res/index.js";
+import { parseRequest } from "#/utils/commons/parse-request/index.js";
+import { readCookie } from "#/utils/commons/read-cookie/index.js";
+import { readAdmin } from "#/utils/domains/admin-auth/read-admin/index.js";
 import {
   adminLoginRequestSchema,
   adminRefreshTokenRequestSchema,
   adminShortTimeTokenRequestSchema,
 } from "#/validators/admin-auth-validators/index.js";
-import { hashRefreshToken } from "./_services/issue-admin-tokens/index.js";
 import { loginAdmin } from "./_services/login-admin/index.js";
 import { refreshAdminTokens } from "./_services/refresh-admin-tokens/index.js";
-import { clearAdminTokenCookies, writeAdminTokenCookies } from "./_utils/admin-auth-cookies/index.js";
+import { clearAdminTokenCookies } from "./_utils/domains/admin-auth-cookie/clear-admin-token-cookies/index.js";
+import { writeAdminTokenCookies } from "./_utils/domains/admin-auth-cookie/write-admin-token-cookies/index.js";
+import { hashRefreshToken } from "./_utils/hash-refresh-token/index.js";
 
 const router = Router();
 

@@ -2,10 +2,10 @@ import type { PUBLIC_SHARE_LINK_DETAIL_API } from "@fms/api-schemas/schemas/publ
 import type { SHARE_LINK_LIST_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { readFileIcon } from "@fms/web-utils/files/read-file-icon";
-import { formatDate } from "@fms/web-utils/formats/format-date-time";
 import { formatFileSize } from "@fms/web-utils/formats/format-file-size";
 import { DownloadLink } from "./_components/download-link";
 import { DownloadStatus } from "./_components/download-status";
+import { readPeriod } from "./_utils/read-period";
 
 const UNAVAILABLE_MESSAGES: Record<
   Exclude<ResBody<typeof SHARE_LINK_LIST_API>["data"][number]["availability"], "ACTIVE">,
@@ -20,15 +20,6 @@ const DOWNLOAD_ERROR_MESSAGES: Record<string, string> = {
   CONFLICT: "다운로드 가능 기간이 아니거나 허용 횟수를 모두 사용했습니다.",
   NOT_FOUND: "받을 수 없는 버전입니다.",
 };
-
-function readPeriod(detail: ResBody<typeof PUBLIC_SHARE_LINK_DETAIL_API>["data"]) {
-  if (!detail.availableFrom && !detail.availableUntil) {
-    return null;
-  }
-  const from = detail.availableFrom ? formatDate(detail.availableFrom) : "제한 없음";
-  const until = detail.availableUntil ? formatDate(detail.availableUntil) : "제한 없음";
-  return `다운로드 가능 기간 ${from} ~ ${until}`;
-}
 
 export function ShareDocumentView(props: {
   detail: ResBody<typeof PUBLIC_SHARE_LINK_DETAIL_API>["data"];

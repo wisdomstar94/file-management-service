@@ -1,7 +1,7 @@
 import { DOCUMENT_LIST_API } from "@fms/api-schemas/schemas/document-api-schemas";
 import type { ReqQuery } from "@fms/api-schemas/types/api-schema-utils";
-import { readPageParam } from "@/utils/read-page-param";
-import { requirePagePermission } from "@/utils/require-page-permission";
+import { readPageParam } from "@/utils/commons/read-page-param";
+import { requirePagePermission } from "@/utils/domains/permission/require-page-permission";
 import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
 import { DocumentsScreen } from "./_components/documents-screen";
 

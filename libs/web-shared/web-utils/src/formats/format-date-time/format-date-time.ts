@@ -1,19 +1,4 @@
-const TIME_ZONE = "Asia/Seoul";
-
-function readParts(iso: string) {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: TIME_ZONE,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(new Date(iso));
-  return Object.fromEntries(parts.map((part) => [part.type, part.value]));
-}
-
+import { readParts } from "./_utils/read-parts/index.js";
 /** `2026-10-03` (한국 시간) */
 export function formatDate(iso: string): string {
   const p = readParts(iso);

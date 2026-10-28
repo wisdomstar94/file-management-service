@@ -4,7 +4,7 @@ import {
   SHARE_LINK_LIST_API,
 } from "@fms/api-schemas/schemas/share-link-api-schemas";
 import { webEnv } from "@/consts/web-env";
-import { requirePagePermission } from "@/utils/require-page-permission";
+import { requirePagePermission } from "@/utils/domains/permission/require-page-permission";
 import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
 import { DocumentDetailScreen } from "./_components/document-detail-screen";
 

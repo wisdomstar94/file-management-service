@@ -1,7 +1,7 @@
 import type { ApiSchema } from "@fms/api-schemas/types/api-schema";
 import type { ApiRequest, ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import { buildApiUrl } from "../_utils/build-api-url";
-import { createApiCommonError } from "../_utils/create-common-error";
+import { buildApiUrl } from "@/utils/commons/build-api-url";
+import { createApiCommonError } from "../_utils/create-api-common-error";
 import { toRequestBody } from "../_utils/to-request-body";
 
 export type FetchClientWrapperOptions = {
@@ -10,16 +10,6 @@ export type FetchClientWrapperOptions = {
   /** api 가 심는 httpOnly 쿠키(로그인 토큰)를 주고받으려면 `include` */
   credentials?: RequestCredentials;
 };
-
-/** 브라우저에서 바로 열 url (다운로드 링크 등) */
-export function buildClientApiUrl<S extends ApiSchema>(
-  schema: S,
-  request: ApiRequest<S>,
-  options: FetchClientWrapperOptions = {},
-): string {
-  const { params, query } = request as Partial<ApiSchema["request"]>;
-  return `${options.baseUrl ?? ""}${buildApiUrl({ url: schema.url, params, query })}`;
-}
 
 /**
  * 브라우저에서 api 를 직접 호출한다. admin 에서는 로그인 · 로그아웃과 short-time token 을 쓰는 업로드에 쓴다.

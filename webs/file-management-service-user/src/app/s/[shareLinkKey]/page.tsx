@@ -1,23 +1,9 @@
-import { PUBLIC_SHARE_LINK_GATE_API } from "@fms/api-schemas/schemas/public-share-link-api-schemas";
 import { SharePageFrame } from "@/components/domains/share-links/share-page-frame";
-import { readAccessPolicyDeniedDetails } from "@/utils/read-access-policy-denied-details";
-import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
 import { ShareBlockedNotice } from "./_components/share-blocked-notice";
 import { ShareLinkScreen } from "./_components/share-link-screen";
 import { ShareNotFoundNotice } from "./_components/share-not-found-notice";
-
-/** 접근 정책만 서버에서 확인한다. 비밀번호 · 자료 정보는 api 의 잠금 해제 쿠키가 필요해 브라우저가 직접 받는다. */
-async function readGateState(shareLinkKey: string) {
-  return fetchServerWrapper(PUBLIC_SHARE_LINK_GATE_API, { params: { shareLinkKey } })
-    .then((gate) => ({ kind: "PASSED" as const, isPasswordRequired: gate.data.state === "PASSWORD_REQUIRED" }))
-    .catch((error: unknown) => {
-      const details = readAccessPolicyDeniedDetails(error);
-      return details ? { kind: "BLOCKED" as const, details } : { kind: "NOT_FOUND" as const };
-    });
-}
-
-/** 다운로드에 실패하면 api 가 `downloadError` · `timestamp` 쿼리를 붙여 이 화면으로 돌려보낸다. */
-const readQueryValue = (value: string | string[] | undefined) => (typeof value === "string" ? value : undefined);
+import { readGateState } from "./_utils/read-gate-state";
+import { readQueryValue } from "./_utils/read-query-value";
 
 export default async function SharePage(props: PageProps<"/s/[shareLinkKey]">) {
   const { shareLinkKey } = await props.params;

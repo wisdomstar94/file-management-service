@@ -5,8 +5,8 @@ import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import { type FormEvent, useState } from "react";
-import { readCommonErrorMessage } from "@/utils/read-common-error-message";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
+import { readCommonErrorMessage } from "./_utils/read-common-error-message";
 
 /** 비밀번호가 맞으면 api 가 잠금 해제 쿠키를 심고, `onUnlocked` 로 자료 정보를 다시 불러온다. */
 export function SharePasswordForm(props: { shareLinkKey: string; onUnlocked: () => void }) {

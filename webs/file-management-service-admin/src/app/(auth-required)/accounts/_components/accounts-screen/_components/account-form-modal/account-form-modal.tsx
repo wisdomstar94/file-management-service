@@ -17,11 +17,7 @@ import { SelectInput } from "@/components/commons/select-input";
 import { TextAreaInput } from "@/components/commons/text-area-input";
 import { useAdminSession } from "@/providers/admin-session-provider";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
-
-const readOptional = (form: FormData, name: string) => {
-  const value = String(form.get(name) ?? "");
-  return value === "" ? undefined : value;
-};
+import { readOptionalFormValue } from "./_utils/read-optional-form-value";
 
 /** `account` 가 없으면 생성, 있으면 상세(수정) 모달 */
 export function AccountFormModal(props: {
@@ -44,7 +40,7 @@ export function AccountFormModal(props: {
       memo: String(form.get("memo") ?? ""),
       permissionGroupId: String(form.get("permissionGroupId") ?? ""),
       accessPolicyGroupId: String(form.get("accessPolicyGroupId") ?? ""),
-      password: readOptional(form, "password"),
+      password: readOptionalFormValue(form, "password"),
     };
     const result = account
       ? await updateApi.fetchApi({ params: { id: account.id }, body })

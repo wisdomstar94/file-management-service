@@ -2,6 +2,8 @@ import type { PUBLIC_SHARE_LINK_UNLOCK_API } from "@fms/api-schemas/schemas/publ
 import type { CREATE_SHARE_LINK_API, UPDATE_SHARE_LINK_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
 import type { ReqBody } from "@fms/api-schemas/types/api-schema-utils";
 import { z } from "zod";
+import { isValidFixedVersion } from "./_utils/is-valid-fixed-version/index.js";
+import { isValidPeriod } from "./_utils/is-valid-period/index.js";
 
 const shareLinkFieldsSchema = z.object({
   accessPolicyGroupId: z.uuid().nullable(),
@@ -16,19 +18,6 @@ const shareLinkFieldsSchema = z.object({
   isAllowOtherVersionDownload: z.boolean(),
   isShowDownloadStatus: z.boolean(),
 });
-
-type ShareLinkFields = z.infer<typeof shareLinkFieldsSchema>;
-
-function isValidPeriod(value: Partial<ShareLinkFields>): boolean {
-  if (!value.availableFrom || !value.availableUntil) {
-    return true;
-  }
-  return new Date(value.availableFrom) <= new Date(value.availableUntil);
-}
-
-function isValidFixedVersion(value: Partial<ShareLinkFields>): boolean {
-  return value.defaultVersionMode !== "FIXED" || !!value.fixedVersionId;
-}
 
 export const createShareLinkRequestSchema = shareLinkFieldsSchema
   .refine(isValidPeriod, { message: "종료일은 시작일보다 빠를 수 없습니다.", path: ["availableUntil"] })

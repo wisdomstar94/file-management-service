@@ -19,7 +19,8 @@ import { PageHeading } from "@/components/commons/page-heading";
 import { useAdminSession } from "@/providers/admin-session-provider";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { PolicyGroupBlock } from "./_components/policy-group-block";
-import { fromPolicyTree, toPolicyTree } from "./_utils/convert-policy-tree";
+import { fromPolicyTree } from "./_utils/domains/policy-tree/from-policy-tree";
+import { toPolicyTree } from "./_utils/domains/policy-tree/to-policy-tree";
 
 export function AccessPolicyGroupEditor(props: {
   group: ResBody<typeof ACCESS_POLICY_GROUP_DETAIL_API>["data"] | null;

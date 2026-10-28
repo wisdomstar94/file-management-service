@@ -2,7 +2,7 @@
 
 import type { AccessPolicyIpMode } from "@fms/common-utils/access-policies/access-policy-node";
 import { ChoiceCard } from "@/components/commons/choice-card";
-import type { EditorBlock } from "../../_utils/convert-policy-tree";
+import type { EditorBlock } from "../../_types/editor-block";
 
 type IpBlock = Extract<EditorBlock, { kind: "IP" }>;
 

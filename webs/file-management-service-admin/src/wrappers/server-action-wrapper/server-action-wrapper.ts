@@ -2,7 +2,7 @@ import type { CommonError } from "@fms/error-provider/errors/common-error";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { unstable_rethrow } from "next/navigation";
 import { DEFAULT_ERROR_MESSAGE } from "@/consts/default-error-message";
-import { createOtherCommonError } from "../_utils/create-common-error";
+import { createOtherCommonError } from "@/utils/commons/create-other-common-error";
 
 /**
  * 모든 서버 액션은 이 함수로 감싸 선언한다. 던져진 에러를 `CommonError` 로 바꿔 return 하므로,

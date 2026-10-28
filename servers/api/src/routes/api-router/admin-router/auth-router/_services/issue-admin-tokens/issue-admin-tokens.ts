@@ -1,4 +1,4 @@
-import { createHash, randomBytes } from "node:crypto";
+import { randomBytes } from "node:crypto";
 import type { ADMIN_REFRESH_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { AdminAccountEntity } from "@fms/database-entities/entities/admin-account-entity";
@@ -9,10 +9,7 @@ import {
 } from "@fms/jwt-handler/tokens/admin-access-token";
 import type { EntityManager } from "typeorm";
 import { apiEnv } from "#/consts/api-env/index.js";
-
-export function hashRefreshToken(refreshToken: string): string {
-  return createHash("sha256").update(refreshToken).digest("hex");
-}
+import { hashRefreshToken } from "../../_utils/hash-refresh-token/index.js";
 
 /** access token 과 refresh token 을 새로 발급하고 최근 접속일을 갱신한다. refresh token 은 해시만 저장한다. */
 export async function issueAdminTokens(

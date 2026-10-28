@@ -3,7 +3,7 @@
 import { Button } from "@fms/web-ui/components/button";
 import { useRouter } from "next/navigation";
 import { usePublicEnv } from "@/providers/public-env-provider";
-import { requestAdminLogout } from "@/utils/request-admin-logout";
+import { requestAdminLogout } from "@/utils/domains/admin-auth/request-admin-logout";
 
 export function AccessDeniedActions() {
   const router = useRouter();

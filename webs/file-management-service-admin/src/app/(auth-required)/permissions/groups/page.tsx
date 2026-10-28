@@ -2,7 +2,7 @@ import {
   PERMISSION_GROUP_ASSIGNABLE_PERMISSIONS_API,
   PERMISSION_GROUP_LIST_API,
 } from "@fms/api-schemas/schemas/permission-group-api-schemas";
-import { requirePagePermission } from "@/utils/require-page-permission";
+import { requirePagePermission } from "@/utils/domains/permission/require-page-permission";
 import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
 import { PermissionGroupsScreen } from "./_components/permission-groups-screen";
 

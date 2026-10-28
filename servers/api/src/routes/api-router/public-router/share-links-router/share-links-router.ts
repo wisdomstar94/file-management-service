@@ -5,44 +5,27 @@ import type {
 } from "@fms/api-schemas/schemas/public-share-link-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
-import type { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 import { verifyPassword } from "@fms/password-handler/passwords/verify-password";
-import { type Request, type Response, Router } from "express";
+import { Router } from "express";
 import { HttpError } from "#/classes/http-error/index.js";
 import { apiEnv } from "#/consts/api-env/index.js";
-import { generateCommonRes } from "#/utils/generate-common-res/index.js";
-import { notFoundError } from "#/utils/not-found-error/index.js";
-import { parseRequest } from "#/utils/parse-request/index.js";
-import { readAccessPolicyRequest } from "#/utils/read-access-policy-request/index.js";
-import { readShareLinkAvailability } from "#/utils/read-share-link-availability/index.js";
-import { readUuidParam } from "#/utils/read-uuid-param/index.js";
-import { sendVersionFile } from "#/utils/send-version-file/index.js";
+import { generateCommonRes } from "#/utils/commons/generate-common-res/index.js";
+import { notFoundError } from "#/utils/commons/not-found-error/index.js";
+import { parseRequest } from "#/utils/commons/parse-request/index.js";
+import { readUuidParam } from "#/utils/commons/read-uuid-param/index.js";
+import { readAccessPolicyRequest } from "#/utils/domains/access-policy/read-access-policy-request/index.js";
+import { sendVersionFile } from "#/utils/domains/document-version/send-version-file/index.js";
+import { readShareLinkAvailability } from "#/utils/domains/share-link/read-share-link-availability/index.js";
 import { unlockShareLinkRequestSchema } from "#/validators/share-link-validators/index.js";
 import { consumeDownload } from "./_services/consume-download/index.js";
 import { findOpenShareLinkOrThrow } from "./_services/find-open-share-link-or-throw/index.js";
-import { resolveShareLinkDefaultVersion } from "./_services/resolve-share-link-default-version/index.js";
-import { readShareLinkUnlockCookie, writeShareLinkUnlockCookie } from "./_utils/share-link-unlock-cookie/index.js";
-import { isShareLinkUnlocked, signShareLinkUnlockToken } from "./_utils/share-link-unlock-token/index.js";
+import { findUnlockedShareLinkOrThrow } from "./_services/find-unlocked-share-link-or-throw/index.js";
+import { writeShareLinkUnlockCookie } from "./_utils/domains/share-link-unlock-cookie/write-share-link-unlock-cookie/index.js";
+import { signShareLinkUnlockToken } from "./_utils/domains/share-link-unlock-token/sign-share-link-unlock-token/index.js";
+import { redirectToShareLinkPage } from "./_utils/redirect-to-share-link-page/index.js";
+import { toPublicVersion } from "./_utils/to-public-version/index.js";
 
 const router = Router();
-
-const toPublicVersion = (
-  version: DocumentVersionEntity,
-): ResBody<typeof PUBLIC_SHARE_LINK_DETAIL_API>["data"]["defaultVersion"] => ({
-  id: version.id,
-  versionName: version.versionName,
-  fileName: version.fileName,
-  fileSize: version.fileSize,
-});
-
-/** 접근 정책 → 비밀번호 순서로 통과해야 자료 정보를 연다. */
-async function findUnlockedShareLinkOrThrow(req: Request) {
-  const opened = await findOpenShareLinkOrThrow(req);
-  if (!(await isShareLinkUnlocked(opened.link, readShareLinkUnlockCookie(req, opened.link.shareLinkKey)))) {
-    throw new HttpError(401, API_ERROR_CODE.UNAUTHORIZED, "비밀번호가 필요합니다.");
-  }
-  return { ...opened, defaultVersion: resolveShareLinkDefaultVersion(opened.link, opened.document, opened.versions) };
-}
 
 router.get("/:shareLinkKey", async (req, res) => {
   const { link } = await findOpenShareLinkOrThrow(req);
@@ -87,19 +70,6 @@ router.get("/:shareLinkKey/detail", async (req, res) => {
   };
   res.json(generateCommonRes(body));
 });
-
-/**
- * 받을 수 없으면 브라우저가 이동해 온 주소라 JSON 대신 공개 링크 화면으로 돌려보낸다.
- * 잠금 해제가 만료된 것이면 화면이 비밀번호 입력을 띄우면 충분하고, 그 외에는 실패 사유와 시각을 쿼리로 넘긴다.
- */
-function redirectToShareLinkPage(res: Response, shareLinkKey: string, error: HttpError) {
-  const url = new URL(`/s/${encodeURIComponent(shareLinkKey)}`, apiEnv.userWebOrigin);
-  if (error.code !== API_ERROR_CODE.UNAUTHORIZED) {
-    url.searchParams.set("downloadError", error.code);
-    url.searchParams.set("timestamp", String(Date.now()));
-  }
-  res.redirect(303, url.toString());
-}
 
 router.get("/:shareLinkKey/versions/:versionId/download", async (req, res) => {
   try {

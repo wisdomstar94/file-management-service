@@ -2,8 +2,8 @@ import {
   ADMIN_ACCOUNT_ASSIGNABLE_GROUPS_API,
   ADMIN_ACCOUNT_LIST_API,
 } from "@fms/api-schemas/schemas/admin-account-api-schemas";
-import { readPageParam } from "@/utils/read-page-param";
-import { requirePagePermission } from "@/utils/require-page-permission";
+import { readPageParam } from "@/utils/commons/read-page-param";
+import { requirePagePermission } from "@/utils/domains/permission/require-page-permission";
 import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
 import { AccountsScreen } from "./_components/accounts-screen";
 

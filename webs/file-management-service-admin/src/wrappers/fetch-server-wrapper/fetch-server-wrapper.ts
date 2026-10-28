@@ -6,9 +6,9 @@ import type { CommonError } from "@fms/error-provider/errors/common-error";
 import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { webEnv } from "@/consts/web-env";
-import { buildApiForwardHeaders } from "@/utils/build-api-forward-headers";
-import { buildApiUrl } from "../_utils/build-api-url";
-import { createApiCommonError } from "../_utils/create-common-error";
+import { buildApiForwardHeaders } from "@/utils/commons/build-api-forward-headers";
+import { buildApiUrl } from "@/utils/commons/build-api-url";
+import { createApiCommonError } from "../_utils/create-api-common-error";
 import { toRequestBody } from "../_utils/to-request-body";
 
 export type FetchServerWrapperOptions = {

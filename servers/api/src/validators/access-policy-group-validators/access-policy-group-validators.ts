@@ -5,30 +5,10 @@ import type {
 import type { ReqBody } from "@fms/api-schemas/types/api-schema-utils";
 import type { AccessPolicyNode } from "@fms/common-utils/access-policies/access-policy-node";
 import { ACCESS_POLICY_TREE_MAX_DEPTH } from "@fms/common-utils/access-policies/access-policy-node";
-import { readIpVersion } from "@fms/common-utils/networks/read-ip-version";
 import { z } from "zod";
-
-function isCidrFormat(value: string): boolean {
-  const [ip, prefix] = value.trim().split("/");
-  const version = readIpVersion(ip);
-  if (version === 0) {
-    return false;
-  }
-  if (prefix === undefined) {
-    return true;
-  }
-  const prefixNumber = Number(prefix);
-  return Number.isInteger(prefixNumber) && prefixNumber >= 0 && prefixNumber <= (version === 4 ? 32 : 128);
-}
-
-function isRegexFormat(value: string): boolean {
-  try {
-    new RegExp(value);
-    return true;
-  } catch {
-    return false;
-  }
-}
+import { isCidrFormat } from "./_utils/is-cidr-format/index.js";
+import { isRegexFormat } from "./_utils/is-regex-format/index.js";
+import { readDepth } from "./_utils/read-depth/index.js";
 
 const ipNodeSchema = z.object({
   type: z.literal("IP"),
@@ -60,13 +40,6 @@ export const accessPolicyNodeSchema: z.ZodType<AccessPolicyNode> = z.lazy(() =>
     }),
   ]),
 );
-
-function readDepth(node: AccessPolicyNode): number {
-  if (node.type !== "GROUP") {
-    return 1;
-  }
-  return 1 + Math.max(...node.children.map(readDepth));
-}
 
 const ruleTreeSchema = accessPolicyNodeSchema
   .nullable()

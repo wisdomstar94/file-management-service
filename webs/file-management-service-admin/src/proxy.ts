@@ -1,35 +1,14 @@
-import { ADMIN_ACCESS_CHECK_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import {
   ADMIN_ACCESS_TOKEN_COOKIE,
   ADMIN_REFRESH_TOKEN_COOKIE,
 } from "@fms/common-utils/cookies/admin-auth-cookie-names";
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
-import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { type NextRequest, NextResponse } from "next/server";
-import { clearAdminTokenCookies, writeAdminTokenCookies } from "./utils/admin-auth-cookies";
-import { readRouteGroup } from "./utils/read-route-group";
-import { resolveAdminAccessToken } from "./utils/resolve-admin-access-token";
-import { fetchServerWrapper } from "./wrappers/fetch-server-wrapper";
-
-async function checkAccessPolicy(request: NextRequest, accessToken: string) {
-  try {
-    await fetchServerWrapper(
-      ADMIN_ACCESS_CHECK_API,
-      {},
-      { incoming: request.headers, accessToken, redirectOnAuthError: false, redirectOnPageError: false },
-    );
-    return "ALLOWED" as const;
-  } catch (error) {
-    const isDenied = isCommonError(error) && error.errorCode === API_ERROR_CODE.ACCESS_POLICY_DENIED;
-    return isDenied ? ("DENIED" as const) : ("UNAUTHORIZED" as const);
-  }
-}
-
-/** 새로 받은 토큰을 이번 요청의 서버 컴포넌트도 읽을 수 있게 요청 쿠키에도 반영한다. */
-function nextWithAccessToken(request: NextRequest, accessToken: string) {
-  request.cookies.set(ADMIN_ACCESS_TOKEN_COOKIE, accessToken);
-  return NextResponse.next({ request: { headers: request.headers } });
-}
+import { checkAccessPolicy } from "./_utils/domains/access-policy/check-access-policy";
+import { nextWithAccessToken } from "./_utils/domains/admin-auth/next-with-access-token";
+import { resolveAdminAccessToken } from "./_utils/domains/admin-auth/resolve-admin-access-token";
+import { clearAdminTokenCookies } from "./_utils/domains/admin-auth-cookie/clear-admin-token-cookies";
+import { writeAdminTokenCookies } from "./_utils/domains/admin-auth-cookie/write-admin-token-cookies";
+import { readRouteGroup } from "./_utils/read-route-group";
 
 export async function proxy(request: NextRequest) {
   const routeGroup = readRouteGroup(request.nextUrl.pathname);
