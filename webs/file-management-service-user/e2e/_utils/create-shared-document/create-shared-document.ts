@@ -78,5 +78,5 @@ export async function createSharedDocument(
     data: { ...DEFAULT_LINK, accessPolicyGroupId, ...props.link },
   });
   expect(link.status()).toBe(201);
-  return { name, token: (await link.json()).data.token as string };
+  return { name, shareLinkKey: (await link.json()).data.shareLinkKey as string };
 }

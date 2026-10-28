@@ -17,7 +17,7 @@ export function toShareLinkResponse(
 
   return {
     id: link.id,
-    token: link.token,
+    shareLinkKey: link.shareLinkKey,
     accessPolicyGroup: link.accessPolicyGroup
       ? { id: link.accessPolicyGroup.id, name: link.accessPolicyGroup.name }
       : null,

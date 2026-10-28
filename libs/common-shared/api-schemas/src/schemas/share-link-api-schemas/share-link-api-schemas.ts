@@ -7,7 +7,7 @@ type DocumentVersionSummary = ResBody<typeof DOCUMENT_LIST_API>["data"]["items"]
 
 type ShareLink = {
   id: string;
-  token: string;
+  shareLinkKey: string;
   accessPolicyGroup: { id: string; name: string } | null;
   hasPassword: boolean;
   downloadCount: number;

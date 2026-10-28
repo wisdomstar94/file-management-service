@@ -62,7 +62,7 @@ router.post("/", requirePermission("file.detail.link.create"), async (req, res) 
   const document = await findDocumentOrThrow(appDataSource.manager, readUuidParam(req, "documentId"));
   const columns = await toShareLinkColumns(appDataSource.manager, document, body);
   const saved = await repository().save(
-    repository().create({ ...columns, documentId: document.id, token: randomBytes(16).toString("base64url") }),
+    repository().create({ ...columns, documentId: document.id, shareLinkKey: randomBytes(16).toString("base64url") }),
   );
   const link = await repository().findOneOrFail({ where: { id: saved.id }, relations });
   res.status(201).json(generateCommonRes(toShareLinkResponse(link, document)));

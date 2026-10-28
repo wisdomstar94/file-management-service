@@ -6,10 +6,10 @@ import type { SHARE_LINK_LIST_API } from "../share-link-api-schemas/index.js";
 type PublicShareLinkVersion = { id: string; versionName: string; fileName: string; fileSize: number };
 
 export const PUBLIC_SHARE_LINK_GATE_API = {
-  url: "/api/public/share-links/:token",
+  url: "/api/public/share-links/:shareLinkKey",
   method: "GET",
   request: {
-    params: typeOf<{ token: string }>(),
+    params: typeOf<{ shareLinkKey: string }>(),
     headers: typeOf<undefined>(),
     body: typeOf<undefined>(),
     query: typeOf<undefined>(),
@@ -19,10 +19,10 @@ export const PUBLIC_SHARE_LINK_GATE_API = {
 } as const satisfies ApiSchema;
 
 export const PUBLIC_SHARE_LINK_UNLOCK_API = {
-  url: "/api/public/share-links/:token/unlock",
+  url: "/api/public/share-links/:shareLinkKey/unlock",
   method: "POST",
   request: {
-    params: typeOf<{ token: string }>(),
+    params: typeOf<{ shareLinkKey: string }>(),
     headers: typeOf<undefined>(),
     body: typeOf<{ password: string }>(),
     query: typeOf<undefined>(),
@@ -33,10 +33,10 @@ export const PUBLIC_SHARE_LINK_UNLOCK_API = {
 } as const satisfies ApiSchema;
 
 export const PUBLIC_SHARE_LINK_DETAIL_API = {
-  url: "/api/public/share-links/:token/detail",
+  url: "/api/public/share-links/:shareLinkKey/detail",
   method: "GET",
   request: {
-    params: typeOf<{ token: string }>(),
+    params: typeOf<{ shareLinkKey: string }>(),
     headers: typeOf<undefined>(),
     body: typeOf<undefined>(),
     query: typeOf<undefined>(),
@@ -60,10 +60,10 @@ export const PUBLIC_SHARE_LINK_DETAIL_API = {
 } as const satisfies ApiSchema;
 
 export const PUBLIC_SHARE_LINK_DOWNLOAD_API = {
-  url: "/api/public/share-links/:token/versions/:versionId/download",
+  url: "/api/public/share-links/:shareLinkKey/versions/:versionId/download",
   method: "GET",
   request: {
-    params: typeOf<{ token: string; versionId: string }>(),
+    params: typeOf<{ shareLinkKey: string; versionId: string }>(),
     headers: typeOf<undefined>(),
     body: typeOf<undefined>(),
     query: typeOf<undefined>(),

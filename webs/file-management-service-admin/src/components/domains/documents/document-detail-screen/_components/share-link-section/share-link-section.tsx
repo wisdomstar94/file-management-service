@@ -65,7 +65,7 @@ export function ShareLinkSection(props: {
         <ShareLinkCard
           key={link.id}
           link={link}
-          url={`${userWebOrigin}/s/${link.token}`}
+          url={`${userWebOrigin}/s/${link.shareLinkKey}`}
           canUpdate={canUpdate}
           canDelete={canDelete}
           onEdit={() => setEditing(link)}

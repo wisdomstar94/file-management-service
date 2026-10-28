@@ -38,13 +38,13 @@ const toPublicVersion = (
 /** 접근 정책 → 비밀번호 순서로 통과해야 자료 정보를 연다. */
 async function findUnlockedShareLinkOrThrow(req: Request) {
   const opened = await findOpenShareLinkOrThrow(req);
-  if (!(await isShareLinkUnlocked(opened.link, readShareLinkUnlockCookie(req, opened.link.token)))) {
+  if (!(await isShareLinkUnlocked(opened.link, readShareLinkUnlockCookie(req, opened.link.shareLinkKey)))) {
     throw new HttpError(401, API_ERROR_CODE.UNAUTHORIZED, "비밀번호가 필요합니다.");
   }
   return { ...opened, defaultVersion: resolveShareLinkDefaultVersion(opened.link, opened.document, opened.versions) };
 }
 
-router.get("/:token", async (req, res) => {
+router.get("/:shareLinkKey", async (req, res) => {
   const { link } = await findOpenShareLinkOrThrow(req);
   const body: ResBody<typeof PUBLIC_SHARE_LINK_GATE_API>["data"] = {
     state: link.passwordHash === null ? "OPEN" : "PASSWORD_REQUIRED",
@@ -52,7 +52,7 @@ router.get("/:token", async (req, res) => {
   res.json(generateCommonRes(body));
 });
 
-router.post("/:token/unlock", async (req, res) => {
+router.post("/:shareLinkKey/unlock", async (req, res) => {
   const { password } = parseRequest(unlockShareLinkRequestSchema, req.body);
   const { link } = await findOpenShareLinkOrThrow(req);
   const isValid = link.passwordHash !== null && (await verifyPassword(link.passwordHash, password));
@@ -60,12 +60,16 @@ router.post("/:token/unlock", async (req, res) => {
     throw new HttpError(401, API_ERROR_CODE.INVALID_CREDENTIALS, "비밀번호가 올바르지 않습니다.");
   }
   const expiresAt = new Date(Date.now() + apiEnv.shareLinkUnlockExpiresInSeconds * 1000);
-  writeShareLinkUnlockCookie(res, { token: link.token, unlockToken: await signShareLinkUnlockToken(link), expiresAt });
+  writeShareLinkUnlockCookie(res, {
+    shareLinkKey: link.shareLinkKey,
+    unlockToken: await signShareLinkUnlockToken(link),
+    expiresAt,
+  });
   const body: ResBody<typeof PUBLIC_SHARE_LINK_UNLOCK_API>["data"] = { expiresAt: expiresAt.toISOString() };
   res.json(generateCommonRes(body));
 });
 
-router.get("/:token/detail", async (req, res) => {
+router.get("/:shareLinkKey/detail", async (req, res) => {
   const { link, document, versions, defaultVersion } = await findUnlockedShareLinkOrThrow(req);
   const body: ResBody<typeof PUBLIC_SHARE_LINK_DETAIL_API>["data"] = {
     documentName: document.name,
@@ -88,8 +92,8 @@ router.get("/:token/detail", async (req, res) => {
  * 받을 수 없으면 브라우저가 이동해 온 주소라 JSON 대신 공개 링크 화면으로 돌려보낸다.
  * 잠금 해제가 만료된 것이면 화면이 비밀번호 입력을 띄우면 충분하고, 그 외에는 실패 사유와 시각을 쿼리로 넘긴다.
  */
-function redirectToShareLinkPage(res: Response, token: string, error: HttpError) {
-  const url = new URL(`/s/${encodeURIComponent(token)}`, apiEnv.userWebOrigin);
+function redirectToShareLinkPage(res: Response, shareLinkKey: string, error: HttpError) {
+  const url = new URL(`/s/${encodeURIComponent(shareLinkKey)}`, apiEnv.userWebOrigin);
   if (error.code !== API_ERROR_CODE.UNAUTHORIZED) {
     url.searchParams.set("downloadError", error.code);
     url.searchParams.set("timestamp", String(Date.now()));
@@ -97,7 +101,7 @@ function redirectToShareLinkPage(res: Response, token: string, error: HttpError)
   res.redirect(303, url.toString());
 }
 
-router.get("/:token/versions/:versionId/download", async (req, res) => {
+router.get("/:shareLinkKey/versions/:versionId/download", async (req, res) => {
   try {
     const { link, versions, defaultVersion } = await findUnlockedShareLinkOrThrow(req);
     const versionId = readUuidParam(req, "versionId");
@@ -114,7 +118,7 @@ router.get("/:token/versions/:versionId/download", async (req, res) => {
     if (!(error instanceof HttpError)) {
       throw error;
     }
-    redirectToShareLinkPage(res, String(req.params.token), error);
+    redirectToShareLinkPage(res, String(req.params.shareLinkKey), error);
   }
 });
 

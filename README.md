@@ -44,7 +44,7 @@ docker compose --env-file .env.local -p fms-quickstart -f dockers/compose.yml up
 | 화면 | 주소 | 비고 |
 | --- | --- | --- |
 | 관리자 웹 | http://localhost:3000 | 아이디 `admin` · 비밀번호 `admin1234!` |
-| 공개 링크 웹 | `http://localhost:3001/s/<token>` | 관리자 웹에서 만든 외부 공개 링크로 열립니다 |
+| 공개 링크 웹 | `http://localhost:3001/s/<shareLinkKey>` | 관리자 웹에서 만든 외부 공개 링크로 열립니다 |
 | API 상태 확인 | http://localhost:4000/api/health | `{"data":{"status":"ok"}}` |
 
 ### 둘러보기
@@ -73,7 +73,7 @@ FMS_ENV_FILE=.env.local docker compose --env-file .env.local -p fms-quickstart -
 | `servers/api` | Express API (`/api/admin/**` 관리자, `/api/public/**` 외부 공개 링크) |
 | `servers/database-manager` | TypeORM 마이그레이션 · 시드 CLI |
 | `webs/file-management-service-admin` | 관리자 웹 (Next.js, 3000) |
-| `webs/file-management-service-user` | 외부 공개 링크 웹 (Next.js, 3001, `/s/<token>`) |
+| `webs/file-management-service-user` | 외부 공개 링크 웹 (Next.js, 3001, `/s/<shareLinkKey>`) |
 | `libs/**` | 공용 패키지. vite 로 sub export 빌드 (`dist/<그룹>/<모듈>/index.{mjs,cjs,d.ts}`). `libs/internal/biome-config` 는 biome 공용 설정 |
 | `dockers/` | Dockerfile(서비스별 · e2e) · compose (개발 · 서비스별 단독 · e2e) |
 

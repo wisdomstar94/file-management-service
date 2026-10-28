@@ -25,8 +25,8 @@ export class ShareLinkEntity {
   @JoinColumn({ name: "document_id" })
   document?: DocumentEntity;
 
-  @Column({ type: "varchar", length: 64, unique: true })
-  token: string;
+  @Column({ name: "share_link_key", type: "varchar", length: 64, unique: true })
+  shareLinkKey: string;
 
   @Column({ name: "access_policy_group_id", type: "uuid", nullable: true })
   accessPolicyGroupId: string | null;

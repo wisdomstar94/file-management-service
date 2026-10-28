@@ -9,7 +9,7 @@ import { readCommonErrorMessage } from "@/utils/read-common-error-message";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 
 /** 비밀번호가 맞으면 api 가 잠금 해제 쿠키를 심고, `onUnlocked` 로 자료 정보를 다시 불러온다. */
-export function SharePasswordForm(props: { token: string; onUnlocked: () => void }) {
+export function SharePasswordForm(props: { shareLinkKey: string; onUnlocked: () => void }) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const unlockApi = useCallApiWrapper(PUBLIC_SHARE_LINK_UNLOCK_API, { via: "client", refreshOnSuccess: false });
 
@@ -17,7 +17,7 @@ export function SharePasswordForm(props: { token: string; onUnlocked: () => void
     event.preventDefault();
     setErrorMessage(null);
     const result = await unlockApi.fetchApi({
-      params: { token: props.token },
+      params: { shareLinkKey: props.shareLinkKey },
       body: { password: String(new FormData(event.currentTarget).get("password") ?? "") },
     });
     if (!isCommonError(result)) {

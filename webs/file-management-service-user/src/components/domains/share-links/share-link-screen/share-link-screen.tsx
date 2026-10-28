@@ -48,19 +48,19 @@ function toShareDetailState(
  * 다운로드 실패 사유는 api 가 붙인 `timestamp` 로부터 5초 안일 때만 보여준다.
  */
 export function ShareLinkScreen(props: {
-  token: string;
+  shareLinkKey: string;
   isPasswordRequired: boolean;
   downloadError?: string;
   downloadErrorTimestamp?: string;
 }) {
-  const { token, isPasswordRequired } = props;
+  const { shareLinkKey, isPasswordRequired } = props;
   const { apiPublicUrl } = usePublicEnv();
   const detailApi = useCallApiWrapper(PUBLIC_SHARE_LINK_DETAIL_API, { via: "client", refreshOnSuccess: false });
   const [state, setState] = useState<ShareDetailState>({ kind: "LOADING" });
   const [downloadError, setDownloadError] = useState<string>();
 
   async function loadDetail() {
-    setState(toShareDetailState(await detailApi.fetchApi({ params: { token } }), isPasswordRequired));
+    setState(toShareDetailState(await detailApi.fetchApi({ params: { shareLinkKey } }), isPasswordRequired));
   }
 
   // 서버 렌더링과 시각이 달라 화면이 어긋나지 않도록 브라우저에서 한 번만 판단한다.
@@ -71,13 +71,13 @@ export function ShareLinkScreen(props: {
       setDownloadError(props.downloadError);
     }
     loadDetail();
-  }, [token]);
+  }, [shareLinkKey]);
 
   if (state.kind === "LOADING") {
     return null;
   }
   if (state.kind === "PASSWORD_REQUIRED") {
-    return <SharePasswordForm token={token} onUnlocked={loadDetail} />;
+    return <SharePasswordForm shareLinkKey={shareLinkKey} onUnlocked={loadDetail} />;
   }
   if (state.kind === "BLOCKED") {
     return <ShareBlockedNotice details={state.details} />;
@@ -90,7 +90,11 @@ export function ShareLinkScreen(props: {
       detail={state.detail}
       downloadError={downloadError}
       downloadHref={(versionId) =>
-        buildClientApiUrl(PUBLIC_SHARE_LINK_DOWNLOAD_API, { params: { token, versionId } }, { baseUrl: apiPublicUrl })
+        buildClientApiUrl(
+          PUBLIC_SHARE_LINK_DOWNLOAD_API,
+          { params: { shareLinkKey, versionId } },
+          { baseUrl: apiPublicUrl },
+        )
       }
       onDownload={loadDetail}
     />

@@ -7,8 +7,8 @@ import { readAccessPolicyDeniedDetails } from "@/utils/read-access-policy-denied
 import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
 
 /** 접근 정책만 서버에서 확인한다. 비밀번호 · 자료 정보는 api 의 잠금 해제 쿠키가 필요해 브라우저가 직접 받는다. */
-async function readGateState(token: string) {
-  return fetchServerWrapper(PUBLIC_SHARE_LINK_GATE_API, { params: { token } })
+async function readGateState(shareLinkKey: string) {
+  return fetchServerWrapper(PUBLIC_SHARE_LINK_GATE_API, { params: { shareLinkKey } })
     .then((gate) => ({ kind: "PASSED" as const, isPasswordRequired: gate.data.state === "PASSWORD_REQUIRED" }))
     .catch((error: unknown) => {
       const details = readAccessPolicyDeniedDetails(error);
@@ -19,10 +19,10 @@ async function readGateState(token: string) {
 /** 다운로드에 실패하면 api 가 `downloadError` · `timestamp` 쿼리를 붙여 이 화면으로 돌려보낸다. */
 const readQueryValue = (value: string | string[] | undefined) => (typeof value === "string" ? value : undefined);
 
-export default async function SharePage(props: PageProps<"/s/[token]">) {
-  const { token } = await props.params;
+export default async function SharePage(props: PageProps<"/s/[shareLinkKey]">) {
+  const { shareLinkKey } = await props.params;
   const searchParams = await props.searchParams;
-  const gate = await readGateState(token);
+  const gate = await readGateState(shareLinkKey);
 
   return (
     <SharePageFrame>
@@ -30,7 +30,7 @@ export default async function SharePage(props: PageProps<"/s/[token]">) {
       {gate.kind === "NOT_FOUND" && <ShareNotFoundNotice />}
       {gate.kind === "PASSED" && (
         <ShareLinkScreen
-          token={token}
+          shareLinkKey={shareLinkKey}
           isPasswordRequired={gate.isPasswordRequired}
           downloadError={readQueryValue(searchParams.downloadError)}
           downloadErrorTimestamp={readQueryValue(searchParams.timestamp)}
