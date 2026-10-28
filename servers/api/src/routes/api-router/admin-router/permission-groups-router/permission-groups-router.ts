@@ -8,7 +8,7 @@ import { Router } from "express";
 import { In } from "typeorm";
 import { HttpError } from "#/classes/http-error/index.js";
 import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
-import { appDataSource } from "#/utils/app-data-source/index.js";
+import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
 import { conflictError } from "#/utils/conflict-error/index.js";
 import { generateCommonRes } from "#/utils/generate-common-res/index.js";
 import { notFoundError } from "#/utils/not-found-error/index.js";

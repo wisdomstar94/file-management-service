@@ -4,7 +4,7 @@ import { PERMISSION_CODES } from "@fms/common-utils/permissions/permission-code-
 import { PermissionEntity } from "@fms/database-entities/entities/permission-entity";
 import { Router } from "express";
 import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
-import { appDataSource } from "#/utils/app-data-source/index.js";
+import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
 import { generateCommonRes } from "#/utils/generate-common-res/index.js";
 import { notFoundError } from "#/utils/not-found-error/index.js";
 import { parseRequest } from "#/utils/parse-request/index.js";

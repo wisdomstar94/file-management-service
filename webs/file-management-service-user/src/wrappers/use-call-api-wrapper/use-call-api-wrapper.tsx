@@ -7,7 +7,8 @@ import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { usePublicEnv } from "@/providers/public-env-provider";
-import { createOtherCommonError, DEFAULT_ERROR_MESSAGE } from "../_utils/create-common-error";
+import { DEFAULT_ERROR_MESSAGE } from "../_consts/default-error-message";
+import { createOtherCommonError } from "../_utils/create-common-error";
 import { callApiActionWrapper } from "../call-api-action-wrapper";
 import { fetchClientWrapper } from "../fetch-client-wrapper";
 

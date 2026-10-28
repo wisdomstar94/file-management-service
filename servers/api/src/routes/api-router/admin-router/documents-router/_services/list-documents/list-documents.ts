@@ -1,5 +1,5 @@
 import { DocumentEntity } from "@fms/database-entities/entities/document-entity";
-import { appDataSource } from "#/utils/app-data-source/index.js";
+import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
 import type { ParsedDocumentListQuery } from "#/validators/document-validators/index.js";
 import type { DocumentWithVersions } from "../find-document-or-throw/index.js";
 

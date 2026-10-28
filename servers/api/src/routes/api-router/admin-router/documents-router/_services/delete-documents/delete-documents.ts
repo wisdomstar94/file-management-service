@@ -1,8 +1,8 @@
 import { DocumentEntity } from "@fms/database-entities/entities/document-entity";
 import { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 import { In } from "typeorm";
-import { appDataSource } from "#/utils/app-data-source/index.js";
-import { storageDriver } from "#/utils/storage-driver/index.js";
+import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
+import { storageDriver } from "#/singleton-classes/storage-driver/index.js";
 
 /** 자료를 지우면 버전 · 공개 링크는 DB 에서 함께 지워지고(cascade), 파일은 커밋 후 지운다. */
 export async function deleteDocuments(ids: string[]): Promise<number> {

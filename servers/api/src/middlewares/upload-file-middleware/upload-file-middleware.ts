@@ -4,8 +4,8 @@ import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import type { NextFunction, Request, Response } from "express";
 import multer from "multer";
 import { HttpError } from "#/classes/http-error/index.js";
-import { apiEnv } from "#/utils/api-env/index.js";
-import { STORAGE_ROOT_DIR } from "#/utils/storage-driver/index.js";
+import { apiEnv } from "#/consts/api-env/index.js";
+import { STORAGE_ROOT_DIR } from "#/consts/storage-root-dir/index.js";
 
 const TEMP_DIR = path.join(STORAGE_ROOT_DIR, ".tmp");
 mkdirSync(TEMP_DIR, { recursive: true });

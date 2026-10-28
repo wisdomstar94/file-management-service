@@ -9,7 +9,7 @@ import { PermissionGroupEntity } from "@fms/database-entities/entities/permissio
 import { hashPassword } from "@fms/password-handler/passwords/hash-password";
 import { Router } from "express";
 import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
-import { appDataSource } from "#/utils/app-data-source/index.js";
+import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
 import { conflictError } from "#/utils/conflict-error/index.js";
 import { generateCommonRes } from "#/utils/generate-common-res/index.js";
 import { notFoundError } from "#/utils/not-found-error/index.js";

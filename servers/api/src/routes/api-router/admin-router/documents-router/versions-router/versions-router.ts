@@ -4,14 +4,14 @@ import { ShareLinkEntity } from "@fms/database-entities/entities/share-link-enti
 import { Router } from "express";
 import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
 import { uploadFileMiddleware } from "#/middlewares/upload-file-middleware/index.js";
-import { appDataSource } from "#/utils/app-data-source/index.js";
+import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
+import { storageDriver } from "#/singleton-classes/storage-driver/index.js";
 import { conflictError } from "#/utils/conflict-error/index.js";
 import { generateCommonRes } from "#/utils/generate-common-res/index.js";
 import { notFoundError } from "#/utils/not-found-error/index.js";
 import { parseRequest } from "#/utils/parse-request/index.js";
 import { readUuidParam } from "#/utils/read-uuid-param/index.js";
 import { sendVersionFile } from "#/utils/send-version-file/index.js";
-import { storageDriver } from "#/utils/storage-driver/index.js";
 import {
   createDocumentVersionRequestSchema,
   updateDocumentVersionRequestSchema,

@@ -15,10 +15,10 @@ import {
 } from "@fms/jwt-handler/tokens/admin-short-time-token";
 import { Router } from "express";
 import { HttpError } from "#/classes/http-error/index.js";
+import { apiEnv } from "#/consts/api-env/index.js";
 import { accessPolicyMiddleware } from "#/middlewares/access-policy-middleware/index.js";
 import { adminAuthMiddleware } from "#/middlewares/admin-auth-middleware/index.js";
-import { apiEnv } from "#/utils/api-env/index.js";
-import { appDataSource } from "#/utils/app-data-source/index.js";
+import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
 import { generateCommonRes } from "#/utils/generate-common-res/index.js";
 import { parseRequest } from "#/utils/parse-request/index.js";
 import { readAdmin } from "#/utils/read-admin/index.js";

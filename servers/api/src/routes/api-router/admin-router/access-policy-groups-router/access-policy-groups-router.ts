@@ -3,7 +3,7 @@ import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
 import { Router } from "express";
 import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
-import { appDataSource } from "#/utils/app-data-source/index.js";
+import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
 import { conflictError } from "#/utils/conflict-error/index.js";
 import { generateCommonRes } from "#/utils/generate-common-res/index.js";
 import { notFoundError } from "#/utils/not-found-error/index.js";

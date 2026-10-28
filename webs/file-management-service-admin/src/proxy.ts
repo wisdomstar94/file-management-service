@@ -1,14 +1,13 @@
 import { ADMIN_ACCESS_CHECK_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import {
+  ADMIN_ACCESS_TOKEN_COOKIE,
+  ADMIN_REFRESH_TOKEN_COOKIE,
+} from "@fms/common-utils/cookies/admin-auth-cookie-names";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { type NextRequest, NextResponse } from "next/server";
-import { readRouteGroup } from "./consts/route-group-paths";
-import {
-  ACCESS_TOKEN_COOKIE,
-  clearAdminTokenCookies,
-  REFRESH_TOKEN_COOKIE,
-  writeAdminTokenCookies,
-} from "./utils/admin-auth-cookies";
+import { clearAdminTokenCookies, writeAdminTokenCookies } from "./utils/admin-auth-cookies";
+import { readRouteGroup } from "./utils/read-route-group";
 import { resolveAdminAccessToken } from "./utils/resolve-admin-access-token";
 import { fetchServerWrapper } from "./wrappers/fetch-server-wrapper";
 
@@ -28,7 +27,7 @@ async function checkAccessPolicy(request: NextRequest, accessToken: string) {
 
 /** 새로 받은 토큰을 이번 요청의 서버 컴포넌트도 읽을 수 있게 요청 쿠키에도 반영한다. */
 function nextWithAccessToken(request: NextRequest, accessToken: string) {
-  request.cookies.set(ACCESS_TOKEN_COOKIE, accessToken);
+  request.cookies.set(ADMIN_ACCESS_TOKEN_COOKIE, accessToken);
   return NextResponse.next({ request: { headers: request.headers } });
 }
 
@@ -40,8 +39,8 @@ export async function proxy(request: NextRequest) {
 
   const { accessToken, refreshed } = await resolveAdminAccessToken({
     incoming: request.headers,
-    accessToken: request.cookies.get(ACCESS_TOKEN_COOKIE)?.value,
-    refreshToken: request.cookies.get(REFRESH_TOKEN_COOKIE)?.value,
+    accessToken: request.cookies.get(ADMIN_ACCESS_TOKEN_COOKIE)?.value,
+    refreshToken: request.cookies.get(ADMIN_REFRESH_TOKEN_COOKIE)?.value,
   });
   const withCookies = (response: NextResponse) => {
     if (refreshed) {

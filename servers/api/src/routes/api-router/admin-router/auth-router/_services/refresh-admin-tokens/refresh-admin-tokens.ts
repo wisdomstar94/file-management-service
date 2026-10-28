@@ -4,7 +4,7 @@ import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { AdminRefreshTokenEntity } from "@fms/database-entities/entities/admin-refresh-token-entity";
 import type { Request } from "express";
 import { HttpError } from "#/classes/http-error/index.js";
-import { appDataSource } from "#/utils/app-data-source/index.js";
+import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
 import { assertAccessPolicy } from "#/utils/assert-access-policy/index.js";
 import { hashRefreshToken, issueAdminTokens } from "../issue-admin-tokens/index.js";
 

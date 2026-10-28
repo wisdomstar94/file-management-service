@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { webEnv } from "@/consts/web-env";
 import { PublicEnvProvider } from "@/providers/public-env-provider";
-import { webEnv } from "@/utils/web-env";
 import "./globals.css";
 
 export const metadata: Metadata = {

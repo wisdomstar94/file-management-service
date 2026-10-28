@@ -9,7 +9,7 @@ import type { DocumentVersionEntity } from "@fms/database-entities/entities/docu
 import { verifyPassword } from "@fms/password-handler/passwords/verify-password";
 import { type Request, type Response, Router } from "express";
 import { HttpError } from "#/classes/http-error/index.js";
-import { apiEnv } from "#/utils/api-env/index.js";
+import { apiEnv } from "#/consts/api-env/index.js";
 import { generateCommonRes } from "#/utils/generate-common-res/index.js";
 import { notFoundError } from "#/utils/not-found-error/index.js";
 import { parseRequest } from "#/utils/parse-request/index.js";

@@ -9,9 +9,10 @@ import { TextInput } from "@fms/web-ui/components/text-input";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { FormField } from "@/components/commons/form-field";
+import { DEFAULT_ERROR_MESSAGE } from "@/consts/default-error-message";
 import { usePublicEnv } from "@/providers/public-env-provider";
 import { readCommonErrorMessage } from "@/utils/read-common-error-message";
-import { createOtherCommonError, DEFAULT_ERROR_MESSAGE } from "@/wrappers/_utils/create-common-error";
+import { createOtherCommonError } from "@/wrappers/_utils/create-common-error";
 import { fetchClientWrapper } from "@/wrappers/fetch-client-wrapper";
 
 export function LoginForm(props: { nextPath: string }) {

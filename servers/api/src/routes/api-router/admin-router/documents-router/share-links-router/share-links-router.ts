@@ -6,7 +6,7 @@ import { ShareLinkEntity } from "@fms/database-entities/entities/share-link-enti
 import { type Request, Router } from "express";
 import { requireAnyPermission } from "#/middlewares/require-any-permission-middleware/index.js";
 import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
-import { appDataSource } from "#/utils/app-data-source/index.js";
+import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
 import { generateCommonRes } from "#/utils/generate-common-res/index.js";
 import { notFoundError } from "#/utils/not-found-error/index.js";
 import { parseRequest } from "#/utils/parse-request/index.js";

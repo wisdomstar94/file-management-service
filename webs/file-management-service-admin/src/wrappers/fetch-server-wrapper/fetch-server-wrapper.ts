@@ -1,12 +1,12 @@
 import type { ApiSchema } from "@fms/api-schemas/types/api-schema";
 import type { ApiRequest, ResBody } from "@fms/api-schemas/types/api-schema-utils";
+import { ADMIN_ACCESS_TOKEN_COOKIE } from "@fms/common-utils/cookies/admin-auth-cookie-names";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import type { CommonError } from "@fms/error-provider/errors/common-error";
 import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { ACCESS_TOKEN_COOKIE } from "@/utils/admin-auth-cookies";
+import { webEnv } from "@/consts/web-env";
 import { buildApiForwardHeaders } from "@/utils/build-api-forward-headers";
-import { webEnv } from "@/utils/web-env";
 import { buildApiUrl } from "../_utils/build-api-url";
 import { createApiCommonError } from "../_utils/create-common-error";
 import { toRequestBody } from "../_utils/to-request-body";
@@ -37,7 +37,7 @@ export async function fetchServerWrapper<S extends ApiSchema>(
 
   const accessToken =
     options.accessToken === undefined
-      ? (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value
+      ? (await cookies()).get(ADMIN_ACCESS_TOKEN_COOKIE)?.value
       : (options.accessToken ?? undefined);
   // 요청 IP · 토큰 헤더를 호출하는 쪽이 덮어쓰지 못하게 schema 헤더를 먼저 넣고 전달 헤더로 덮는다.
   const forwardHeaders = buildApiForwardHeaders(options.incoming ?? (await headers()), accessToken);

@@ -4,10 +4,7 @@ import {
   ADMIN_ACCESS_TOKEN_COOKIE,
   ADMIN_REFRESH_TOKEN_COOKIE,
 } from "@fms/common-utils/cookies/admin-auth-cookie-names";
-import { webEnv } from "../web-env";
-
-export const ACCESS_TOKEN_COOKIE = ADMIN_ACCESS_TOKEN_COOKIE;
-export const REFRESH_TOKEN_COOKIE = ADMIN_REFRESH_TOKEN_COOKIE;
+import { webEnv } from "@/consts/web-env";
 
 type CookieWriter = {
   set: (name: string, value: string, options: Record<string, unknown>) => unknown;
@@ -27,17 +24,17 @@ export function writeAdminTokenCookies(
   cookies: CookieWriter,
   tokens: ResBody<typeof ADMIN_REFRESH_TOKEN_API>["data"],
 ): void {
-  cookies.set(ACCESS_TOKEN_COOKIE, tokens.accessToken, {
+  cookies.set(ADMIN_ACCESS_TOKEN_COOKIE, tokens.accessToken, {
     ...baseOptions(),
     expires: new Date(tokens.accessTokenExpiresAt),
   });
-  cookies.set(REFRESH_TOKEN_COOKIE, tokens.refreshToken, {
+  cookies.set(ADMIN_REFRESH_TOKEN_COOKIE, tokens.refreshToken, {
     ...baseOptions(),
     expires: new Date(tokens.refreshTokenExpiresAt),
   });
 }
 
 export function clearAdminTokenCookies(cookies: CookieWriter): void {
-  cookies.delete({ name: ACCESS_TOKEN_COOKIE, domain: webEnv.cookieDomain, path: "/" });
-  cookies.delete({ name: REFRESH_TOKEN_COOKIE, domain: webEnv.cookieDomain, path: "/" });
+  cookies.delete({ name: ADMIN_ACCESS_TOKEN_COOKIE, domain: webEnv.cookieDomain, path: "/" });
+  cookies.delete({ name: ADMIN_REFRESH_TOKEN_COOKIE, domain: webEnv.cookieDomain, path: "/" });
 }

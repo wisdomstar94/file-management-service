@@ -5,7 +5,7 @@ import { AdminAccountEntity } from "@fms/database-entities/entities/admin-accoun
 import { verifyPassword } from "@fms/password-handler/passwords/verify-password";
 import type { Request } from "express";
 import { HttpError } from "#/classes/http-error/index.js";
-import { appDataSource } from "#/utils/app-data-source/index.js";
+import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
 import { assertAccessPolicy } from "#/utils/assert-access-policy/index.js";
 import { issueAdminTokens } from "../issue-admin-tokens/index.js";
 

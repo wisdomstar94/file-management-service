@@ -1,7 +1,7 @@
 import { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 import { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
 import type { Request } from "express";
-import { appDataSource } from "#/utils/app-data-source/index.js";
+import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
 import { assertAccessPolicy } from "#/utils/assert-access-policy/index.js";
 import { notFoundError } from "#/utils/not-found-error/index.js";
 

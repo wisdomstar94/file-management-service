@@ -2,7 +2,7 @@ import type { ApiSchema } from "@fms/api-schemas/types/api-schema";
 import type { ApiRequest, ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { buildApiForwardHeaders } from "@fms/web-utils/requests/build-api-forward-headers";
 import { headers } from "next/headers";
-import { webEnv } from "@/utils/web-env";
+import { webEnv } from "@/consts/web-env";
 import { buildApiUrl } from "../_utils/build-api-url";
 import { createApiCommonError } from "../_utils/create-common-error";
 import { toRequestBody } from "../_utils/to-request-body";

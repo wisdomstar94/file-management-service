@@ -1,8 +1,6 @@
 import type { ApiFailBody } from "@fms/common-utils/responses/api-response-body";
 import { COMMON_ERROR_IDENTIFIER, type CommonError } from "@fms/error-provider/errors/common-error";
 
-export const DEFAULT_ERROR_MESSAGE = "에러가 발생하였습니다. 잠시 후 다시 시도해주세요.";
-
 /** api 에러 응답이 아닌 에러. `errorCode` 가 없으면 uuid 를 쓴다. */
 export function createOtherCommonError(props: { errorCode?: string; message: string }): CommonError {
   return {

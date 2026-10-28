@@ -6,10 +6,11 @@ import type { CommonError } from "@fms/error-provider/errors/common-error";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { DEFAULT_ERROR_MESSAGE } from "@/consts/default-error-message";
 import { usePublicEnv } from "@/providers/public-env-provider";
 import { useToast } from "@/providers/toast-provider";
 import { readCommonErrorMessage } from "@/utils/read-common-error-message";
-import { createOtherCommonError, DEFAULT_ERROR_MESSAGE } from "../_utils/create-common-error";
+import { createOtherCommonError } from "../_utils/create-common-error";
 import { callApiActionWrapper } from "../call-api-action-wrapper";
 import { fetchClientWrapper } from "../fetch-client-wrapper";
 

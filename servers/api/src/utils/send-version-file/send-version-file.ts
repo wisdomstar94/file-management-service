@@ -1,6 +1,6 @@
 import type { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 import type { Response } from "express";
-import { storageDriver } from "#/utils/storage-driver/index.js";
+import { storageDriver } from "#/singleton-classes/storage-driver/index.js";
 
 function toContentDisposition(fileName: string): string {
   const asciiFallback = fileName.replace(/[^\x20-\x7e]/g, "_").replaceAll('"', "_");
