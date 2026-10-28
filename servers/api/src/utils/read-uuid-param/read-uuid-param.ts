@@ -1,7 +1,7 @@
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import type { Request } from "express";
 import { z } from "zod";
-import { HttpError } from "../http-error/index.js";
+import { HttpError } from "#/classes/http-error/index.js";
 
 /** 경로의 식별키가 uuid 가 아니면 DB 를 조회하지 않고 404 로 응답한다. */
 export function readUuidParam(req: Request, name: string): string {

@@ -1,6 +1,6 @@
 import cors from "cors";
 import type { Express } from "express";
-import { apiEnv } from "../../utils/api-env/index.js";
+import { apiEnv } from "#/utils/api-env/index.js";
 
 export function corsMiddleware(props: { app: Express }) {
   const { app } = props;

@@ -1,7 +1,7 @@
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { ShareLinkDownloadLogEntity } from "@fms/database-entities/entities/share-link-download-log-entity";
-import { appDataSource } from "../../../../../../utils/app-data-source/index.js";
-import { HttpError } from "../../../../../../utils/http-error/index.js";
+import { HttpError } from "#/classes/http-error/index.js";
+import { appDataSource } from "#/utils/app-data-source/index.js";
 
 /**
  * 기간 · 허용 수를 만족할 때만 다운로드 수를 1 올리고 이력을 남긴다.

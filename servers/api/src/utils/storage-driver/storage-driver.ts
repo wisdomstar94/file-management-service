@@ -1,6 +1,6 @@
 import path from "node:path";
 import type { Readable } from "node:stream";
-import { apiEnv } from "../api-env/index.js";
+import { apiEnv } from "#/utils/api-env/index.js";
 import { createLocalStorageDriver } from "./_utils/create-local-storage-driver/index.js";
 
 /** 파일 저장소 추상화. S3 등으로 바꿀 때는 이 인터페이스의 구현만 추가한다. */

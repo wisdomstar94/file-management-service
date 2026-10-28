@@ -1,8 +1,8 @@
 import type { SHARE_LINK_LIST_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import type { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
-import { readShareLinkAvailability } from "../../../../../../../utils/read-share-link-availability/index.js";
-import { resolveDefaultVersion } from "../../../../../../../utils/resolve-default-version/index.js";
+import { readShareLinkAvailability } from "#/utils/read-share-link-availability/index.js";
+import { resolveDefaultVersion } from "#/utils/resolve-default-version/index.js";
 import type { DocumentWithVersions } from "../../../_services/find-document-or-throw/index.js";
 
 export function toShareLinkResponse(

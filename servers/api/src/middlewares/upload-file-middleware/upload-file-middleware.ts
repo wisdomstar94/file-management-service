@@ -3,9 +3,9 @@ import path from "node:path";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import type { NextFunction, Request, Response } from "express";
 import multer from "multer";
-import { apiEnv } from "../../utils/api-env/index.js";
-import { HttpError } from "../../utils/http-error/index.js";
-import { STORAGE_ROOT_DIR } from "../../utils/storage-driver/index.js";
+import { HttpError } from "#/classes/http-error/index.js";
+import { apiEnv } from "#/utils/api-env/index.js";
+import { STORAGE_ROOT_DIR } from "#/utils/storage-driver/index.js";
 
 const TEMP_DIR = path.join(STORAGE_ROOT_DIR, ".tmp");
 mkdirSync(TEMP_DIR, { recursive: true });

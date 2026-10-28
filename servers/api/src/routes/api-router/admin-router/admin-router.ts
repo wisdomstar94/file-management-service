@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { accessPolicyMiddleware } from "../../../middlewares/access-policy-middleware/index.js";
-import { adminAuthMiddleware } from "../../../middlewares/admin-auth-middleware/index.js";
+import { accessPolicyMiddleware } from "#/middlewares/access-policy-middleware/index.js";
+import { adminAuthMiddleware } from "#/middlewares/admin-auth-middleware/index.js";
 import { accessPolicyGroupsRouter } from "./access-policy-groups-router/index.js";
 import { accountsRouter } from "./accounts-router/index.js";
 import { authRouter } from "./auth-router/index.js";

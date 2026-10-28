@@ -8,19 +8,19 @@ import { AdminAccountEntity } from "@fms/database-entities/entities/admin-accoun
 import { PermissionGroupEntity } from "@fms/database-entities/entities/permission-group-entity";
 import { hashPassword } from "@fms/password-handler/passwords/hash-password";
 import { Router } from "express";
-import { requirePermission } from "../../../../middlewares/require-permission-middleware/index.js";
-import { appDataSource } from "../../../../utils/app-data-source/index.js";
-import { conflictError } from "../../../../utils/conflict-error/index.js";
-import { generateCommonRes } from "../../../../utils/generate-common-res/index.js";
-import { notFoundError } from "../../../../utils/not-found-error/index.js";
-import { parseRequest } from "../../../../utils/parse-request/index.js";
-import { readAdmin } from "../../../../utils/read-admin/index.js";
-import { readPagination } from "../../../../utils/read-pagination/index.js";
-import { readUuidParam } from "../../../../utils/read-uuid-param/index.js";
+import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
+import { appDataSource } from "#/utils/app-data-source/index.js";
+import { conflictError } from "#/utils/conflict-error/index.js";
+import { generateCommonRes } from "#/utils/generate-common-res/index.js";
+import { notFoundError } from "#/utils/not-found-error/index.js";
+import { parseRequest } from "#/utils/parse-request/index.js";
+import { readAdmin } from "#/utils/read-admin/index.js";
+import { readPagination } from "#/utils/read-pagination/index.js";
+import { readUuidParam } from "#/utils/read-uuid-param/index.js";
 import {
   createAdminAccountRequestSchema,
   updateAdminAccountRequestSchema,
-} from "../../../../validators/admin-account-validators/index.js";
+} from "#/validators/admin-account-validators/index.js";
 import { toAdminAccountResponse } from "./_utils/to-admin-account-response/index.js";
 import { assertAssignableGroups } from "./_validators/assert-assignable-groups/index.js";
 

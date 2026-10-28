@@ -1,8 +1,8 @@
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import type { PermissionCode } from "@fms/common-utils/permissions/permission-code-registry";
 import type { NextFunction, Request, Response } from "express";
-import { HttpError } from "../../utils/http-error/index.js";
-import { readAdmin } from "../../utils/read-admin/index.js";
+import { HttpError } from "#/classes/http-error/index.js";
+import { readAdmin } from "#/utils/read-admin/index.js";
 
 /** 권한 그룹에 넘긴 코드 중 하나도 없으면 403. */
 export function requireAnyPermission(codes: PermissionCode[]) {

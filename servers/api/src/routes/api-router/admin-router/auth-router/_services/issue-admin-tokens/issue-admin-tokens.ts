@@ -8,7 +8,7 @@ import {
   signAdminAccessToken,
 } from "@fms/jwt-handler/tokens/admin-access-token";
 import type { EntityManager } from "typeorm";
-import { apiEnv } from "../../../../../../utils/api-env/index.js";
+import { apiEnv } from "#/utils/api-env/index.js";
 
 export function hashRefreshToken(refreshToken: string): string {
   return createHash("sha256").update(refreshToken).digest("hex");

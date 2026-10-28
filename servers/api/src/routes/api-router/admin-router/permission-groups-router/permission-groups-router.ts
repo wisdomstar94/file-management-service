@@ -6,18 +6,18 @@ import { PermissionEntity } from "@fms/database-entities/entities/permission-ent
 import { PermissionGroupEntity } from "@fms/database-entities/entities/permission-group-entity";
 import { Router } from "express";
 import { In } from "typeorm";
-import { requirePermission } from "../../../../middlewares/require-permission-middleware/index.js";
-import { appDataSource } from "../../../../utils/app-data-source/index.js";
-import { conflictError } from "../../../../utils/conflict-error/index.js";
-import { generateCommonRes } from "../../../../utils/generate-common-res/index.js";
-import { HttpError } from "../../../../utils/http-error/index.js";
-import { notFoundError } from "../../../../utils/not-found-error/index.js";
-import { parseRequest } from "../../../../utils/parse-request/index.js";
-import { readUuidParam } from "../../../../utils/read-uuid-param/index.js";
+import { HttpError } from "#/classes/http-error/index.js";
+import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
+import { appDataSource } from "#/utils/app-data-source/index.js";
+import { conflictError } from "#/utils/conflict-error/index.js";
+import { generateCommonRes } from "#/utils/generate-common-res/index.js";
+import { notFoundError } from "#/utils/not-found-error/index.js";
+import { parseRequest } from "#/utils/parse-request/index.js";
+import { readUuidParam } from "#/utils/read-uuid-param/index.js";
 import {
   createPermissionGroupRequestSchema,
   updatePermissionGroupRequestSchema,
-} from "../../../../validators/permission-group-validators/index.js";
+} from "#/validators/permission-group-validators/index.js";
 import { toPermissionResponse } from "../_utils/to-permission-response/index.js";
 import {
   toPermissionGroupDetailResponse,

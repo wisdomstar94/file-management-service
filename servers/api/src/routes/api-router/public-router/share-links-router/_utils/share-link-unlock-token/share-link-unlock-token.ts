@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import type { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
 import { signJwt } from "@fms/jwt-handler/tokens/sign-jwt";
 import { verifyJwt } from "@fms/jwt-handler/tokens/verify-jwt";
-import { apiEnv } from "../../../../../../utils/api-env/index.js";
+import { apiEnv } from "#/utils/api-env/index.js";
 
 const AUDIENCE = "fms-share-link-unlock";
 

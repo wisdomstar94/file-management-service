@@ -2,7 +2,7 @@ import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
 import { PermissionGroupEntity } from "@fms/database-entities/entities/permission-group-entity";
 import type { EntityManager } from "typeorm";
-import { HttpError } from "../../../../../../utils/http-error/index.js";
+import { HttpError } from "#/classes/http-error/index.js";
 
 /** 계정에 지정하려는 권한 그룹 · 접근 정책 그룹이 실제로 있는지 확인한다. */
 export async function assertAssignableGroups(

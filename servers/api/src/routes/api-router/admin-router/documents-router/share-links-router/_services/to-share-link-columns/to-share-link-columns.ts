@@ -5,7 +5,7 @@ import { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-
 import type { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
 import { hashPassword } from "@fms/password-handler/passwords/hash-password";
 import type { EntityManager } from "typeorm";
-import { HttpError } from "../../../../../../../utils/http-error/index.js";
+import { HttpError } from "#/classes/http-error/index.js";
 import type { DocumentWithVersions } from "../../../_services/find-document-or-throw/index.js";
 
 /** 요청 값을 share_link 컬럼 값으로 바꾼다. 비밀번호는 해시하고, 참조하는 버전 · 접근 정책 그룹이 유효한지 확인한다. */

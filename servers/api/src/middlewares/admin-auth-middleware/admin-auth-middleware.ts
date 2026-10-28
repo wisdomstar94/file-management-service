@@ -6,9 +6,9 @@ import {
   verifyAdminShortTimeToken,
 } from "@fms/jwt-handler/tokens/admin-short-time-token";
 import type { NextFunction, Request, Response } from "express";
-import { apiEnv } from "../../utils/api-env/index.js";
-import { appDataSource } from "../../utils/app-data-source/index.js";
-import { HttpError } from "../../utils/http-error/index.js";
+import { HttpError } from "#/classes/http-error/index.js";
+import { apiEnv } from "#/utils/api-env/index.js";
+import { appDataSource } from "#/utils/app-data-source/index.js";
 
 function readBearerToken(req: Request): string | null {
   const [scheme, token] = (req.headers.authorization ?? "").split(" ");

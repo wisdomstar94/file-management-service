@@ -1,6 +1,6 @@
 import type { Request } from "express";
-import { paginationQuerySchema } from "../../validators/pagination-query-validators/index.js";
-import { parseRequest } from "../parse-request/index.js";
+import { parseRequest } from "#/utils/parse-request/index.js";
+import { paginationQuerySchema } from "#/validators/pagination-query-validators/index.js";
 
 export function readPagination(req: Request) {
   const { page, size } = parseRequest(paginationQuerySchema, req.query);

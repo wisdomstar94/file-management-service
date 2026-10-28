@@ -2,8 +2,8 @@ import { type AccessPolicyDeniedDetails, API_ERROR_CODE } from "@fms/common-util
 import type { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
 import { evaluateAccessPolicy } from "@fms/server-utils/access-policies/evaluate-access-policy";
 import type { Request } from "express";
-import { HttpError } from "../http-error/index.js";
-import { readAccessPolicyRequest } from "../read-access-policy-request/index.js";
+import { HttpError } from "#/classes/http-error/index.js";
+import { readAccessPolicyRequest } from "#/utils/read-access-policy-request/index.js";
 
 /** 접근 정책을 통과하지 못하면 차단 화면에 쓸 정보를 담아 403 을 던진다. */
 export function assertAccessPolicy(

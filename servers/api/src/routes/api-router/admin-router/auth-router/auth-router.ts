@@ -14,20 +14,20 @@ import {
   signAdminShortTimeToken,
 } from "@fms/jwt-handler/tokens/admin-short-time-token";
 import { Router } from "express";
-import { accessPolicyMiddleware } from "../../../../middlewares/access-policy-middleware/index.js";
-import { adminAuthMiddleware } from "../../../../middlewares/admin-auth-middleware/index.js";
-import { apiEnv } from "../../../../utils/api-env/index.js";
-import { appDataSource } from "../../../../utils/app-data-source/index.js";
-import { generateCommonRes } from "../../../../utils/generate-common-res/index.js";
-import { HttpError } from "../../../../utils/http-error/index.js";
-import { parseRequest } from "../../../../utils/parse-request/index.js";
-import { readAdmin } from "../../../../utils/read-admin/index.js";
-import { readCookie } from "../../../../utils/read-cookie/index.js";
+import { HttpError } from "#/classes/http-error/index.js";
+import { accessPolicyMiddleware } from "#/middlewares/access-policy-middleware/index.js";
+import { adminAuthMiddleware } from "#/middlewares/admin-auth-middleware/index.js";
+import { apiEnv } from "#/utils/api-env/index.js";
+import { appDataSource } from "#/utils/app-data-source/index.js";
+import { generateCommonRes } from "#/utils/generate-common-res/index.js";
+import { parseRequest } from "#/utils/parse-request/index.js";
+import { readAdmin } from "#/utils/read-admin/index.js";
+import { readCookie } from "#/utils/read-cookie/index.js";
 import {
   adminLoginRequestSchema,
   adminRefreshTokenRequestSchema,
   adminShortTimeTokenRequestSchema,
-} from "../../../../validators/admin-auth-validators/index.js";
+} from "#/validators/admin-auth-validators/index.js";
 import { hashRefreshToken } from "./_services/issue-admin-tokens/index.js";
 import { loginAdmin } from "./_services/login-admin/index.js";
 import { refreshAdminTokens } from "./_services/refresh-admin-tokens/index.js";

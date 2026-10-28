@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { generateCommonRes } from "../../utils/generate-common-res/index.js";
+import { generateCommonRes } from "#/utils/generate-common-res/index.js";
 import { adminRouter } from "./admin-router/index.js";
 import { publicRouter } from "./public-router/index.js";
 

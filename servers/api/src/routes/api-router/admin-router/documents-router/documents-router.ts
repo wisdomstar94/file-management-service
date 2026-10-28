@@ -3,19 +3,19 @@ import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { DocumentEntity } from "@fms/database-entities/entities/document-entity";
 import { Router } from "express";
-import { requirePermission } from "../../../../middlewares/require-permission-middleware/index.js";
-import { uploadFileMiddleware } from "../../../../middlewares/upload-file-middleware/index.js";
-import { appDataSource } from "../../../../utils/app-data-source/index.js";
-import { generateCommonRes } from "../../../../utils/generate-common-res/index.js";
-import { HttpError } from "../../../../utils/http-error/index.js";
-import { parseRequest } from "../../../../utils/parse-request/index.js";
-import { readUuidParam } from "../../../../utils/read-uuid-param/index.js";
+import { HttpError } from "#/classes/http-error/index.js";
+import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
+import { uploadFileMiddleware } from "#/middlewares/upload-file-middleware/index.js";
+import { appDataSource } from "#/utils/app-data-source/index.js";
+import { generateCommonRes } from "#/utils/generate-common-res/index.js";
+import { parseRequest } from "#/utils/parse-request/index.js";
+import { readUuidParam } from "#/utils/read-uuid-param/index.js";
 import {
   bulkDeleteDocumentsRequestSchema,
   createDocumentRequestSchema,
   documentListQuerySchema,
   updateDocumentRequestSchema,
-} from "../../../../validators/document-validators/index.js";
+} from "#/validators/document-validators/index.js";
 import { deleteDocuments } from "./_services/delete-documents/index.js";
 import { findDocumentOrThrow } from "./_services/find-document-or-throw/index.js";
 import { listDocuments } from "./_services/list-documents/index.js";

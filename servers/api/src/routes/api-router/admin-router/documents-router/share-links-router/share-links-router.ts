@@ -4,17 +4,17 @@ import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
 import { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
 import { type Request, Router } from "express";
-import { requireAnyPermission } from "../../../../../middlewares/require-any-permission-middleware/index.js";
-import { requirePermission } from "../../../../../middlewares/require-permission-middleware/index.js";
-import { appDataSource } from "../../../../../utils/app-data-source/index.js";
-import { generateCommonRes } from "../../../../../utils/generate-common-res/index.js";
-import { notFoundError } from "../../../../../utils/not-found-error/index.js";
-import { parseRequest } from "../../../../../utils/parse-request/index.js";
-import { readUuidParam } from "../../../../../utils/read-uuid-param/index.js";
+import { requireAnyPermission } from "#/middlewares/require-any-permission-middleware/index.js";
+import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
+import { appDataSource } from "#/utils/app-data-source/index.js";
+import { generateCommonRes } from "#/utils/generate-common-res/index.js";
+import { notFoundError } from "#/utils/not-found-error/index.js";
+import { parseRequest } from "#/utils/parse-request/index.js";
+import { readUuidParam } from "#/utils/read-uuid-param/index.js";
 import {
   createShareLinkRequestSchema,
   updateShareLinkRequestSchema,
-} from "../../../../../validators/share-link-validators/index.js";
+} from "#/validators/share-link-validators/index.js";
 import { findDocumentOrThrow } from "../_services/find-document-or-throw/index.js";
 import { toShareLinkColumns } from "./_services/to-share-link-columns/index.js";
 import { toShareLinkResponse } from "./_utils/to-share-link-response/index.js";

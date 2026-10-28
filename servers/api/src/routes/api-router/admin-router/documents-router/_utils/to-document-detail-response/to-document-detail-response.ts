@@ -1,6 +1,6 @@
 import type { DOCUMENT_DETAIL_API } from "@fms/api-schemas/schemas/document-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import { findLatestVersion, resolveDefaultVersion } from "../../../../../../utils/resolve-default-version/index.js";
+import { findLatestVersion, resolveDefaultVersion } from "#/utils/resolve-default-version/index.js";
 import type { DocumentWithVersions } from "../../_services/find-document-or-throw/index.js";
 import { toDocumentVersionResponse } from "../to-document-version-response/index.js";
 

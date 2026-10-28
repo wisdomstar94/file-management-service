@@ -6,7 +6,7 @@ import type {
 import type { UPDATE_DOCUMENT_VERSION_API } from "@fms/api-schemas/schemas/document-version-api-schemas";
 import type { ReqBody, ReqQuery } from "@fms/api-schemas/types/api-schema-utils";
 import { z } from "zod";
-import { paginationQuerySchema } from "../pagination-query-validators/index.js";
+import { paginationQuerySchema } from "#/validators/pagination-query-validators/index.js";
 
 const versionNameSchema = z.string().trim().min(1, "버전명을 입력하세요.").max(100);
 

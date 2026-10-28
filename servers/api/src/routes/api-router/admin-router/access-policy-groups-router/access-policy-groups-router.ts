@@ -2,17 +2,17 @@ import type { ACCESS_POLICY_GROUP_DETAIL_API } from "@fms/api-schemas/schemas/ac
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
 import { Router } from "express";
-import { requirePermission } from "../../../../middlewares/require-permission-middleware/index.js";
-import { appDataSource } from "../../../../utils/app-data-source/index.js";
-import { conflictError } from "../../../../utils/conflict-error/index.js";
-import { generateCommonRes } from "../../../../utils/generate-common-res/index.js";
-import { notFoundError } from "../../../../utils/not-found-error/index.js";
-import { parseRequest } from "../../../../utils/parse-request/index.js";
-import { readUuidParam } from "../../../../utils/read-uuid-param/index.js";
+import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
+import { appDataSource } from "#/utils/app-data-source/index.js";
+import { conflictError } from "#/utils/conflict-error/index.js";
+import { generateCommonRes } from "#/utils/generate-common-res/index.js";
+import { notFoundError } from "#/utils/not-found-error/index.js";
+import { parseRequest } from "#/utils/parse-request/index.js";
+import { readUuidParam } from "#/utils/read-uuid-param/index.js";
 import {
   createAccessPolicyGroupRequestSchema,
   updateAccessPolicyGroupRequestSchema,
-} from "../../../../validators/access-policy-group-validators/index.js";
+} from "#/validators/access-policy-group-validators/index.js";
 import { countAccessPolicyGroupUsage } from "./_services/count-access-policy-group-usage/index.js";
 import { toAccessPolicyGroupSummaryResponse } from "./_utils/to-access-policy-group-response/index.js";
 

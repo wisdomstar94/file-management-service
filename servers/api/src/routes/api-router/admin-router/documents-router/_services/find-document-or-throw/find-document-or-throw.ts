@@ -1,7 +1,7 @@
 import { DocumentEntity } from "@fms/database-entities/entities/document-entity";
 import type { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 import type { EntityManager } from "typeorm";
-import { notFoundError } from "../../../../../../utils/not-found-error/index.js";
+import { notFoundError } from "#/utils/not-found-error/index.js";
 
 export type DocumentWithVersions = DocumentEntity & { versions: DocumentVersionEntity[] };
 

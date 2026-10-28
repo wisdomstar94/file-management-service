@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 import type { EntityManager } from "typeorm";
-import { createVersionStorageKey, storageDriver } from "../../../../../../utils/storage-driver/index.js";
+import { createVersionStorageKey, storageDriver } from "#/utils/storage-driver/index.js";
 
 /**
  * 업로드된 임시 파일을 저장소로 옮기고 버전 행을 만든다. 등록 순서(seq)는 그 자료의 마지막 값 + 1.

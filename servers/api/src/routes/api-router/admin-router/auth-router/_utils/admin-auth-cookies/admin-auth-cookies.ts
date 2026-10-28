@@ -5,7 +5,7 @@ import {
   ADMIN_REFRESH_TOKEN_COOKIE,
 } from "@fms/common-utils/cookies/admin-auth-cookie-names";
 import type { CookieOptions, Response } from "express";
-import { apiEnv } from "../../../../../../utils/api-env/index.js";
+import { apiEnv } from "#/utils/api-env/index.js";
 
 // 관리자 웹 서버가 같은 쿠키를 읽고 갱신하므로 도메인 · 경로를 그쪽과 똑같이 맞춘다.
 const baseOptions = (): CookieOptions => ({
