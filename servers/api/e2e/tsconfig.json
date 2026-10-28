@@ -8,5 +8,31 @@
     "types": ["node", "jest"]
   },
   "include": ["./**/*.ts"],
-  "exclude": []
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../../libs/common-shared/api-schemas"
+    },
+    {
+      "path": "../../../libs/common-shared/common-utils"
+    },
+    {
+      "path": "../../../libs/common-shared/consts"
+    },
+    {
+      "path": "../../../libs/server-shared/database-entities"
+    },
+    {
+      "path": "../../../libs/common-shared/jwt-handler"
+    },
+    {
+      "path": "../../../libs/server-shared/password-handler"
+    },
+    {
+      "path": "../../../libs/server-shared/server-utils"
+    },
+    {
+      "path": "../../../libs/common-shared/types"
+    }
+  ]
 }

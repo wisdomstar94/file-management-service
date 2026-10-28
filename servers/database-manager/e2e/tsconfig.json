@@ -8,5 +8,19 @@
     "types": ["node", "jest"]
   },
   "include": ["./**/*.ts"],
-  "exclude": []
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../../libs/common-shared/consts"
+    },
+    {
+      "path": "../../../libs/server-shared/database-entities"
+    },
+    {
+      "path": "../../../libs/server-shared/password-handler"
+    },
+    {
+      "path": "../../../libs/server-shared/server-utils"
+    }
+  ]
 }

@@ -18,5 +18,19 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["./src/**/*.ts"],
-  "exclude": ["dist", "node_modules", "e2e"]
+  "exclude": ["dist", "node_modules", "e2e"],
+  "references": [
+    {
+      "path": "../../libs/common-shared/consts"
+    },
+    {
+      "path": "../../libs/server-shared/database-entities"
+    },
+    {
+      "path": "../../libs/server-shared/password-handler"
+    },
+    {
+      "path": "../../libs/server-shared/server-utils"
+    }
+  ]
 }

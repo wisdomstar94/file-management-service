@@ -1,0 +1,50 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./libs/common-shared/api-schemas"
+    },
+    {
+      "path": "./libs/common-shared/common-utils"
+    },
+    {
+      "path": "./libs/common-shared/consts"
+    },
+    {
+      "path": "./libs/common-shared/error-provider"
+    },
+    {
+      "path": "./libs/common-shared/jwt-handler"
+    },
+    {
+      "path": "./libs/common-shared/types"
+    },
+    {
+      "path": "./libs/server-shared/database-entities"
+    },
+    {
+      "path": "./libs/server-shared/password-handler"
+    },
+    {
+      "path": "./libs/server-shared/server-utils"
+    },
+    {
+      "path": "./libs/web-shared/web-ui"
+    },
+    {
+      "path": "./libs/web-shared/web-utils"
+    },
+    {
+      "path": "./servers/api"
+    },
+    {
+      "path": "./servers/database-manager"
+    },
+    {
+      "path": "./webs/file-management-service-admin"
+    },
+    {
+      "path": "./webs/file-management-service-user"
+    }
+  ]
+}

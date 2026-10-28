@@ -7,5 +7,31 @@
     "types": ["node"]
   },
   "include": ["./**/*.ts", "../playwright.config.ts"],
-  "exclude": []
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../../libs/common-shared/api-schemas"
+    },
+    {
+      "path": "../../../libs/common-shared/common-utils"
+    },
+    {
+      "path": "../../../libs/common-shared/consts"
+    },
+    {
+      "path": "../../../libs/common-shared/error-provider"
+    },
+    {
+      "path": "../../../libs/common-shared/jwt-handler"
+    },
+    {
+      "path": "../../../libs/common-shared/types"
+    },
+    {
+      "path": "../../../libs/web-shared/web-ui"
+    },
+    {
+      "path": "../../../libs/web-shared/web-utils"
+    }
+  ]
 }
