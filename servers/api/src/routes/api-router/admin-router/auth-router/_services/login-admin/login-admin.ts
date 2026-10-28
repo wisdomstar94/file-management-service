@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { ADMIN_LOGIN_API, ADMIN_REFRESH_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { ReqBody, ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
@@ -23,5 +24,7 @@ export async function loginAdmin(
   }
 
   assertAccessPolicy(req, { group: account.accessPolicyGroup, account });
-  return appDataSource.transaction((manager) => issueAdminTokens(manager, account.id));
+  return appDataSource.transaction((manager) =>
+    issueAdminTokens(manager, { adminAccountId: account.id, familyId: randomUUID() }),
+  );
 }

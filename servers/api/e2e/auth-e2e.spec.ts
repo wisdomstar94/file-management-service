@@ -31,14 +31,28 @@ describe("관리자 인증", () => {
     expect(res.body.error.code).toBe("UNAUTHORIZED");
   });
 
-  test("refresh 는 새 토큰을 발급하고, 이미 쓴 refresh token 은 다시 쓸 수 없다", async () => {
+  test("refresh 는 새 토큰을 발급하고, 유예 시간 안에는 이미 쓴 refresh token 도 다시 받아 준다", async () => {
     const { refreshToken } = readLoginTokens(await loginAs(INITIAL_ADMIN_CREDENTIALS));
     const refreshed = await api().post("/api/admin/auth/refresh").send({ refreshToken });
     expect(refreshed.status).toBe(200);
     expect(refreshed.body.data.refreshToken).not.toBe(refreshToken);
 
     const reused = await api().post("/api/admin/auth/refresh").send({ refreshToken });
-    expect(reused.status).toBe(401);
+    expect(reused.status).toBe(200);
+    expect(reused.body.data.refreshToken).not.toBe(refreshed.body.data.refreshToken);
+  });
+
+  test("유예 시간이 지난 뒤 쓴 refresh token 을 다시 쓰면 401 이고, 그 로그인의 토큰만 모두 폐기한다", async () => {
+    const { refreshToken } = readLoginTokens(await loginAs(INITIAL_ADMIN_CREDENTIALS));
+    const other = readLoginTokens(await loginAs(INITIAL_ADMIN_CREDENTIALS));
+    const refreshed = await api().post("/api/admin/auth/refresh").send({ refreshToken }).expect(200);
+
+    const graceSeconds = Number(process.env.ADMIN_REFRESH_TOKEN_REUSE_GRACE_SECONDS ?? 30);
+    await new Promise((resolve) => setTimeout(resolve, (graceSeconds + 1) * 1000));
+
+    await api().post("/api/admin/auth/refresh").send({ refreshToken }).expect(401);
+    await api().post("/api/admin/auth/refresh").send({ refreshToken: refreshed.body.data.refreshToken }).expect(401);
+    await api().post("/api/admin/auth/refresh").send({ refreshToken: other.refreshToken }).expect(200);
   });
 
   test("logout 은 쿠키의 refresh token 을 폐기하고 토큰 쿠키를 지운다", async () => {

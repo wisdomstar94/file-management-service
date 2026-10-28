@@ -6,6 +6,8 @@ export const webEnv = {
   apiPublicUrl: process.env.API_PUBLIC_URL ?? "http://localhost:4000",
   /** api 와 같은 `JWT_SECRET_ADMIN_ACCOUNT`. access token 검증에만 쓴다. */
   adminAccessTokenSecret: process.env.JWT_SECRET_ADMIN_ACCOUNT ?? "",
+  /** access token 만료까지 이 시간(초)보다 적게 남으면 미리 갱신한다. 검증한 토큰이 api 호출 전에 만료되지 않게 한다. */
+  accessTokenRefreshBeforeSeconds: Number(process.env.WEB_ACCESS_TOKEN_REFRESH_BEFORE_SECONDS ?? 60),
   /** admin-web 앞단에 있는 신뢰할 수 있는 프록시 수. X-Forwarded-For 의 오른쪽에서 이만큼 건너뛴 값을 요청 IP 로 본다. */
   trustedProxyHops: Number(process.env.WEB_TRUSTED_PROXY_HOPS ?? 0),
   isSecureCookie: process.env.WEB_SECURE_COOKIE === "true",

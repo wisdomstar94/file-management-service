@@ -11,6 +11,8 @@ export const apiEnv = {
   /** express `trust proxy` 값. 비어 있으면 프록시를 신뢰하지 않고 직접 연결된 IP 를 쓴다. */
   trustProxy: process.env.API_TRUST_PROXY ?? "",
   refreshTokenDays: Number(process.env.ADMIN_REFRESH_TOKEN_DAYS ?? 14),
+  /** 갱신에 쓴 refresh token 을 다시 받아 주는 시간(초). 동시에 들어온 갱신 요청이 서로를 401 로 만들지 않게 한다. */
+  adminRefreshTokenReuseGraceSeconds: Number(process.env.ADMIN_REFRESH_TOKEN_REUSE_GRACE_SECONDS ?? 30),
   /** 공개 링크 비밀번호를 한 번 맞히면 다시 묻지 않는 시간(초). */
   shareLinkUnlockExpiresInSeconds: Number(process.env.SHARE_LINK_UNLOCK_EXPIRES_IN_SECONDS ?? 600),
   /** 토큰 쿠키를 함께 쓸 상위 도메인. 비우면 api 호스트 한정이다. 쿠키는 포트를 구분하지 않아 로컬은 비워도 된다. */

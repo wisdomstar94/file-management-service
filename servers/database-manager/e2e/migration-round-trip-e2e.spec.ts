@@ -53,8 +53,14 @@ describe("database-manager 마이그레이션 · 시드", () => {
       return result.rows.map((row) => row.code);
     };
 
-    runDatabaseManagerCommand("migration:revert", database.name);
-    runDatabaseManagerCommand("migration:revert", database.name);
+    // 권한 마이그레이션 뒤에 마이그레이션이 더 생겨도 권한 마이그레이션 직전(Init 만 실행된 상태)까지 되돌린다.
+    const readLatestMigration = async () =>
+      (await database.client.query<{ name: string }>("SELECT name FROM migrations ORDER BY id DESC LIMIT 1")).rows[0]
+        ?.name;
+    for (let latest = await readLatestMigration(); latest && latest !== "Init1790990442114"; ) {
+      runDatabaseManagerCommand("migration:revert", database.name);
+      latest = await readLatestMigration();
+    }
     expect(await readGroupCodes()).toEqual(["account.access", "account.manage"]);
 
     await database.client.query(`
