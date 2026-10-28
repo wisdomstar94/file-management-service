@@ -5,7 +5,7 @@ import { createApiCommonError } from "../_utils/create-common-error";
 import { toRequestBody } from "../_utils/to-request-body";
 
 export type FetchClientWrapperOptions = {
-  /** schema url 앞에 붙일 주소. api 를 직접 호출하면 `API_PUBLIC_URL`. 기본은 웹 자체 route 용 빈 문자열 */
+  /** schema url 앞에 붙일 api 주소(`API_PUBLIC_URL`). 없으면 같은 origin 기준 상대 경로 */
   baseUrl?: string;
   /** api 가 심은 httpOnly 쿠키(공개 링크 잠금 해제)를 주고받으려면 `include` */
   credentials?: RequestCredentials;

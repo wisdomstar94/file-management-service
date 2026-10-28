@@ -2,7 +2,7 @@ const IPV4_PATTERN = /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d
 
 /**
  * IP 문자열의 버전을 판정합니다. 올바른 IP 가 아니면 `0` 입니다.
- * 브라우저에서도 쓰므로 `node:net` 대신 URL 파서로 IPv6 를 검증합니다.
+ * 브라우저에서도 쓸 수 있도록 `node:net` 대신 URL 파서로 IPv6 를 검증합니다.
  */
 export function readIpVersion(ip: string): 0 | 4 | 6 {
   if (IPV4_PATTERN.test(ip)) {

@@ -36,7 +36,6 @@ docker compose --env-file .env.local -p fms-quickstart -f dockers/compose.yml up
 - cmd 에서는 `copy .env.local-sample .env.local` · `set FMS_ENV_FILE=.env.local` 을 먼저 실행한 뒤 같은 `docker compose` 명령을 씁니다.
 - PowerShell · cmd 에서 지정한 `FMS_ENV_FILE` 은 그 창을 닫으면 사라집니다. 새 창에서 종료할 때는 다시 지정하세요.
 - `.env.local` 의 `JWT_SECRET` 은 저장소에 공개된 로컬용 값입니다. 둘러보기 용도면 그대로 써도 되고, 외부에 열어 둘 거라면 32자 이상의 임의 문자열로 바꾸세요.
-- `migrator` 가 `exit 2` 로 실패했다면 `git pull` 로 최신 코드를 받은 뒤 같은 명령으로 다시 실행하세요. 셸 스크립트 줄바꿈(CRLF) 문제로, 최신 코드에서 고쳐졌습니다.
 
 #### 실행 후
 
@@ -75,8 +74,8 @@ FMS_ENV_FILE=.env.local docker compose --env-file .env.local -p fms-quickstart -
 | `servers/database-manager` | TypeORM 마이그레이션 · 시드 CLI |
 | `webs/file-management-service-admin` | 관리자 웹 (Next.js, 3000) |
 | `webs/file-management-service-user` | 외부 공개 링크 웹 (Next.js, 3001, `/s/<token>`) |
-| `libs/**` | 공용 패키지. vite 로 sub export 빌드 (`dist/<그룹>/<모듈>/index.{mjs,cjs,d.ts}`) |
-| `dockers/` | Dockerfile(빌드 대상별) · compose (개발 · e2e) |
+| `libs/**` | 공용 패키지. vite 로 sub export 빌드 (`dist/<그룹>/<모듈>/index.{mjs,cjs,d.ts}`). `libs/internal/biome-config` 는 biome 공용 설정 |
+| `dockers/` | Dockerfile(서비스별 · e2e) · compose (개발 · 서비스별 단독 · e2e) |
 
 ## 로컬 개발
 
@@ -97,6 +96,21 @@ yarn workspace @fms/user-web dev
 - `libs/**` 를 고칠 때는 `yarn libs:watch` 를 함께 띄우면 모든 libs 패키지가 변경 시 다시 빌드됩니다. (최초 1회 `yarn libs:build` 가 먼저 필요)
 - 최초 관리자 계정은 `.env.local` 의 `INITIAL_ADMIN_ID` · `INITIAL_ADMIN_PASSWORD` 로 만들어집니다.
 
+### 서비스별 node 실행 (도커 없이)
+
+도커 없이 서비스 하나를 빌드해 node 로 바로 띄웁니다. 개발 모드(`dev`)가 아니라 빌드 결과물을 실행합니다.
+
+```bash
+yarn node:up:api:local            # libs · database-manager · api 빌드 → 마이그레이션 + 시드 → api 실행
+yarn node:up:admin-web:local      # libs · 관리자 웹 빌드 → 실행 (3000)
+yarn node:up:user-web:local       # libs · 공개 링크 웹 빌드 → 실행 (3001)
+# :development · :production 도 있습니다 (.env.development · .env.production)
+```
+
+- 읽을 env 파일은 `FMS_ENV_FILE` 로 고릅니다. 워크스페이스 스크립트(`start` · `build` · `setup` 등)를 직접 실행할 때도 `FMS_ENV_FILE=.env.production yarn workspace @fms/api start` 처럼 쓸 수 있고, 지정하지 않으면 `.env.local` 입니다.
+- 포그라운드로 실행되므로 서비스마다 터미널을 따로 씁니다. 종료는 `Ctrl+C` 입니다.
+- DB 는 띄우지 않습니다. env 파일의 `DB_*` 가 가리키는 DB 가 먼저 떠 있어야 합니다.
+
 ## 마이그레이션
 
 ```bash
@@ -113,19 +127,36 @@ yarn workspace @fms/database-manager migration:revert
 postgres + migrator + api + admin-web + user-web 를 각각의 컨테이너로 띄웁니다. 환경별로 저장소 루트의 env 파일을 골라 실행합니다.
 
 ```bash
-yarn docker:up:local          # .env.local
-yarn docker:up:development    # .env.development
-yarn docker:up:production     # .env.production
+yarn docker:up:all:local          # .env.local
+yarn docker:up:all:development    # .env.development
+yarn docker:up:all:production     # .env.production
 ```
 
 - 각 명령은 `FMS_ENV_FILE` 로 컨테이너에 넣을 env 파일을 고르고, 같은 파일을 `--env-file` 로도 넘깁니다(postgres 계정 설정용). `docker compose` 를 직접 실행할 때도 `FMS_ENV_FILE` 은 필수이며, 빠지면 compose 가 실행되지 않습니다.
 - env 파일은 저장소에 올라가지 않습니다(`.gitignore`). `.env.development` · `.env.production` 은 `.env.local-sample` 을 복사해 값을 바꿔 만드세요. 맨 위 `APP_ENV` 도 `development` · `production` 으로 바꿉니다.
 - env 파일의 변수는 모두 컨테이너에 그대로 들어갑니다. 변수를 새로 추가해도 compose 는 고치지 않아도 됩니다.
-- 단, `DB_HOST` · `DB_PORT` · `API_PORT` · `STORAGE_DIR` · `API_TRUST_PROXY` · `API_INTERNAL_URL` 은 컨테이너 안에서 값이 달라야 해서 `dockers/compose.yml` 이 고정하고, env 파일 값보다 우선합니다.
+- 단, `DB_HOST` · `DB_PORT` · `API_PORT` · `STORAGE_DIR` · `API_TRUST_PROXY` · `API_INTERNAL_URL` 은 컨테이너 안에서 값이 달라야 해서 compose 가 고정하고, env 파일 값보다 우선합니다. (`API_PORT` · `STORAGE_DIR` 은 `dockers/compose.standalone.yml`, 나머지는 `dockers/compose.yml`)
 - `JWT_SECRET` 은 필수이고, 매번 같은 값이어야 기존 로그인이 유지됩니다. 운영에서는 32자 이상의 임의 문자열로 바꾸세요.
 - `API_TRUST_PROXY` 는 웹 컨테이너의 고정 IP(`172.31.240.10` · `172.31.240.11`)만 신뢰합니다. 웹이 넘긴 `X-Forwarded-For` 만 믿고, 브라우저가 api 에 직접 보낸 헤더는 무시해 IP 정책을 위조로 우회할 수 없게 하기 위해서입니다. 이 대역(`172.31.240.0/24`)이 사내망과 겹치면 `dockers/compose.yml` 의 `web-api` 네트워크와 `API_TRUST_PROXY` 를 함께 바꾸세요.
 - 관리자 로그인 · 로그아웃과 공개 링크 비밀번호 확인 · 다운로드는 브라우저가 api 를 직접 호출하고, api 가 httpOnly 쿠키를 심습니다. 그래서 **api 와 웹은 같은 사이트(같은 상위 도메인)에 있어야 합니다.** 예) `admin.example.com` · `files.example.com` · `api.example.com` 이면 `COOKIE_DOMAIN=.example.com`. 같은 호스트에 포트만 다르게 띄우면(`localhost`) 비워 둡니다.
 - 셸에 `DB_USER` · `DB_PASSWORD` · `DB_NAME` 이 남아 있으면 postgres 계정만 그 값으로 만들어집니다(compose 의 `${...}` 는 셸 값이 우선). 실행 전에 셸에서 지우세요.
+
+### 서비스별 단독 실행
+
+api 와 웹을 서로 다른 서버에 나눠 띄울 때는 서비스 하나씩 독립 컨테이너로 띄웁니다. `dockers/compose.standalone.yml` 을 씁니다.
+
+```bash
+yarn docker:up:api:local            # migrator + api
+yarn docker:up:admin-web:local      # 관리자 웹
+yarn docker:up:user-web:local       # 공개 링크 웹
+# :development · :production 도 있습니다 (.env.development · .env.production)
+```
+
+- postgres 는 띄우지 않습니다. 따로 준비한 DB 를 env 파일의 `DB_*` 로 지정하세요.
+- 서비스끼리 네트워크를 나누지 않으므로 `DB_HOST` · `API_INTERNAL_URL` · `API_TRUST_PROXY` 는 env 파일 값을 그대로 씁니다. 컨테이너 안에서 `127.0.0.1` 은 컨테이너 자신이라, 같은 호스트의 DB · api 에 닿으려면 `host.docker.internal` 을 쓰세요. 예) `DB_HOST=host.docker.internal` · `DB_PORT=15432` · `API_INTERNAL_URL=http://host.docker.internal:4000`
+- `API_TRUST_PROXY` 에는 웹 서버가 api 에 닿을 때의 출발 IP 만 넣으세요(운영 시 주의 참고). 컨테이너 안 경로 · 포트인 `API_PORT` · `STORAGE_DIR` 만 compose 가 고정합니다.
+- 서비스마다 compose 프로젝트(`fms-api` · `fms-admin-web` · `fms-user-web`)가 따로라, 하나를 내리거나 다시 띄워도 나머지에 영향이 없습니다. 종료는 같은 프로젝트 이름으로 합니다. 예) `FMS_ENV_FILE=.env.local docker compose -p fms-api -f dockers/compose.standalone.yml down`
+- 호스트 포트(4000 · 3000 · 3001)가 `yarn docker:up:all:<환경>` 과 같으므로 한 호스트에서 둘을 함께 띄울 수는 없습니다.
 
 ## 검사 · 테스트
 

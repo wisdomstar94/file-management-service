@@ -9,7 +9,7 @@
     "lint:format": "biome check --write",
     "build": "rm -rf dist && tsc",
     "watch": "tsc --watch",
-    "start": "node --env-file-if-exists=../../.env.local ./dist/app.js",
+    "start": "node ../../scripts/run-with-root-env.mjs node ./dist/app.js",
     "nodemon:start": "nodemon",
     "dev": "yarn build && concurrently \"yarn nodemon:start\" \"yarn watch\"",
     "pm2:start": "pm2 start pm2.config.mjs",

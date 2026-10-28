@@ -1,7 +1,7 @@
 import { type Browser, expect, test } from "@playwright/test";
 import { expectToast, loginAsInitialAdmin, loginThroughUi, uniqueName } from "./_utils/admin-e2e-helpers";
 
-/** 다른 IP 에서 접속하는 사용자를 흉내낸다. admin-web 은 X-Forwarded-For 로 요청 IP 를 판정한다. */
+/** 다른 IP 에서 접속하는 사용자를 흉내낸다. 관리자 웹과 브라우저가 직접 호출하는 api 모두 X-Forwarded-For 로 요청 IP 를 판정한다. */
 async function openPageFrom(browser: Browser, ip: string) {
   const context = await browser.newContext({ extraHTTPHeaders: { "X-Forwarded-For": ip } });
   return context.newPage();

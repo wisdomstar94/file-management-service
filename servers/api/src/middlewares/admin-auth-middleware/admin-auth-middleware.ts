@@ -48,7 +48,7 @@ async function readAdminAccountId(req: Request): Promise<string | null> {
   return transfer && isTransferTargetRequest(req, transfer.target) ? transfer.adminAccountId : null;
 }
 
-/** access token 을 검증하고, 계정 · 권한 그룹 · 접근 정책 그룹을 읽어 `req.admin` 에 담는다. */
+/** access token(없으면 그 요청용 transfer token)을 검증하고, 계정 · 권한 그룹 · 접근 정책 그룹을 읽어 `req.admin` 에 담는다. */
 export async function adminAuthMiddleware(req: Request, _: Response, next: NextFunction) {
   const adminAccountId = await readAdminAccountId(req);
   const account = adminAccountId

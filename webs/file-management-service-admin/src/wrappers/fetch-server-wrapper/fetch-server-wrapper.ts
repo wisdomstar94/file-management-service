@@ -23,7 +23,7 @@ export type FetchServerWrapperOptions = {
 };
 
 /**
- * 서버(서버 컴포넌트 · 서버 액션 · route handler · proxy)에서 api 를 호출한다.
+ * 서버(서버 컴포넌트 · 서버 액션 · proxy)에서 api 를 호출한다.
  * 400~500 대 응답은 `CommonError` 로 throw 한다. 이동 옵션이 켜져 있으면 해당 화면으로 먼저 이동한다.
  */
 export async function fetchServerWrapper<S extends ApiSchema>(

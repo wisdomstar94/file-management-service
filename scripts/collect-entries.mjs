@@ -18,7 +18,7 @@ import path from "node:path";
  * 해당 코드는 이를 참조하는 진입점들의 공유 청크로만 번들됩니다.
  *
  * @example
- * // packages/<패키지>/vite.config.mjs
+ * // libs/<그룹>/<패키지>/vite.config.mjs
  * import { collectEntries } from "../../../scripts/collect-entries.mjs";
  *
  * const entries = collectEntries();

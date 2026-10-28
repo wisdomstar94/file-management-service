@@ -8,7 +8,7 @@ import { createApiCommonError } from "../_utils/create-common-error";
 import { toRequestBody } from "../_utils/to-request-body";
 
 /**
- * 서버(서버 컴포넌트 · 서버 액션 · route handler)에서 api 를 호출한다. 400~500 대 응답은 `CommonError` 로 throw 한다.
+ * 서버(서버 컴포넌트 · 서버 액션)에서 api 를 호출한다. 400~500 대 응답은 `CommonError` 로 throw 한다.
  * 원래 요청 IP · 헤더를 함께 넘긴다.
  */
 export async function fetchServerWrapper<S extends ApiSchema>(schema: S, request: ApiRequest<S>): Promise<ResBody<S>> {

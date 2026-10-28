@@ -8,7 +8,7 @@ import { createOtherCommonError } from "../_utils/create-common-error";
 import { fetchServerWrapper } from "../fetch-server-wrapper";
 import { serverActionWrapper } from "../server-action-wrapper";
 
-// 토큰을 돌려주는 인증 api 는 브라우저로 노출하지 않는다.
+// 토큰을 주고받거나(refresh) api 가 쿠키를 심는(login · logout) 인증 api 는 서버 액션으로 대신 호출하지 않는다.
 const ALLOWED_AUTH_URLS: string[] = [ADMIN_ME_API.url, ADMIN_TRANSFER_TOKEN_API.url];
 
 /** 브라우저가 넘긴 schema 라 그대로 믿지 않는다. admin api 경로 · json 응답 · 헤더 없음만 허용한다. */

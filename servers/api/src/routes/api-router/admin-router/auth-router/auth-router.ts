@@ -57,7 +57,7 @@ router.post("/logout", async (req, res) => {
   res.status(204).end();
 });
 
-// admin-web proxy.ts 가 페이지 진입마다 호출한다. 차단이면 403 과 차단 화면용 정보를 돌려준다.
+// 관리자 웹이 로그인 후 페이지에 들어올 때(proxy.ts)와 차단 화면을 그릴 때 호출한다. 차단이면 403 과 차단 화면용 정보를 돌려준다.
 router.get("/access-check", adminAuthMiddleware, accessPolicyMiddleware, (_, res) => {
   res.json(generateCommonRes({ isAllowed: true }));
 });

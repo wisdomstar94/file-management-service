@@ -19,7 +19,7 @@ const DROP_HEADERS = new Set([
   "x-forwarded-port",
   "x-forwarded-proto",
   "x-real-ip",
-  // api 는 웹 서버끼리만 호출하므로 브라우저 Origin 을 넘기면 api 의 CORS 검사에 걸린다.
+  // 서버 간 호출이라 브라우저 Origin 은 넘기지 않는다. 넘기면 api 가 브라우저 요청으로 보고 CORS 허용 목록과 대조한다.
   "origin",
 ]);
 

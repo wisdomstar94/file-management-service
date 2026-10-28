@@ -37,7 +37,7 @@ services:
       retries: 30
 
   migrator:
-    build: { context: .., dockerfile: dockers/Dockerfile, target: api }
+    build: { context: .., dockerfile: dockers/api/Dockerfile }
     networks: [e2e]
     env_file: *e2e-env-file
     command: ["sh", "/app/dockers/scripts/run-migrations.sh"]
@@ -45,7 +45,7 @@ services:
       postgres: { condition: service_healthy }
 
   api:
-    build: { context: .., dockerfile: dockers/Dockerfile, target: api }
+    build: { context: .., dockerfile: dockers/api/Dockerfile }
     networks:
       e2e: { aliases: [api.fms.test] }
     env_file: *e2e-env-file
@@ -57,7 +57,7 @@ services:
       migrator: { condition: service_completed_successfully }
 
   admin-web:
-    build: { context: .., dockerfile: dockers/Dockerfile, target: admin-web }
+    build: { context: .., dockerfile: dockers/admin-web/Dockerfile }
     networks:
       e2e: { aliases: [admin.fms.test] }
     env_file: *e2e-env-file
@@ -68,7 +68,7 @@ services:
       api: { condition: service_healthy }
 
   user-web:
-    build: { context: .., dockerfile: dockers/Dockerfile, target: user-web }
+    build: { context: .., dockerfile: dockers/user-web/Dockerfile }
     networks:
       e2e: { aliases: [user.fms.test] }
     env_file: *e2e-env-file
@@ -80,13 +80,13 @@ services:
 
   e2e-servers:
     profiles: [runner]
-    build: { context: .., dockerfile: dockers/Dockerfile, target: e2e-servers }
+    build: { context: .., dockerfile: dockers/e2e/Dockerfile, target: e2e-servers }
     networks: [e2e]
     env_file: *e2e-env-file
 
   e2e-webs:
     profiles: [runner]
-    build: { context: .., dockerfile: dockers/Dockerfile, target: e2e-webs }
+    build: { context: .., dockerfile: dockers/e2e/Dockerfile, target: e2e-webs }
     networks: [e2e]
     ipc: host
     env_file: *e2e-env-file
