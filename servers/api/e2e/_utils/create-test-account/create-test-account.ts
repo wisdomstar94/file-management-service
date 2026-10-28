@@ -1,10 +1,6 @@
-import { randomUUID } from "node:crypto";
 import type { AccessPolicyNode } from "@fms/types/access-policies/access-policy-node";
 import { api } from "../api-client";
-
-export function uniqueName(prefix: string) {
-  return `${prefix}_${randomUUID().slice(0, 8)}`;
-}
+import { uniqueName } from "../unique-name";
 
 /**
  * 최초 관리자 토큰으로 「지정한 권한만 가진 권한 그룹 + 지정한 정책의 접근 정책 그룹 + 계정」 을 만든다.

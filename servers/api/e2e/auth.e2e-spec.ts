@@ -1,6 +1,7 @@
 import { INITIAL_ADMIN_CREDENTIALS } from "./_consts/initial-admin-credentials";
 import { api } from "./_utils/api-client";
-import { loginAs, readLoginTokens } from "./_utils/login-as";
+import { loginAs } from "./_utils/login-as";
+import { readLoginTokens } from "./_utils/read-login-tokens";
 
 describe("관리자 인증", () => {
   test("올바른 아이디 · 비밀번호면 토큰을 httpOnly 쿠키로만 발급하고 /me 로 권한 코드를 돌려준다", async () => {

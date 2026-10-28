@@ -1,15 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { Client } from "pg";
-
-function createAdminClient(database: string) {
-  return new Client({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database,
-  });
-}
+import { createAdminClient } from "./_utils/create-admin-client";
 
 /** 테스트마다 빈 DB 를 새로 만들어, 개발 DB 와 다른 테스트의 데이터를 건드리지 않게 한다. */
 export async function createIsolatedDatabase() {

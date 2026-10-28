@@ -1,7 +1,10 @@
 import { Client } from "pg";
 import { api } from "./_utils/api-client";
-import { createTestAccount, uniqueName } from "./_utils/create-test-account";
-import { loginAs, loginAsInitialAdmin, readLoginTokens } from "./_utils/login-as";
+import { createTestAccount } from "./_utils/create-test-account";
+import { loginAs } from "./_utils/login-as";
+import { loginAsInitialAdmin } from "./_utils/login-as-initial-admin";
+import { readLoginTokens } from "./_utils/read-login-tokens";
+import { uniqueName } from "./_utils/unique-name";
 
 describe("권한 · 권한 그룹", () => {
   let adminToken: string;

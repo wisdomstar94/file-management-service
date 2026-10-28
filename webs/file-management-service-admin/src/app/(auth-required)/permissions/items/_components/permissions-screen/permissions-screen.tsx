@@ -3,10 +3,13 @@
 import type { PERMISSION_DETAIL_API, PERMISSION_LIST_API } from "@fms/api-schemas/schemas/permission-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { Button } from "@fms/web-ui/components/button";
-import { formatDate } from "@fms/web-utils/formats/format-date-time";
+import { formatDate } from "@fms/web-utils/formats/format-date";
 import { useState } from "react";
+import { BodyCell } from "@/components/commons/body-cell";
 import { Card } from "@/components/commons/card";
-import { BodyCell, DataTable, EmptyRow, HeadCell } from "@/components/commons/data-table";
+import { DataTable } from "@/components/commons/data-table";
+import { EmptyRow } from "@/components/commons/empty-row";
+import { HeadCell } from "@/components/commons/head-cell";
 import { PageHeading } from "@/components/commons/page-heading";
 import { PermissionFormModal } from "./_components/permission-form-modal";
 

@@ -10,7 +10,7 @@ import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
-import { formatDate } from "@fms/web-utils/formats/format-date-time";
+import { formatDate } from "@fms/web-utils/formats/format-date";
 import { type SubmitEvent, useState } from "react";
 import { ChoiceCard } from "@/components/commons/choice-card";
 import { FormField } from "@/components/commons/form-field";

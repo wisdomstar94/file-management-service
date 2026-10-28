@@ -4,7 +4,7 @@ import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { AdminAccountEntity } from "@fms/database-entities/entities/admin-account-entity";
 import { AdminRefreshTokenEntity } from "@fms/database-entities/entities/admin-refresh-token-entity";
 import { ADMIN_ACCESS_TOKEN_EXPIRES_IN_SECONDS } from "@fms/jwt-handler/consts/admin-access-token-expires-in-seconds";
-import { signAdminAccessToken } from "@fms/jwt-handler/tokens/admin-access-token";
+import { signAdminAccessToken } from "@fms/jwt-handler/tokens/sign-admin-access-token";
 import type { EntityManager } from "typeorm";
 import { apiEnv } from "#/consts/api-env/index.js";
 import { hashRefreshToken } from "../../_utils/hash-refresh-token/index.js";

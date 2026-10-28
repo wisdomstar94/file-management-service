@@ -8,7 +8,7 @@ import { ADMIN_REFRESH_TOKEN_COOKIE } from "@fms/consts/cookies/admin-auth-cooki
 import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import { AdminRefreshTokenEntity } from "@fms/database-entities/entities/admin-refresh-token-entity";
 import { ADMIN_SHORT_TIME_TOKEN_EXPIRES_IN_SECONDS } from "@fms/jwt-handler/consts/admin-short-time-token-expires-in-seconds";
-import { signAdminShortTimeToken } from "@fms/jwt-handler/tokens/admin-short-time-token";
+import { signAdminShortTimeToken } from "@fms/jwt-handler/tokens/sign-admin-short-time-token";
 import { Router } from "express";
 import { HttpError } from "#/classes/http-error/index.js";
 import { apiEnv } from "#/consts/api-env/index.js";

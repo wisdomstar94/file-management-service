@@ -1,6 +1,8 @@
 import { api } from "./_utils/api-client";
-import { createTestAccount, uniqueName } from "./_utils/create-test-account";
-import { loginAs, loginAsInitialAdmin } from "./_utils/login-as";
+import { createTestAccount } from "./_utils/create-test-account";
+import { loginAs } from "./_utils/login-as";
+import { loginAsInitialAdmin } from "./_utils/login-as-initial-admin";
+import { uniqueName } from "./_utils/unique-name";
 
 describe("관리자 계정", () => {
   let adminToken: string;

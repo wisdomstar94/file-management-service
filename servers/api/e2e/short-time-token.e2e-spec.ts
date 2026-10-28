@@ -1,7 +1,10 @@
 import { api } from "./_utils/api-client";
-import { createTestAccount, uniqueName } from "./_utils/create-test-account";
+import { createTestAccount } from "./_utils/create-test-account";
 import { createTestDocument } from "./_utils/create-test-document";
-import { loginAs, loginAsInitialAdmin, readLoginTokens } from "./_utils/login-as";
+import { loginAs } from "./_utils/login-as";
+import { loginAsInitialAdmin } from "./_utils/login-as-initial-admin";
+import { readLoginTokens } from "./_utils/read-login-tokens";
+import { uniqueName } from "./_utils/unique-name";
 
 async function issueShortTimeToken(adminToken: string, target: Record<string, string>) {
   const res = await api({ token: adminToken }).post("/api/admin/auth/short-time-token").send(target).expect(200);

@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
-import { expectToast, loginAsInitialAdmin, uniqueName } from "./_utils/admin-e2e-helpers";
+import { expectToast } from "./_utils/expect-toast";
+import { loginAsInitialAdmin } from "./_utils/login-as-initial-admin";
+import { uniqueName } from "./_utils/unique-name";
 
 test.describe("자료 관리", () => {
   test.beforeEach(async ({ page }) => {

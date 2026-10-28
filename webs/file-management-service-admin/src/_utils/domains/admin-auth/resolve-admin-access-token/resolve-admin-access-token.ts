@@ -1,6 +1,6 @@
 import type { ADMIN_REFRESH_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import { verifyAdminAccessToken } from "@fms/jwt-handler/tokens/admin-access-token";
+import { verifyAdminAccessToken } from "@fms/jwt-handler/tokens/verify-admin-access-token";
 import { webEnv } from "@/consts/web-env";
 import { requestAdminTokenRefresh } from "./_utils/request-admin-token-refresh";
 

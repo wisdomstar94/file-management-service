@@ -1,9 +1,10 @@
 import type { Response } from "supertest";
 import { BASE_SHARE_LINK } from "./_consts/base-share-link";
 import { USER_WEB_ORIGIN } from "./_consts/user-web-origin";
+import { addTestVersion } from "./_utils/add-test-version";
 import { api } from "./_utils/api-client";
-import { addTestVersion, createTestDocument } from "./_utils/create-test-document";
-import { loginAsInitialAdmin } from "./_utils/login-as";
+import { createTestDocument } from "./_utils/create-test-document";
+import { loginAsInitialAdmin } from "./_utils/login-as-initial-admin";
 import { readSetCookie } from "./_utils/read-set-cookie";
 
 describe("외부 공개 링크", () => {

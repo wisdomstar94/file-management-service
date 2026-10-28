@@ -1,6 +1,6 @@
 import type { SHARE_LINK_LIST_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import { formatDate } from "@fms/web-utils/formats/format-date-time";
+import { formatDate } from "@fms/web-utils/formats/format-date";
 
 export function readPeriod(link: ResBody<typeof SHARE_LINK_LIST_API>["data"][number]) {
   if (!link.availableFrom && !link.availableUntil) {

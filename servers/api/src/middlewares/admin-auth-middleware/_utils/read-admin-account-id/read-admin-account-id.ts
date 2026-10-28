@@ -1,5 +1,5 @@
-import { verifyAdminAccessToken } from "@fms/jwt-handler/tokens/admin-access-token";
-import { verifyAdminShortTimeToken } from "@fms/jwt-handler/tokens/admin-short-time-token";
+import { verifyAdminAccessToken } from "@fms/jwt-handler/tokens/verify-admin-access-token";
+import { verifyAdminShortTimeToken } from "@fms/jwt-handler/tokens/verify-admin-short-time-token";
 import type { Request } from "express";
 import { apiEnv } from "#/consts/api-env/index.js";
 import { isShortTimeTokenTargetRequest } from "../is-short-time-token-target-request/index.js";

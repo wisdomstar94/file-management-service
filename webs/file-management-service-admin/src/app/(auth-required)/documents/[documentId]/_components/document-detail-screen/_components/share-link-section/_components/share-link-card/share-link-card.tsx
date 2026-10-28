@@ -4,7 +4,7 @@ import type { SHARE_LINK_LIST_API } from "@fms/api-schemas/schemas/share-link-ap
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { Button } from "@fms/web-ui/components/button";
 import { ProgressBar } from "@fms/web-ui/components/progress-bar";
-import { formatDate } from "@fms/web-utils/formats/format-date-time";
+import { formatDate } from "@fms/web-utils/formats/format-date";
 import { useToast } from "@/providers/toast-provider";
 import { AVAILABILITY_LABELS } from "./_consts/availability-labels";
 import { readOthers } from "./_utils/read-others";

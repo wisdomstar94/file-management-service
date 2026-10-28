@@ -4,12 +4,15 @@ import type { ACCESS_POLICY_GROUP_LIST_API } from "@fms/api-schemas/schemas/acce
 import { DELETE_ACCESS_POLICY_GROUP_API } from "@fms/api-schemas/schemas/access-policy-group-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { Button } from "@fms/web-ui/components/button";
-import { formatDate } from "@fms/web-utils/formats/format-date-time";
+import { formatDate } from "@fms/web-utils/formats/format-date";
 import Link from "next/link";
 import { useState } from "react";
+import { BodyCell } from "@/components/commons/body-cell";
 import { Card } from "@/components/commons/card";
 import { ConfirmDialog } from "@/components/commons/confirm-dialog";
-import { BodyCell, DataTable, EmptyRow, HeadCell } from "@/components/commons/data-table";
+import { DataTable } from "@/components/commons/data-table";
+import { EmptyRow } from "@/components/commons/empty-row";
+import { HeadCell } from "@/components/commons/head-cell";
 import { IdentifierText } from "@/components/commons/identifier-text";
 import { PageHeading } from "@/components/commons/page-heading";
 import { useAdminSession } from "@/providers/admin-session-provider";

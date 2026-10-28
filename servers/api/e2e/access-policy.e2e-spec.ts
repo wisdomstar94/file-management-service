@@ -1,6 +1,8 @@
 import { api } from "./_utils/api-client";
 import { createTestAccount } from "./_utils/create-test-account";
-import { loginAs, loginAsInitialAdmin, readLoginTokens } from "./_utils/login-as";
+import { loginAs } from "./_utils/login-as";
+import { loginAsInitialAdmin } from "./_utils/login-as-initial-admin";
+import { readLoginTokens } from "./_utils/read-login-tokens";
 
 describe("접근 정책", () => {
   let adminToken: string;
