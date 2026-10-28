@@ -136,6 +136,32 @@ describe("외부 공개 링크", () => {
     expect((await publicApi("10.2.3.4").get(`/api/public/share-links/${link.shareLinkKey}`)).status).toBe(200);
   });
 
+  test("잠금 해제 쿠키가 있어도 허용되지 않은 IP 로 바뀌면 접근 정책에 막힌다", async () => {
+    const policy = await api({ token: adminToken })
+      .post("/api/admin/access-policy-groups")
+      .send({ name: "link-unlock-policy", ruleTree: { type: "IP", mode: "DENY_ALL_EXCEPT", cidrs: ["10.0.0.0/8"] } })
+      .expect(201);
+    const link = await createLink({ accessPolicyGroupId: policy.body.data.id, password: "share1234" });
+    const base = `/api/public/share-links/${link.shareLinkKey}`;
+
+    const unlocked = await publicApi("10.2.3.4").post(`${base}/unlock`).send({ password: "share1234" }).expect(200);
+    const unlockCookieName = `fms_share_unlock_${link.shareLinkKey}`;
+    const cookie = { Cookie: `${unlockCookieName}=${readSetCookie(unlocked, unlockCookieName) ?? ""}` };
+    expect((await publicApi("10.2.3.4", cookie).get(`${base}/detail`)).status).toBe(200);
+
+    const denied = await publicApi("8.8.8.8", cookie).get(`${base}/detail`);
+    expect(denied.status).toBe(403);
+    expect(denied.body.error.code).toBe("ACCESS_POLICY_DENIED");
+    expectDownloadErrorRedirect(
+      await publicApi("8.8.8.8", cookie).get(`${base}/versions/${v2()}/download`),
+      link.shareLinkKey,
+      "ACCESS_POLICY_DENIED",
+    );
+
+    // 허용 범위 안에서 IP 가 바뀌는 것은 막지 않는다.
+    expect((await publicApi("10.9.9.9", cookie).get(`${base}/detail`)).status).toBe(200);
+  });
+
   test("링크별 기본 버전 지정 · 다른 버전 표시와 다운로드 허용", async () => {
     const link = await createLink({
       defaultVersionMode: "FIXED",
