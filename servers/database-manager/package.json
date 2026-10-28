@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "imports": {
+    "#/*": "./dist/*"
+  },
   "scripts": {
     "type:check": "tsc --noEmit && tsc --noEmit -p ./e2e/tsconfig.json",
     "lint:check": "biome check",
