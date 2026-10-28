@@ -6,7 +6,7 @@ import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
-import type { FormEvent } from "react";
+import type { SubmitEvent } from "react";
 import { FormField } from "@/components/commons/form-field";
 import { Modal } from "@/components/commons/modal";
 import { TextAreaInput } from "@/components/commons/text-area-input";
@@ -22,7 +22,7 @@ export function PermissionFormModal(props: {
   const isReadOnly = !useAdminSession().hasPermission("perm.update");
   const updateApi = useCallApiWrapper(UPDATE_PERMISSION_API, { successMessage: "저장했습니다" });
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const body = {

@@ -4,7 +4,7 @@ import { PUBLIC_SHARE_LINK_UNLOCK_API } from "@fms/api-schemas/schemas/public-sh
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
-import { type FormEvent, useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { readCommonErrorMessage } from "./_utils/read-common-error-message";
 
@@ -13,7 +13,7 @@ export function SharePasswordForm(props: { shareLinkKey: string; onUnlocked: () 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const unlockApi = useCallApiWrapper(PUBLIC_SHARE_LINK_UNLOCK_API, { via: "client", refreshOnSuccess: false });
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setErrorMessage(null);
     const result = await unlockApi.fetchApi({

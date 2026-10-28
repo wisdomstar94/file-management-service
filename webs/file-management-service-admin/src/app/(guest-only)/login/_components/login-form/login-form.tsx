@@ -7,7 +7,7 @@ import { BrandMark } from "@fms/web-ui/components/brand-mark";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import { FormField } from "@/components/commons/form-field";
 import { DEFAULT_ERROR_MESSAGE } from "@/consts/default-error-message";
 import { usePublicEnv } from "@/providers/public-env-provider";
@@ -21,7 +21,7 @@ export function LoginForm(props: { nextPath: string }) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     setIsPending(true);

@@ -11,7 +11,7 @@ import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
-import { type FormEvent, useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import { FormField } from "@/components/commons/form-field";
 import { Modal } from "@/components/commons/modal";
 import { useToast } from "@/providers/toast-provider";
@@ -80,7 +80,7 @@ export function VersionUploadModal(props: {
       : createVersionApi.fetchApi({ params: { documentId: mode.documentId }, headers, body });
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!isEdit && !file) {
       showToast("파일을 선택하세요.", "error");

@@ -11,7 +11,7 @@ import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import { formatDate } from "@fms/web-utils/formats/format-date-time";
-import { type FormEvent, useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import { ChoiceCard } from "@/components/commons/choice-card";
 import { FormField } from "@/components/commons/form-field";
 import { Modal } from "@/components/commons/modal";
@@ -68,7 +68,7 @@ export function ShareLinkFormModal(props: {
     return password === "" && link?.hasPassword ? {} : { password };
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const maxDownloadCount = String(form.get("maxDownloadCount") ?? "");

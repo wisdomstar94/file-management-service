@@ -10,7 +10,7 @@ import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import { formatDateTime } from "@fms/web-utils/formats/format-date-time";
-import type { FormEvent } from "react";
+import type { SubmitEvent } from "react";
 import { FormField } from "@/components/commons/form-field";
 import { Modal } from "@/components/commons/modal";
 import { SelectInput } from "@/components/commons/select-input";
@@ -32,7 +32,7 @@ export function AccountFormModal(props: {
   const updateApi = useCallApiWrapper(UPDATE_ADMIN_ACCOUNT_API, { successMessage: "관리자 계정을 저장했습니다" });
   const isPending = createApi.isLoading || updateApi.isLoading;
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const body = {
