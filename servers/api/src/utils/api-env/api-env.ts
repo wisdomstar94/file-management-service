@@ -3,7 +3,10 @@ import { readRequiredEnv } from "@fms/server-utils/envs/read-required-env";
 /** api 가 쓰는 환경변수. 기동 시 한 번 읽어 빠진 값이 있으면 바로 실패하게 한다. */
 export const apiEnv = {
   port: Number(readRequiredEnv("API_PORT")),
-  jwtSecret: readRequiredEnv("JWT_SECRET"),
+  /** 용도마다 다른 JWT 서명 키. 하나가 새도 다른 용도의 토큰은 위조할 수 없다. */
+  adminAccessTokenSecret: readRequiredEnv("JWT_SECRET_ADMIN_ACCOUNT"),
+  adminShortTimeTokenSecret: readRequiredEnv("JWT_SECRET_ADMIN_SHORT_TIME"),
+  shareLinkUnlockTokenSecret: readRequiredEnv("JWT_SECRET_SHARE_LINK_UNLOCK"),
   corsOrigins: (process.env.API_CORS_ORIGINS ?? "").split(",").filter(Boolean),
   /** express `trust proxy` 값. 비어 있으면 프록시를 신뢰하지 않고 직접 연결된 IP 를 쓴다. */
   trustProxy: process.env.API_TRUST_PROXY ?? "",

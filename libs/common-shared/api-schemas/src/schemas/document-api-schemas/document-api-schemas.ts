@@ -60,7 +60,7 @@ export const DOCUMENT_LIST_API = {
 } as const satisfies ApiSchema;
 
 /**
- * 브라우저가 api 를 직접 호출한다. `authorization` 에 `UPLOAD_DOCUMENT` 용 transfer token 을 담는다.
+ * 브라우저가 api 를 직접 호출한다. `authorization` 에 `UPLOAD_DOCUMENT` 용 short-time token 을 담는다.
  * 본문은 `name` · `versionName` 텍스트 필드 + `file` 을 담은 `FormData`
  */
 export const CREATE_DOCUMENT_API = {

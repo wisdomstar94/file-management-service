@@ -1,6 +1,6 @@
 "use client";
 
-import { ADMIN_TRANSFER_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import { ADMIN_SHORT_TIME_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { DOCUMENT_DETAIL_API } from "@fms/api-schemas/schemas/document-api-schemas";
 import {
   DELETE_DOCUMENT_VERSION_API,
@@ -33,7 +33,7 @@ export function VersionTable(props: { document: ResBody<typeof DOCUMENT_DETAIL_A
   );
   const { apiPublicUrl } = usePublicEnv();
   const deleteApi = useCallApiWrapper(DELETE_DOCUMENT_VERSION_API, { successMessage: "삭제했습니다" });
-  const transferTokenApi = useCallApiWrapper(ADMIN_TRANSFER_TOKEN_API, { refreshOnSuccess: false });
+  const shortTimeTokenApi = useCallApiWrapper(ADMIN_SHORT_TIME_TOKEN_API, { refreshOnSuccess: false });
   const isLastVersion = document.versions.length === 1;
 
   async function deleteVersion(version: ResBody<typeof DOCUMENT_DETAIL_API>["data"]["versions"][number]) {
@@ -44,14 +44,14 @@ export function VersionTable(props: { document: ResBody<typeof DOCUMENT_DETAIL_A
   /** 파일은 브라우저가 api 에서 바로 받는다. 이 버전에만 쓸 수 있는 단기 토큰을 먼저 받는다. */
   async function download(version: ResBody<typeof DOCUMENT_DETAIL_API>["data"]["versions"][number]) {
     const params = { documentId: document.id, versionId: version.id };
-    const token = await transferTokenApi.fetchApi({ body: { purpose: "DOWNLOAD_DOCUMENT_VERSION", ...params } });
+    const token = await shortTimeTokenApi.fetchApi({ body: { purpose: "DOWNLOAD_DOCUMENT_VERSION", ...params } });
     if (isCommonError(token)) {
       return;
     }
     window.location.assign(
       buildClientApiUrl(
         DOWNLOAD_DOCUMENT_VERSION_API,
-        { params, query: { transferToken: token.data.transferToken } },
+        { params, query: { shortTimeToken: token.data.shortTimeToken } },
         { baseUrl: apiPublicUrl },
       ),
     );
@@ -123,7 +123,7 @@ export function VersionTable(props: { document: ResBody<typeof DOCUMENT_DETAIL_A
                 <BodyCell className="whitespace-nowrap text-sub">{formatDateTime(version.updatedAt)}</BodyCell>
                 <BodyCell align="right" className="!px-[22px]">
                   <div className="inline-flex gap-1.5">
-                    <Button size="sm" disabled={transferTokenApi.isLoading} onClick={() => download(version)}>
+                    <Button size="sm" disabled={shortTimeTokenApi.isLoading} onClick={() => download(version)}>
                       다운로드
                     </Button>
                     <Button

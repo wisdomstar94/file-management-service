@@ -88,8 +88,8 @@ export const ADMIN_ME_API = {
 } as const satisfies ApiSchema;
 
 /** 브라우저가 api 를 직접 호출하는 업로드 · 다운로드용 단기 토큰을 받는다. 토큰은 지정한 동작 · 대상에만 쓸 수 있다. */
-export const ADMIN_TRANSFER_TOKEN_API = {
-  url: "/api/admin/auth/transfer-token",
+export const ADMIN_SHORT_TIME_TOKEN_API = {
+  url: "/api/admin/auth/short-time-token",
   method: "POST",
   request: {
     params: typeOf<undefined>(),
@@ -101,6 +101,6 @@ export const ADMIN_TRANSFER_TOKEN_API = {
     >(),
     query: typeOf<undefined>(),
   },
-  response: typeOf<ApiSuccessBody<{ transferToken: string; expiresAt: string }>>(),
+  response: typeOf<ApiSuccessBody<{ shortTimeToken: string; expiresAt: string }>>(),
   tags: ["admin-auth"],
 } as const satisfies ApiSchema;

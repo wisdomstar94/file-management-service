@@ -19,7 +19,7 @@ export function signShareLinkUnlockToken(link: ShareLinkEntity): Promise<string>
     payload: { pwf: readPasswordFingerprint(link) },
     subject: link.id,
     audience: AUDIENCE,
-    secret: apiEnv.jwtSecret,
+    secret: apiEnv.shareLinkUnlockTokenSecret,
     expiresInSeconds: apiEnv.shareLinkUnlockExpiresInSeconds,
   });
 }
@@ -31,6 +31,10 @@ export async function isShareLinkUnlocked(link: ShareLinkEntity, token: string |
   if (!token) {
     return false;
   }
-  const payload = await verifyJwt<{ pwf: string }>({ token, audience: AUDIENCE, secret: apiEnv.jwtSecret });
+  const payload = await verifyJwt<{ pwf: string }>({
+    token,
+    audience: AUDIENCE,
+    secret: apiEnv.shareLinkUnlockTokenSecret,
+  });
   return payload?.sub === link.id && payload.pwf === readPasswordFingerprint(link);
 }

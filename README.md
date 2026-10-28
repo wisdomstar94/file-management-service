@@ -35,7 +35,7 @@ docker compose --env-file .env.local -p fms-quickstart -f dockers/compose.yml up
 
 - cmd 에서는 `copy .env.local-sample .env.local` · `set FMS_ENV_FILE=.env.local` 을 먼저 실행한 뒤 같은 `docker compose` 명령을 씁니다.
 - PowerShell · cmd 에서 지정한 `FMS_ENV_FILE` 은 그 창을 닫으면 사라집니다. 새 창에서 종료할 때는 다시 지정하세요.
-- `.env.local` 의 `JWT_SECRET` 은 저장소에 공개된 로컬용 값입니다. 둘러보기 용도면 그대로 써도 되고, 외부에 열어 둘 거라면 32자 이상의 임의 문자열로 바꾸세요.
+- `.env.local` 의 `JWT_SECRET_*` 은 저장소에 공개된 로컬용 값입니다. 둘러보기 용도면 그대로 써도 되고, 외부에 열어 둘 거라면 각각 서로 다른 32자 이상의 임의 문자열로 바꾸세요.
 
 #### 실행 후
 
@@ -136,7 +136,7 @@ yarn docker:up:all:production     # .env.production
 - env 파일은 저장소에 올라가지 않습니다(`.gitignore`). `.env.development` · `.env.production` 은 `.env.local-sample` 을 복사해 값을 바꿔 만드세요. 맨 위 `APP_ENV` 도 `development` · `production` 으로 바꿉니다.
 - env 파일의 변수는 모두 컨테이너에 그대로 들어갑니다. 변수를 새로 추가해도 compose 는 고치지 않아도 됩니다.
 - 단, `DB_HOST` · `DB_PORT` · `API_PORT` · `STORAGE_DIR` · `API_TRUST_PROXY` · `API_INTERNAL_URL` 은 컨테이너 안에서 값이 달라야 해서 compose 가 고정하고, env 파일 값보다 우선합니다. (`API_PORT` · `STORAGE_DIR` 은 `dockers/compose.standalone.yml`, 나머지는 `dockers/compose.yml`)
-- `JWT_SECRET` 은 필수이고, 매번 같은 값이어야 기존 로그인이 유지됩니다. 운영에서는 32자 이상의 임의 문자열로 바꾸세요.
+- `JWT_SECRET_ADMIN_ACCOUNT` · `JWT_SECRET_ADMIN_SHORT_TIME` · `JWT_SECRET_SHARE_LINK_UNLOCK` 은 필수입니다. 각각 관리자 access token · 업로드 · 다운로드용 short-time token · 공개 링크 잠금 해제 토큰의 서명 키이고, 매번 같은 값이어야 기존 로그인 · 잠금 해제가 유지됩니다. 운영에서는 각각 서로 다른 32자 이상의 임의 문자열로 바꾸세요.
 - `API_TRUST_PROXY` 는 웹 컨테이너의 고정 IP(`172.31.240.10` · `172.31.240.11`)만 신뢰합니다. 웹이 넘긴 `X-Forwarded-For` 만 믿고, 브라우저가 api 에 직접 보낸 헤더는 무시해 IP 정책을 위조로 우회할 수 없게 하기 위해서입니다. 이 대역(`172.31.240.0/24`)이 사내망과 겹치면 `dockers/compose.yml` 의 `web-api` 네트워크와 `API_TRUST_PROXY` 를 함께 바꾸세요.
 - 관리자 로그인 · 로그아웃과 공개 링크 비밀번호 확인 · 다운로드는 브라우저가 api 를 직접 호출하고, api 가 httpOnly 쿠키를 심습니다. 그래서 **api 와 웹은 같은 사이트(같은 상위 도메인)에 있어야 합니다.** 예) `admin.example.com` · `files.example.com` · `api.example.com` 이면 `COOKIE_DOMAIN=.example.com`. 같은 호스트에 포트만 다르게 띄우면(`localhost`) 비워 둡니다.
 - 셸에 `DB_USER` · `DB_PASSWORD` · `DB_NAME` 이 남아 있으면 postgres 계정만 그 값으로 만들어집니다(compose 의 `${...}` 는 셸 값이 우선). 실행 전에 셸에서 지우세요.
@@ -178,5 +178,5 @@ yarn e2e:webs
 
 - 관리자 웹 · 공개 링크 웹은 `X-Forwarded-For` 로 요청 IP 를 판정합니다. 웹을 직접 노출하면 클라이언트가 이 헤더를 위조할 수 있으므로, **헤더를 덮어쓰는 리버스 프록시 뒤에 두고** `WEB_TRUSTED_PROXY_HOPS` 를 그 프록시 수로 지정하세요.
 - 도커 밖에서 api 를 띄울 때 `API_TRUST_PROXY` 에는 웹 서버의 IP 만 지정하세요. 사설 대역 전체(`uniquelocal` 등)를 넣으면 브라우저가 api 를 직접 호출하며 `X-Forwarded-For` 를 위조할 수 있습니다. 도커에서는 compose 가 정합니다.
-- `dockers/compose*.yml` 의 비밀번호 기본값과 `.env.local-sample` 의 값은 **로컬 개발용이며 이 저장소에 공개된 값**입니다. 운영에서는 반드시 위 방법으로 덮어쓰고, `JWT_SECRET` 에도 `.env.local-sample` 의 값을 쓰지 마세요.
+- `dockers/compose*.yml` 의 비밀번호 기본값과 `.env.local-sample` 의 값은 **로컬 개발용이며 이 저장소에 공개된 값**입니다. 운영에서는 반드시 위 방법으로 덮어쓰고, `JWT_SECRET_*` 에도 `.env.local-sample` 의 값을 쓰지 마세요.
 - 최초 관리자 계정은 같은 아이디의 계정이 DB 에 없을 때만 만들어집니다. 한 번 띄운 뒤에 `INITIAL_ADMIN_*` 을 바꾸면 반영되지 않으니, 관리자 화면에서 바꾸거나 DB 볼륨을 지우고 다시 띄우세요.

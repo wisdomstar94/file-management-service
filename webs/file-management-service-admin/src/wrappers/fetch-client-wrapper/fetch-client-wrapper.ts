@@ -22,7 +22,7 @@ export function buildClientApiUrl<S extends ApiSchema>(
 }
 
 /**
- * 브라우저에서 api 를 직접 호출한다. admin 에서는 로그인 · 로그아웃과 transfer token 을 쓰는 업로드에 쓴다.
+ * 브라우저에서 api 를 직접 호출한다. admin 에서는 로그인 · 로그아웃과 short-time token 을 쓰는 업로드에 쓴다.
  * 400~500 대 응답은 `CommonError` 로 throw 한다.
  */
 export async function fetchClientWrapper<S extends ApiSchema>(

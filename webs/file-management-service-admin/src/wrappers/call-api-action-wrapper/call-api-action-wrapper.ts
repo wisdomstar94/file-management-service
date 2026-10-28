@@ -1,6 +1,6 @@
 "use server";
 
-import { ADMIN_ME_API, ADMIN_TRANSFER_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import { ADMIN_ME_API, ADMIN_SHORT_TIME_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { ApiSchema } from "@fms/api-schemas/types/api-schema";
 import type { ApiRequest, ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import type { CommonError } from "@fms/error-provider/errors/common-error";
@@ -9,7 +9,7 @@ import { fetchServerWrapper } from "../fetch-server-wrapper";
 import { serverActionWrapper } from "../server-action-wrapper";
 
 // 토큰을 주고받거나(refresh) api 가 쿠키를 심는(login · logout) 인증 api 는 서버 액션으로 대신 호출하지 않는다.
-const ALLOWED_AUTH_URLS: string[] = [ADMIN_ME_API.url, ADMIN_TRANSFER_TOKEN_API.url];
+const ALLOWED_AUTH_URLS: string[] = [ADMIN_ME_API.url, ADMIN_SHORT_TIME_TOKEN_API.url];
 
 /** 브라우저가 넘긴 schema 라 그대로 믿지 않는다. admin api 경로 · json 응답 · 헤더 없음만 허용한다. */
 function assertCallableSchema(schema: ApiSchema, request: { headers?: unknown }) {

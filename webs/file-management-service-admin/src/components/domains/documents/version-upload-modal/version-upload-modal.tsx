@@ -1,6 +1,6 @@
 "use client";
 
-import { ADMIN_TRANSFER_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import { ADMIN_SHORT_TIME_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { DOCUMENT_DETAIL_API } from "@fms/api-schemas/schemas/document-api-schemas";
 import { CREATE_DOCUMENT_API } from "@fms/api-schemas/schemas/document-api-schemas";
 import {
@@ -39,14 +39,14 @@ export function VersionUploadModal(props: {
   const [file, setFile] = useState<File | null>(null);
   const showToast = useToast();
   const updateVersionApi = useCallApiWrapper(UPDATE_DOCUMENT_VERSION_API, { successMessage: "저장했습니다" });
-  const transferTokenApi = useCallApiWrapper(ADMIN_TRANSFER_TOKEN_API, { refreshOnSuccess: false });
+  const shortTimeTokenApi = useCallApiWrapper(ADMIN_SHORT_TIME_TOKEN_API, { refreshOnSuccess: false });
   // 파일은 Next 서버를 거치지 않고 브라우저가 api 로 바로 올린다.
   const createDocumentApi = useCallApiWrapper(CREATE_DOCUMENT_API, { via: "client", successMessage: "등록했습니다" });
   const createVersionApi = useCallApiWrapper(CREATE_DOCUMENT_VERSION_API, {
     via: "client",
     successMessage: "등록했습니다",
   });
-  const isPending = [updateVersionApi, transferTokenApi, createDocumentApi, createVersionApi].some(
+  const isPending = [updateVersionApi, shortTimeTokenApi, createDocumentApi, createVersionApi].some(
     (api) => api.isLoading,
   );
   const isEdit = mode.kind === "edit-version";
@@ -59,7 +59,7 @@ export function VersionUploadModal(props: {
         body: { versionName },
       });
     }
-    const token = await transferTokenApi.fetchApi({
+    const token = await shortTimeTokenApi.fetchApi({
       body:
         mode.kind === "new-document"
           ? { purpose: "UPLOAD_DOCUMENT" }
@@ -68,7 +68,7 @@ export function VersionUploadModal(props: {
     if (isCommonError(token)) {
       return token;
     }
-    const headers = { authorization: `Bearer ${token.data.transferToken}` };
+    const headers = { authorization: `Bearer ${token.data.shortTimeToken}` };
     const body = new FormData();
     if (mode.kind === "new-document") {
       body.set("name", String(form.get("name") ?? ""));

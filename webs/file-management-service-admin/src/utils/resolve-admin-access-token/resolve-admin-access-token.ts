@@ -15,7 +15,7 @@ export async function resolveAdminAccessToken(props: {
 }): Promise<{ accessToken: string | null; refreshed: ResBody<typeof ADMIN_REFRESH_TOKEN_API>["data"] | null }> {
   const { incoming, accessToken, refreshToken } = props;
   const isValid = accessToken
-    ? (await verifyAdminAccessToken({ token: accessToken, secret: webEnv.jwtSecret })) !== null
+    ? (await verifyAdminAccessToken({ token: accessToken, secret: webEnv.adminAccessTokenSecret })) !== null
     : false;
   if (accessToken && isValid) {
     return { accessToken, refreshed: null };

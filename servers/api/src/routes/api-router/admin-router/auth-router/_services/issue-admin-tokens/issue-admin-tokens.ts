@@ -31,7 +31,7 @@ export async function issueAdminTokens(
   await manager.getRepository(AdminAccountEntity).update(adminAccountId, { lastAccessedAt: new Date(now) });
 
   return {
-    accessToken: await signAdminAccessToken({ adminAccountId, secret: apiEnv.jwtSecret }),
+    accessToken: await signAdminAccessToken({ adminAccountId, secret: apiEnv.adminAccessTokenSecret }),
     accessTokenExpiresAt: new Date(now + ADMIN_ACCESS_TOKEN_EXPIRES_IN_SECONDS * 1000).toISOString(),
     refreshToken,
     refreshTokenExpiresAt: refreshTokenExpiresAt.toISOString(),
