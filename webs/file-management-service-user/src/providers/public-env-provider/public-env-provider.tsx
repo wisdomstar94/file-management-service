@@ -11,7 +11,7 @@ export type PublicEnv = {
 const PublicEnvContext = createContext<PublicEnv>({ apiPublicUrl: "" });
 
 export function PublicEnvProvider(props: { env: PublicEnv; children: ReactNode }) {
-  return <PublicEnvContext.Provider value={props.env}>{props.children}</PublicEnvContext.Provider>;
+  return <PublicEnvContext value={props.env}>{props.children}</PublicEnvContext>;
 }
 
 export function usePublicEnv() {

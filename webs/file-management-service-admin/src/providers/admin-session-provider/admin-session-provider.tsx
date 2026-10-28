@@ -8,7 +8,7 @@ import { createContext, type ReactNode, useContext } from "react";
 const AdminSessionContext = createContext<ResBody<typeof ADMIN_ME_API>["data"] | null>(null);
 
 export function AdminSessionProvider(props: { me: ResBody<typeof ADMIN_ME_API>["data"]; children: ReactNode }) {
-  return <AdminSessionContext.Provider value={props.me}>{props.children}</AdminSessionContext.Provider>;
+  return <AdminSessionContext value={props.me}>{props.children}</AdminSessionContext>;
 }
 
 export function useAdminSession() {

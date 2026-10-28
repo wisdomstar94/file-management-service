@@ -19,7 +19,7 @@ export function ToastProvider(props: { children: ReactNode }) {
   }, []);
 
   return (
-    <ToastContext.Provider value={showToast}>
+    <ToastContext value={showToast}>
       {props.children}
       {toast && (
         <div
@@ -33,7 +33,7 @@ export function ToastProvider(props: { children: ReactNode }) {
           {toast.message}
         </div>
       )}
-    </ToastContext.Provider>
+    </ToastContext>
   );
 }
 
