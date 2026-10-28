@@ -168,6 +168,8 @@ yarn e2e:servers
 yarn e2e:webs
 ```
 
+- `type:check` 는 앱 코드와 각 앱의 `e2e/tsconfig.json` 을 함께 검사합니다. 새 앱을 추가할 때도 `e2e/tsconfig.json` 을 두고 `type:check` 에 `tsc --noEmit -p ./e2e/tsconfig.json` 을 붙이세요.
+
 ## 권한 코드 추가
 
 - 권한은 관리자 화면에서 만들 수 없습니다. 관리자는 분류 · 권한명 · 설명만 바꿀 수 있습니다.

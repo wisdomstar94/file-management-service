@@ -1,4 +1,7 @@
-export const DEFAULT_LINK = {
+import type { CREATE_SHARE_LINK_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
+import type { ReqBody } from "@fms/api-schemas/types/api-schema-utils";
+
+export const DEFAULT_LINK: ReqBody<typeof CREATE_SHARE_LINK_API> = {
   accessPolicyGroupId: null,
   password: null,
   maxDownloadCount: null,

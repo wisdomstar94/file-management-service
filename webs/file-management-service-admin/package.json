@@ -7,7 +7,7 @@
     "dev": "node ../../scripts/run-with-root-env.mjs next dev --port 3000",
     "build": "node ../../scripts/run-with-root-env.mjs next build",
     "start": "node ../../scripts/run-with-root-env.mjs next start --port 3000",
-    "type:check": "next typegen && tsc --noEmit",
+    "type:check": "next typegen && tsc --noEmit && tsc --noEmit -p ./e2e/tsconfig.json",
     "lint:check": "biome check",
     "lint:format": "biome check --write",
     "e2e": "playwright test"

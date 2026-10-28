@@ -1,4 +1,6 @@
 import { randomUUID } from "node:crypto";
+import type { CREATE_SHARE_LINK_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
+import type { ReqBody } from "@fms/api-schemas/types/api-schema-utils";
 import { type APIRequestContext, expect } from "@playwright/test";
 import { API_BASE_URL } from "./_consts/api-base-url";
 import { DEFAULT_LINK } from "./_consts/default-share-link";
@@ -10,7 +12,7 @@ import { loginAsInitialAdmin } from "./_utils/login-as-initial-admin";
  */
 export async function createSharedDocument(
   request: APIRequestContext,
-  props: { link?: Partial<typeof DEFAULT_LINK> & { password?: string | null }; accessPolicyCidrs?: string[] } = {},
+  props: { link?: Partial<ReqBody<typeof CREATE_SHARE_LINK_API>>; accessPolicyCidrs?: string[] } = {},
 ) {
   const headers = await loginAsInitialAdmin(request);
   const name = `공유 자료 ${randomUUID().slice(0, 8)}`;
