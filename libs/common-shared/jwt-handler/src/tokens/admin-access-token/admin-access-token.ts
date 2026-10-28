@@ -1,9 +1,7 @@
+import { ADMIN_ACCESS_TOKEN_EXPIRES_IN_SECONDS } from "../../consts/admin-access-token-expires-in-seconds/index.js";
 import { signJwt } from "../sign-jwt/index.js";
 import { verifyJwt } from "../verify-jwt/index.js";
-
-const ADMIN_ACCESS_TOKEN_AUDIENCE = "fms-admin-access";
-
-export const ADMIN_ACCESS_TOKEN_EXPIRES_IN_SECONDS = 60 * 15;
+import { ADMIN_ACCESS_TOKEN_AUDIENCE } from "./_consts/admin-access-token-audience/index.js";
 
 export function signAdminAccessToken(props: { adminAccountId: string; secret: string }): Promise<string> {
   return signJwt({

@@ -2,8 +2,8 @@
 
 import type { ApiSchema } from "@fms/api-schemas/types/api-schema";
 import type { ApiRequest, ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import type { CommonError } from "@fms/error-provider/errors/common-error";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
+import type { CommonError } from "@fms/error-provider/types/common-error";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { usePublicEnv } from "@/providers/public-env-provider";
@@ -11,16 +11,7 @@ import { createOtherCommonError } from "@/utils/commons/create-other-common-erro
 import { DEFAULT_ERROR_MESSAGE } from "../_consts/default-error-message";
 import { callApiActionWrapper } from "../call-api-action-wrapper";
 import { fetchClientWrapper } from "../fetch-client-wrapper";
-
-export type UseCallApiWrapperOptions = {
-  /**
-   * `action` 은 서버 액션(`callApiActionWrapper`), `client` 는 브라우저에서 api 직접 호출(`fetchClientWrapper`). 기본 `action`
-   * `client` 는 api 가 심은 쿠키(공개 링크 잠금 해제)를 주고받도록 `credentials: "include"` 로 호출한다.
-   */
-  via?: "action" | "client";
-  /** 성공하면 서버 컴포넌트를 다시 불러온다. 기본 `true` */
-  refreshOnSuccess?: boolean;
-};
+import type { UseCallApiWrapperOptions } from "./_types/use-call-api-wrapper-options";
 
 /** 클라이언트 컴포넌트에서 api schema 로 호출한다. `fetchApi` 는 throw 하지 않고 `CommonError` 를 돌려준다. */
 export function useCallApiWrapper<S extends ApiSchema>(schema: S, options: UseCallApiWrapperOptions = {}) {

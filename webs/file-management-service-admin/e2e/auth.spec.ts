@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
-import { INITIAL_ADMIN, loginAsInitialAdmin, loginThroughUi } from "./_utils/admin-e2e-helpers";
+import { INITIAL_ADMIN } from "./_consts/initial-admin";
+import { loginAsInitialAdmin, loginThroughUi } from "./_utils/admin-e2e-helpers";
 
 test.describe("로그인 · 라우트 그룹", () => {
   test("로그인하지 않으면 로그인 필수 화면에서 로그인 화면으로 보내고, 로그인 후 원래 화면으로 돌아온다", async ({

@@ -1,4 +1,4 @@
-import type { AccessPolicyNode } from "@fms/common-utils/access-policies/access-policy-node";
+import type { AccessPolicyNode } from "@fms/types/access-policies/access-policy-node";
 import type { EditorBlock } from "../../../../../../_types/editor-block";
 
 export function toNode(block: EditorBlock): AccessPolicyNode {

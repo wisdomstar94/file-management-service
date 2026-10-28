@@ -1,4 +1,4 @@
-import type { AccessPolicyNode } from "@fms/common-utils/access-policies/access-policy-node";
+import type { AccessPolicyNode } from "@fms/types/access-policies/access-policy-node";
 import type { HeaderRow } from "../../../../../../_types/editor-block";
 import { createKey } from "../../../../../create-key";
 

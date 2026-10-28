@@ -1,5 +1,5 @@
-import type { CommonError } from "@fms/error-provider/errors/common-error";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
+import type { CommonError } from "@fms/error-provider/types/common-error";
 import { unstable_rethrow } from "next/navigation";
 import { DEFAULT_ERROR_MESSAGE } from "@/consts/default-error-message";
 import { createOtherCommonError } from "@/utils/commons/create-other-common-error";

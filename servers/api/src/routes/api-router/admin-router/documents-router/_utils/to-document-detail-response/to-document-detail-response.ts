@@ -2,7 +2,7 @@ import type { DOCUMENT_DETAIL_API } from "@fms/api-schemas/schemas/document-api-
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { findLatestVersion } from "#/utils/domains/document-version/find-latest-version/index.js";
 import { resolveDefaultVersion } from "#/utils/domains/document-version/resolve-default-version/index.js";
-import type { DocumentWithVersions } from "../../_services/find-document-or-throw/index.js";
+import type { DocumentWithVersions } from "../../_types/document-with-versions/index.js";
 import { toDocumentVersionResponse } from "../to-document-version-response/index.js";
 
 export function toDocumentDetailResponse(document: DocumentWithVersions): ResBody<typeof DOCUMENT_DETAIL_API>["data"] {

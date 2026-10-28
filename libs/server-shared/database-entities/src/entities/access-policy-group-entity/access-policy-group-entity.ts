@@ -1,4 +1,4 @@
-import type { AccessPolicyNode } from "@fms/common-utils/access-policies/access-policy-node";
+import type { AccessPolicyNode } from "@fms/types/access-policies/access-policy-node";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("access_policy_group")

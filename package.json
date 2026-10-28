@@ -16,7 +16,7 @@
     "lint:format": "biome check --write && node scripts/check-tailwind-classes.mjs --write",
     "type:check": "yarn workspaces foreach -A --exclude file-management-service run type:check",
     "---------------------- libs ----------------------": "",
-    "libs:build": "yarn workspaces foreach -At --include '@fms/*-utils' --include '@fms/*-handler' --include '@fms/api-schemas' --include '@fms/error-provider' --include '@fms/database-entities' --include '@fms/web-ui' run build",
+    "libs:build": "yarn workspaces foreach -At --include '@fms/*-utils' --include '@fms/*-handler' --include '@fms/consts' --include '@fms/types' --include '@fms/api-schemas' --include '@fms/error-provider' --include '@fms/database-entities' --include '@fms/web-ui' run build",
     "libs:watch": "yarn workspaces foreach -Apiv -j unlimited --include 'libs/**' run watch",
     "---------------------- file-management-service-e2e ----------------------": "",
     "e2e": "sh scripts/run-e2e.sh",

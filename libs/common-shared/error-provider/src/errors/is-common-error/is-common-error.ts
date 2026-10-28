@@ -1,4 +1,5 @@
-import { COMMON_ERROR_IDENTIFIER, type CommonError } from "../common-error/index.js";
+import { COMMON_ERROR_IDENTIFIER } from "../../consts/common-error-identifier/index.js";
+import type { CommonError } from "../../types/common-error/index.js";
 
 export function isCommonError(v: unknown): v is CommonError {
   if (typeof v !== "object" || v === null) {

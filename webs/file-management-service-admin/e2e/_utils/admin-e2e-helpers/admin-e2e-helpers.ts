@@ -1,10 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { expect, type Page } from "@playwright/test";
-
-export const INITIAL_ADMIN = {
-  loginId: process.env.INITIAL_ADMIN_ID ?? "admin",
-  password: process.env.INITIAL_ADMIN_PASSWORD ?? "admin1234!",
-};
+import { INITIAL_ADMIN } from "../../_consts/initial-admin";
 
 export function uniqueName(prefix: string) {
   return `${prefix}-${randomUUID().slice(0, 8)}`;

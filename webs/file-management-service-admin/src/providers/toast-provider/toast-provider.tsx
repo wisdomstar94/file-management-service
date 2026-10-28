@@ -1,8 +1,7 @@
 "use client";
 
 import { createContext, type ReactNode, useCallback, useContext, useRef, useState } from "react";
-
-type Toast = { message: string; tone: "success" | "error" };
+import type { Toast } from "./_types/toast";
 
 const ToastContext = createContext<(message: string, tone?: Toast["tone"]) => void>(() => undefined);
 

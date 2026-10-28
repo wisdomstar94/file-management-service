@@ -1,5 +1,5 @@
-import type { AccessPolicyNode } from "@fms/common-utils/access-policies/access-policy-node";
-import type { AccessPolicyRequest } from "../../evaluate-access-policy.js";
+import type { AccessPolicyNode } from "@fms/types/access-policies/access-policy-node";
+import type { AccessPolicyRequest } from "../../../../types/access-policy-request/index.js";
 import { evaluateHeaderNode } from "../evaluate-header-node/index.js";
 import { evaluateIpNode } from "../evaluate-ip-node/index.js";
 

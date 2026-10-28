@@ -1,4 +1,4 @@
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import type { Response } from "express";
 import type { HttpError } from "#/classes/http-error/index.js";
 import { apiEnv } from "#/consts/api-env/index.js";

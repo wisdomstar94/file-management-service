@@ -1,7 +1,4 @@
-import {
-  ADMIN_ACCESS_TOKEN_COOKIE,
-  ADMIN_REFRESH_TOKEN_COOKIE,
-} from "@fms/common-utils/cookies/admin-auth-cookie-names";
+import { ADMIN_ACCESS_TOKEN_COOKIE, ADMIN_REFRESH_TOKEN_COOKIE } from "@fms/consts/cookies/admin-auth-cookie-names";
 import { webEnv } from "@/consts/web-env";
 import type { CookieWriter } from "../_types/cookie-writer";
 

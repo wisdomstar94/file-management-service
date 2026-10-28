@@ -1,11 +1,10 @@
+import { INITIAL_ADMIN_CREDENTIALS } from "./_consts/initial-admin-credentials";
 import { api } from "./_utils/api-client";
 import { loginAs, readLoginTokens } from "./_utils/login-as";
 
-const credentials = { loginId: process.env.INITIAL_ADMIN_ID ?? "", password: process.env.INITIAL_ADMIN_PASSWORD ?? "" };
-
 describe("관리자 인증", () => {
   test("올바른 아이디 · 비밀번호면 토큰을 httpOnly 쿠키로만 발급하고 /me 로 권한 코드를 돌려준다", async () => {
-    const login = await loginAs(credentials);
+    const login = await loginAs(INITIAL_ADMIN_CREDENTIALS);
     expect(login.status).toBe(200);
     expect(login.body.data).toEqual({ isLoggedIn: true });
     const tokens = readLoginTokens(login);
@@ -15,12 +14,12 @@ describe("관리자 인증", () => {
     );
 
     const me = await api({ token: tokens.accessToken }).get("/api/admin/auth/me").expect(200);
-    expect(me.body.data.loginId).toBe(credentials.loginId);
+    expect(me.body.data.loginId).toBe(INITIAL_ADMIN_CREDENTIALS.loginId);
     expect(me.body.data.permissionCodes).toEqual(expect.arrayContaining(["account.access", "perm.update"]));
   });
 
   test("비밀번호가 틀리면 401 INVALID_CREDENTIALS", async () => {
-    const res = await loginAs({ ...credentials, password: "wrong-password" });
+    const res = await loginAs({ ...INITIAL_ADMIN_CREDENTIALS, password: "wrong-password" });
     expect(res.status).toBe(401);
     expect(res.body.error.code).toBe("INVALID_CREDENTIALS");
   });
@@ -32,7 +31,7 @@ describe("관리자 인증", () => {
   });
 
   test("refresh 는 새 토큰을 발급하고, 이미 쓴 refresh token 은 다시 쓸 수 없다", async () => {
-    const { refreshToken } = readLoginTokens(await loginAs(credentials));
+    const { refreshToken } = readLoginTokens(await loginAs(INITIAL_ADMIN_CREDENTIALS));
     const refreshed = await api().post("/api/admin/auth/refresh").send({ refreshToken });
     expect(refreshed.status).toBe(200);
     expect(refreshed.body.data.refreshToken).not.toBe(refreshToken);
@@ -42,7 +41,7 @@ describe("관리자 인증", () => {
   });
 
   test("logout 은 쿠키의 refresh token 을 폐기하고 토큰 쿠키를 지운다", async () => {
-    const { refreshToken } = readLoginTokens(await loginAs(credentials));
+    const { refreshToken } = readLoginTokens(await loginAs(INITIAL_ADMIN_CREDENTIALS));
     const logout = await api({ headers: { Cookie: `fms_admin_rt=${encodeURIComponent(refreshToken)}` } })
       .post("/api/admin/auth/logout")
       .expect(204);

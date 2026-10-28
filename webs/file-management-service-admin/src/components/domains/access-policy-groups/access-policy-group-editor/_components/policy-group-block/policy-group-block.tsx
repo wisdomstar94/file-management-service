@@ -1,37 +1,20 @@
 "use client";
 
 import { ChoiceCard } from "@/components/commons/choice-card";
-import type { EditorBlock, EditorGroup } from "../../_types/editor-block";
+import type { EditorBlock } from "../../_types/editor-block";
 import { HeaderRuleBlock } from "../header-rule-block";
 import { IpRuleBlock } from "../ip-rule-block";
+import { BLOCK_META } from "./_consts/block-meta";
+import { OPERATORS } from "./_consts/operators";
 import { createBlock } from "./_utils/create-block";
-
-const OPERATORS = [
-  { operator: "AND" as const, title: "모두 통과", description: "모든 제한을 통과해야 접근을 허용합니다." },
-  { operator: "OR" as const, title: "하나 이상 통과", description: "제한 중 하나만 통과해도 접근을 허용합니다." },
-];
-
-const BLOCK_META = {
-  IP: { icon: "ti-world", title: "IP 제한", description: "요청 IP 기준으로 허용 · 차단합니다. CIDR 표기 지원." },
-  HEADERS: {
-    icon: "ti-code",
-    title: "특정 헤더 제한",
-    description: "요청 헤더 값이 조건과 모두 맞을 때만 통과합니다.",
-  },
-  GROUP: {
-    icon: "ti-brackets",
-    title: "하위 조건 그룹",
-    description: "괄호로 묶은 조건입니다. 결합 방식을 따로 정합니다.",
-  },
-};
 
 /** 조건 그룹 하나. 하위 그룹도 같은 컴포넌트로 들여써서 그린다. */
 export function PolicyGroupBlock(props: {
-  group: EditorGroup;
+  group: Extract<EditorBlock, { kind: "GROUP" }>;
   depth: number;
   maxDepth: number;
   isDisabled: boolean;
-  onChange: (group: EditorGroup) => void;
+  onChange: (group: Extract<EditorBlock, { kind: "GROUP" }>) => void;
 }) {
   const { group, depth, maxDepth, isDisabled, onChange } = props;
   const replaceChild = (key: string, next: EditorBlock | null) =>

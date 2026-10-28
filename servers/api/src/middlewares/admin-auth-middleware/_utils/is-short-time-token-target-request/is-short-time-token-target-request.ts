@@ -1,4 +1,4 @@
-import type { AdminShortTimeTokenTarget } from "@fms/jwt-handler/tokens/admin-short-time-token";
+import type { AdminShortTimeTokenTarget } from "@fms/jwt-handler/types/admin-short-time-token-target";
 import type { Request } from "express";
 
 /** short-time token 은 발급받을 때 지정한 동작 · 대상 요청에만 쓸 수 있다. */

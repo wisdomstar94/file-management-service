@@ -1,12 +1,4 @@
-import type { PermissionCode } from "@fms/common-utils/permissions/permission-code-registry";
-
-export type AdminNavItem = {
-  label: string;
-  icon: string;
-  href: string;
-  permission: PermissionCode;
-  children?: AdminNavItem[];
-};
+import type { AdminNavItem } from "../../_types/admin-nav-item";
 
 export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { label: "자료 관리", icon: "ti-folders", href: "/documents", permission: "file.list.access" },

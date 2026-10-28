@@ -1,4 +1,4 @@
-import { PERMISSION_CODE_REGISTRY, PERMISSION_CODES } from "@fms/common-utils/permissions/permission-code-registry";
+import { PERMISSION_CODE_REGISTRY } from "@fms/consts/permissions/permission-code-registry";
 import { PermissionEntity } from "@fms/database-entities/entities/permission-entity";
 import type { EntityManager } from "typeorm";
 
@@ -6,9 +6,9 @@ import type { EntityManager } from "typeorm";
 export async function seedPermissions(manager: EntityManager): Promise<number> {
   const repository = manager.getRepository(PermissionEntity);
   const existingCodes = new Set((await repository.find({ select: { code: true } })).map((p) => p.code));
-  const missing = PERMISSION_CODES.filter((code) => !existingCodes.has(code)).map((code) =>
-    repository.create({ code, ...PERMISSION_CODE_REGISTRY[code].seed }),
-  );
+  const missing = (Object.keys(PERMISSION_CODE_REGISTRY) as (keyof typeof PERMISSION_CODE_REGISTRY)[])
+    .filter((code) => !existingCodes.has(code))
+    .map((code) => repository.create({ code, ...PERMISSION_CODE_REGISTRY[code].seed }));
 
   await repository.save(missing);
   return missing.length;

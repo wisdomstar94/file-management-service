@@ -1,9 +1,7 @@
 import { DocumentEntity } from "@fms/database-entities/entities/document-entity";
-import type { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 import type { EntityManager } from "typeorm";
 import { notFoundError } from "#/utils/commons/not-found-error/index.js";
-
-export type DocumentWithVersions = DocumentEntity & { versions: DocumentVersionEntity[] };
+import type { DocumentWithVersions } from "../../_types/document-with-versions/index.js";
 
 /** 자료와 버전 전체(최신순)를 읽는다. 자료는 버전을 1개 이상 가진다. */
 export async function findDocumentOrThrow(manager: EntityManager, id: string): Promise<DocumentWithVersions> {

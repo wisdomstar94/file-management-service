@@ -1,5 +1,5 @@
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
-import type { ApiFailBody } from "@fms/common-utils/responses/api-response-body";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
+import type { ApiFailBody } from "@fms/types/responses/api-response-body";
 import type { Express, NextFunction, Request, Response } from "express";
 import { HttpError } from "#/classes/http-error/index.js";
 

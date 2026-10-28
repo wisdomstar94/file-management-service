@@ -1,28 +1,15 @@
 "use client";
 
-import type { AccessPolicyIpMode } from "@fms/common-utils/access-policies/access-policy-node";
 import { ChoiceCard } from "@/components/commons/choice-card";
+import { RULE_INPUT_CLASS_NAME } from "../../_consts/rule-input-class-name";
 import type { EditorBlock } from "../../_types/editor-block";
+import { MODES } from "./_consts/ip-modes";
 
-type IpBlock = Extract<EditorBlock, { kind: "IP" }>;
-
-const MODES: { mode: AccessPolicyIpMode; title: string; description: string }[] = [
-  {
-    mode: "ALLOW_ALL_EXCEPT",
-    title: "기본 허용 · 지정 IP 차단",
-    description: "모든 IP를 허용하고, 아래 목록만 차단합니다.",
-  },
-  {
-    mode: "DENY_ALL_EXCEPT",
-    title: "기본 차단 · 지정 IP 허용",
-    description: "모든 IP를 차단하고, 아래 목록만 허용합니다.",
-  },
-];
-
-const inputClassName =
-  "h-9 min-w-0 rounded-lg border border-line-input px-2.5 font-mono text-[13px] outline-none focus:border-primary disabled:bg-disabled-bg";
-
-export function IpRuleBlock(props: { block: IpBlock; isDisabled: boolean; onChange: (block: IpBlock) => void }) {
+export function IpRuleBlock(props: {
+  block: Extract<EditorBlock, { kind: "IP" }>;
+  isDisabled: boolean;
+  onChange: (block: Extract<EditorBlock, { kind: "IP" }>) => void;
+}) {
   const { block, isDisabled, onChange } = props;
   const setCidr = (index: number, value: string) =>
     onChange({ ...block, cidrs: block.cidrs.map((cidr, i) => (i === index ? value : cidr)) });
@@ -56,7 +43,7 @@ export function IpRuleBlock(props: { block: IpBlock; isDisabled: boolean; onChan
               disabled={isDisabled}
               onChange={(event) => setCidr(index, event.target.value)}
               placeholder="IP 또는 CIDR (예: 10.0.0.0/8)"
-              className={inputClassName}
+              className={RULE_INPUT_CLASS_NAME}
             />
             <button
               type="button"

@@ -14,6 +14,9 @@
     "lint:check": "biome check",
     "lint:format": "biome check --write"
   },
+  "dependencies": {
+    "@fms/types": "workspace:^"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
     "@fms/biome-config": "workspace:^",
@@ -22,16 +25,6 @@
     "vite": "8.3.2"
   },
   "exports": {
-    "./permissions/*": {
-      "require": {
-        "types": "./dist/permissions/*/index.d.ts",
-        "default": "./dist/permissions/*/index.cjs"
-      },
-      "import": {
-        "types": "./dist/permissions/*/index.d.ts",
-        "default": "./dist/permissions/*/index.mjs"
-      }
-    },
     "./access-policies/*": {
       "require": {
         "types": "./dist/access-policies/*/index.d.ts",
@@ -42,16 +35,6 @@
         "default": "./dist/access-policies/*/index.mjs"
       }
     },
-    "./errors/*": {
-      "require": {
-        "types": "./dist/errors/*/index.d.ts",
-        "default": "./dist/errors/*/index.cjs"
-      },
-      "import": {
-        "types": "./dist/errors/*/index.d.ts",
-        "default": "./dist/errors/*/index.mjs"
-      }
-    },
     "./networks/*": {
       "require": {
         "types": "./dist/networks/*/index.d.ts",
@@ -60,26 +43,6 @@
       "import": {
         "types": "./dist/networks/*/index.d.ts",
         "default": "./dist/networks/*/index.mjs"
-      }
-    },
-    "./responses/*": {
-      "require": {
-        "types": "./dist/responses/*/index.d.ts",
-        "default": "./dist/responses/*/index.cjs"
-      },
-      "import": {
-        "types": "./dist/responses/*/index.d.ts",
-        "default": "./dist/responses/*/index.mjs"
-      }
-    },
-    "./cookies/*": {
-      "require": {
-        "types": "./dist/cookies/*/index.d.ts",
-        "default": "./dist/cookies/*/index.cjs"
-      },
-      "import": {
-        "types": "./dist/cookies/*/index.d.ts",
-        "default": "./dist/cookies/*/index.mjs"
       }
     }
   }

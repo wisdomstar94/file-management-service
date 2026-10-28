@@ -1,5 +1,5 @@
-import type { ApiFailBody } from "@fms/common-utils/responses/api-response-body";
-import type { CommonError } from "@fms/error-provider/errors/common-error";
+import type { CommonError } from "@fms/error-provider/types/common-error";
+import type { ApiFailBody } from "@fms/types/responses/api-response-body";
 
 /** 400 검증 오류면 필드별 첫 메시지를, 아니면 api 메시지 또는 그 외 에러 메시지를 돌려준다. */
 export function readCommonErrorMessage(error: CommonError): string {

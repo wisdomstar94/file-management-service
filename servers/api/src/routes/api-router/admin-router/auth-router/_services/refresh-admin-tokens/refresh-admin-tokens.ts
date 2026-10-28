@@ -1,6 +1,6 @@
 import type { ADMIN_REFRESH_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import { AdminRefreshTokenEntity } from "@fms/database-entities/entities/admin-refresh-token-entity";
 import type { Request } from "express";
 import { HttpError } from "#/classes/http-error/index.js";

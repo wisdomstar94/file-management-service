@@ -19,9 +19,7 @@ import { Pagination } from "@/components/commons/pagination";
 import { useAdminSession } from "@/providers/admin-session-provider";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { AccountFormModal } from "./_components/account-form-modal";
-
-const NO_CREATE_PERMISSION = "관리자 계정 생성 권한이 없습니다";
-const NO_DELETE_PERMISSION = "관리자 계정 삭제 권한이 없습니다";
+import { NO_CREATE_PERMISSION, NO_DELETE_PERMISSION } from "./_consts/permission-denied-messages";
 
 export function AccountsScreen(props: {
   accounts: ResBody<typeof ADMIN_ACCOUNT_LIST_API>["data"];

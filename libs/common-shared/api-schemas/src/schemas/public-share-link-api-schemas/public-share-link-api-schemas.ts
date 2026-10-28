@@ -1,9 +1,8 @@
-import type { ApiSuccessBody } from "@fms/common-utils/responses/api-response-body";
+import type { ApiSuccessBody } from "@fms/types/responses/api-response-body";
 import { type ApiSchema, typeOf } from "../../types/api-schema/index.js";
 import type { ResBody } from "../../types/api-schema-utils/index.js";
 import type { SHARE_LINK_LIST_API } from "../share-link-api-schemas/index.js";
-
-type PublicShareLinkVersion = { id: string; versionName: string; fileName: string; fileSize: number };
+import type { PublicShareLinkVersion } from "./_types/public-share-link-version/index.js";
 
 export const PUBLIC_SHARE_LINK_GATE_API = {
   url: "/api/public/share-links/:shareLinkKey",

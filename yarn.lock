@@ -550,8 +550,10 @@ __metadata:
     "@fms/api-schemas": "workspace:^"
     "@fms/biome-config": "workspace:^"
     "@fms/common-utils": "workspace:^"
+    "@fms/consts": "workspace:^"
     "@fms/error-provider": "workspace:^"
     "@fms/jwt-handler": "workspace:^"
+    "@fms/types": "workspace:^"
     "@fms/web-ui": "workspace:^"
     "@fms/web-utils": "workspace:^"
     "@playwright/test": "npm:1.63.0"
@@ -573,7 +575,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:2.5.15"
     "@fms/biome-config": "workspace:^"
-    "@fms/common-utils": "workspace:^"
+    "@fms/types": "workspace:^"
     "@types/node": "npm:26.6.4"
     typescript: "npm:7.0.2"
     vite: "npm:8.3.2"
@@ -588,10 +590,12 @@ __metadata:
     "@fms/api-schemas": "workspace:^"
     "@fms/biome-config": "workspace:^"
     "@fms/common-utils": "workspace:^"
+    "@fms/consts": "workspace:^"
     "@fms/database-entities": "workspace:^"
     "@fms/jwt-handler": "workspace:^"
     "@fms/password-handler": "workspace:^"
     "@fms/server-utils": "workspace:^"
+    "@fms/types": "workspace:^"
     "@swc/core": "npm:1.16.13"
     "@swc/jest": "npm:0.2.39"
     "@types/cors": "npm:2.8.19"
@@ -629,6 +633,19 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:2.5.15"
     "@fms/biome-config": "workspace:^"
+    "@fms/types": "workspace:^"
+    "@types/node": "npm:26.6.4"
+    typescript: "npm:7.0.2"
+    vite: "npm:8.3.2"
+  languageName: unknown
+  linkType: soft
+
+"@fms/consts@workspace:^, @fms/consts@workspace:libs/common-shared/consts":
+  version: 0.0.0-use.local
+  resolution: "@fms/consts@workspace:libs/common-shared/consts"
+  dependencies:
+    "@biomejs/biome": "npm:2.5.15"
+    "@fms/biome-config": "workspace:^"
     "@types/node": "npm:26.6.4"
     typescript: "npm:7.0.2"
     vite: "npm:8.3.2"
@@ -641,7 +658,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:2.5.15"
     "@fms/biome-config": "workspace:^"
-    "@fms/common-utils": "workspace:^"
+    "@fms/types": "workspace:^"
     "@types/node": "npm:26.6.4"
     typeorm: "npm:1.1.1"
     typescript: "npm:7.0.2"
@@ -655,7 +672,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:2.5.15"
     "@fms/biome-config": "workspace:^"
-    "@fms/common-utils": "workspace:^"
+    "@fms/consts": "workspace:^"
     "@fms/database-entities": "workspace:^"
     "@fms/password-handler": "workspace:^"
     "@fms/server-utils": "workspace:^"
@@ -716,7 +733,20 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:2.5.15"
     "@fms/biome-config": "workspace:^"
-    "@fms/common-utils": "workspace:^"
+    "@fms/types": "workspace:^"
+    "@types/node": "npm:26.6.4"
+    typescript: "npm:7.0.2"
+    vite: "npm:8.3.2"
+  languageName: unknown
+  linkType: soft
+
+"@fms/types@workspace:^, @fms/types@workspace:libs/common-shared/types":
+  version: 0.0.0-use.local
+  resolution: "@fms/types@workspace:libs/common-shared/types"
+  dependencies:
+    "@biomejs/biome": "npm:2.5.15"
+    "@fms/biome-config": "workspace:^"
+    "@fms/consts": "workspace:^"
     "@types/node": "npm:26.6.4"
     typescript: "npm:7.0.2"
     vite: "npm:8.3.2"
@@ -730,8 +760,9 @@ __metadata:
     "@biomejs/biome": "npm:2.5.15"
     "@fms/api-schemas": "workspace:^"
     "@fms/biome-config": "workspace:^"
-    "@fms/common-utils": "workspace:^"
+    "@fms/consts": "workspace:^"
     "@fms/error-provider": "workspace:^"
+    "@fms/types": "workspace:^"
     "@fms/web-ui": "workspace:^"
     "@fms/web-utils": "workspace:^"
     "@playwright/test": "npm:1.63.0"

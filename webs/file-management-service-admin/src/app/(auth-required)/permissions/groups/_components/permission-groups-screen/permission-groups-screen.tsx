@@ -15,9 +15,7 @@ import { IdentifierText } from "@/components/commons/identifier-text";
 import { PageHeading } from "@/components/commons/page-heading";
 import { useAdminSession } from "@/providers/admin-session-provider";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
-
-const NO_CREATE_PERMISSION = "권한 그룹 생성 권한이 없습니다";
-const NO_DELETE_PERMISSION = "권한 그룹 삭제 권한이 없습니다";
+import { NO_CREATE_PERMISSION, NO_DELETE_PERMISSION } from "./_consts/permission-denied-messages";
 
 export function PermissionGroupsScreen(props: {
   groups: ResBody<typeof PERMISSION_GROUP_LIST_API>["data"][number][];

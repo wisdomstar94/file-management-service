@@ -1,4 +1,4 @@
-import type { AccessPolicyNode } from "../access-policy-node/index.js";
+import type { AccessPolicyNode } from "@fms/types/access-policies/access-policy-node";
 
 /**
  * 접근 정책 트리를 `(IP 제한 && 헤더 제한(X-Token)) || IP 제한` 처럼 사람이 읽는 식으로 바꿉니다.

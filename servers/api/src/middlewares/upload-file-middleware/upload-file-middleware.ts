@@ -1,13 +1,11 @@
 import { mkdirSync } from "node:fs";
-import path from "node:path";
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import type { NextFunction, Request, Response } from "express";
 import multer from "multer";
 import { HttpError } from "#/classes/http-error/index.js";
 import { apiEnv } from "#/consts/api-env/index.js";
-import { STORAGE_ROOT_DIR } from "#/consts/storage-root-dir/index.js";
+import { TEMP_DIR } from "./_consts/temp-dir/index.js";
 
-const TEMP_DIR = path.join(STORAGE_ROOT_DIR, ".tmp");
 mkdirSync(TEMP_DIR, { recursive: true });
 
 const upload = multer({

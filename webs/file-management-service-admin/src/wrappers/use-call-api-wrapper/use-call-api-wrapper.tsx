@@ -2,8 +2,8 @@
 
 import type { ApiSchema } from "@fms/api-schemas/types/api-schema";
 import type { ApiRequest, ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import type { CommonError } from "@fms/error-provider/errors/common-error";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
+import type { CommonError } from "@fms/error-provider/types/common-error";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { DEFAULT_ERROR_MESSAGE } from "@/consts/default-error-message";
@@ -13,19 +13,7 @@ import { createOtherCommonError } from "@/utils/commons/create-other-common-erro
 import { readCommonErrorMessage } from "@/utils/commons/read-common-error-message";
 import { callApiActionWrapper } from "../call-api-action-wrapper";
 import { fetchClientWrapper } from "../fetch-client-wrapper";
-
-export type UseCallApiWrapperOptions = {
-  /** `action` 은 서버 액션(`callApiActionWrapper`), `client` 는 브라우저에서 api 직접 호출(`fetchClientWrapper`). 기본 `action` */
-  via?: "action" | "client";
-  /** 성공하면 띄울 토스트 문구 */
-  successMessage?: string;
-  /** 성공하면 서버 컴포넌트를 다시 불러온다. 기본 `true` */
-  refreshOnSuccess?: boolean;
-  /** 실패하면 오류 토스트를 띄운다. 기본 `true` */
-  showErrorToast?: boolean;
-  /** `via: "client"` 에서 api 가 심는 쿠키(로그인 토큰)를 주고받으려면 `include` */
-  credentials?: RequestCredentials;
-};
+import type { UseCallApiWrapperOptions } from "./_types/use-call-api-wrapper-options";
 
 /** 클라이언트 컴포넌트에서 api schema 로 api 를 호출한다. `fetchApi` 는 throw 하지 않고 `CommonError` 를 돌려준다. */
 export function useCallApiWrapper<S extends ApiSchema>(schema: S, options: UseCallApiWrapperOptions = {}) {

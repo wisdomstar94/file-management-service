@@ -1,4 +1,4 @@
-import type { AccessPolicyDeniedDetails } from "@fms/common-utils/errors/api-error-code";
+import type { AccessPolicyDeniedDetails } from "@fms/types/errors/access-policy-denied-details";
 import { formatDateTime } from "@fms/web-utils/formats/format-date-time";
 import { ShareNoticeCard } from "@/components/domains/share-links/share-notice-card";
 

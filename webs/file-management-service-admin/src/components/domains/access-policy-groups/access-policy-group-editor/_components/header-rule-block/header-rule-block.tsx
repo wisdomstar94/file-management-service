@@ -1,26 +1,16 @@
 "use client";
 
-import type { AccessPolicyHeaderMatchType } from "@fms/common-utils/access-policies/access-policy-node";
+import type { AccessPolicyHeaderMatchType } from "@fms/types/access-policies/access-policy-node";
+import { RULE_INPUT_CLASS_NAME } from "../../_consts/rule-input-class-name";
 import type { EditorBlock, HeaderRow } from "../../_types/editor-block";
 import { createKey } from "../../_utils/create-key";
-
-type HeadersBlock = Extract<EditorBlock, { kind: "HEADERS" }>;
-
-const MATCH_TYPES: { value: AccessPolicyHeaderMatchType; label: string }[] = [
-  { value: "EQUALS", label: "일치" },
-  { value: "CONTAINS", label: "포함" },
-  { value: "REGEX", label: "정규식" },
-  { value: "EXISTS", label: "존재" },
-];
-
-const GRID_CLASS_NAME = "grid grid-cols-[minmax(0,1.2fr)_120px_minmax(0,1.2fr)_32px] items-center gap-2";
-const inputClassName =
-  "h-9 min-w-0 rounded-lg border border-line-input px-2.5 font-mono text-[13px] outline-none focus:border-primary disabled:bg-disabled-bg";
+import { GRID_CLASS_NAME } from "./_consts/header-row-grid-class-name";
+import { MATCH_TYPES } from "./_consts/match-types";
 
 export function HeaderRuleBlock(props: {
-  block: HeadersBlock;
+  block: Extract<EditorBlock, { kind: "HEADERS" }>;
   isDisabled: boolean;
-  onChange: (block: HeadersBlock) => void;
+  onChange: (block: Extract<EditorBlock, { kind: "HEADERS" }>) => void;
 }) {
   const { block, isDisabled, onChange } = props;
   const setRow = (key: string, patch: Partial<HeaderRow>) =>
@@ -42,7 +32,7 @@ export function HeaderRuleBlock(props: {
             disabled={isDisabled}
             onChange={(event) => setRow(row.key, { name: event.target.value })}
             placeholder="X-Internal-Token"
-            className={inputClassName}
+            className={RULE_INPUT_CLASS_NAME}
           />
           <select
             aria-label="조건"
@@ -63,7 +53,7 @@ export function HeaderRuleBlock(props: {
             disabled={isDisabled || row.matchType === "EXISTS"}
             onChange={(event) => setRow(row.key, { value: event.target.value })}
             placeholder={row.matchType === "EXISTS" ? "값 없이 헤더 존재만 확인" : ""}
-            className={inputClassName}
+            className={RULE_INPUT_CLASS_NAME}
           />
           <button
             type="button"

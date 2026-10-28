@@ -1,8 +1,5 @@
 import { execFileSync } from "node:child_process";
-import path from "node:path";
-
-const PACKAGE_DIR = path.resolve(__dirname, "../../..");
-const TYPEORM_CLI = require.resolve("typeorm/cli.js", { paths: [PACKAGE_DIR] });
+import { PACKAGE_DIR, TYPEORM_CLI } from "./_consts/database-manager-paths";
 
 /** 빌드된 database-manager 를 실제 CLI 와 같은 방식으로 실행한다. */
 export function runDatabaseManagerCommand(

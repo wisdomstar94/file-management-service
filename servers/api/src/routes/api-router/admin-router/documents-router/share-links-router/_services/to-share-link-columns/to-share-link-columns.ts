@@ -1,12 +1,12 @@
 import type { UPDATE_SHARE_LINK_API } from "@fms/api-schemas/schemas/share-link-api-schemas";
 import type { ReqBody } from "@fms/api-schemas/types/api-schema-utils";
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
 import type { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
 import { hashPassword } from "@fms/password-handler/passwords/hash-password";
 import type { EntityManager } from "typeorm";
 import { HttpError } from "#/classes/http-error/index.js";
-import type { DocumentWithVersions } from "../../../_services/find-document-or-throw/index.js";
+import type { DocumentWithVersions } from "../../../_types/document-with-versions/index.js";
 
 /** 요청 값을 share_link 컬럼 값으로 바꾼다. 비밀번호는 해시하고, 참조하는 버전 · 접근 정책 그룹이 유효한지 확인한다. */
 export async function toShareLinkColumns(

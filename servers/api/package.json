@@ -22,10 +22,12 @@
   "dependencies": {
     "@fms/api-schemas": "workspace:^",
     "@fms/common-utils": "workspace:^",
+    "@fms/consts": "workspace:^",
     "@fms/database-entities": "workspace:^",
     "@fms/jwt-handler": "workspace:^",
     "@fms/password-handler": "workspace:^",
     "@fms/server-utils": "workspace:^",
+    "@fms/types": "workspace:^",
     "cors": "2.8.6",
     "express": "5.2.1",
     "multer": "2.4.0",

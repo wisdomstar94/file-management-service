@@ -3,8 +3,8 @@ import type {
   UPDATE_ACCESS_POLICY_GROUP_API,
 } from "@fms/api-schemas/schemas/access-policy-group-api-schemas";
 import type { ReqBody } from "@fms/api-schemas/types/api-schema-utils";
-import type { AccessPolicyNode } from "@fms/common-utils/access-policies/access-policy-node";
-import { ACCESS_POLICY_TREE_MAX_DEPTH } from "@fms/common-utils/access-policies/access-policy-node";
+import { ACCESS_POLICY_TREE_MAX_DEPTH } from "@fms/consts/access-policies/access-policy-tree-max-depth";
+import type { AccessPolicyNode } from "@fms/types/access-policies/access-policy-node";
 import { z } from "zod";
 import { isCidrFormat } from "./_utils/is-cidr-format/index.js";
 import { isRegexFormat } from "./_utils/is-regex-format/index.js";

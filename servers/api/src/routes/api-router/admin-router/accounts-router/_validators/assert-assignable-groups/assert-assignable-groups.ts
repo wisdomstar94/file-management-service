@@ -1,4 +1,4 @@
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
 import { PermissionGroupEntity } from "@fms/database-entities/entities/permission-group-entity";
 import type { EntityManager } from "typeorm";

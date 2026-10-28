@@ -34,6 +34,26 @@
         "types": "./dist/tokens/*/index.d.ts",
         "default": "./dist/tokens/*/index.mjs"
       }
+    },
+    "./consts/*": {
+      "require": {
+        "types": "./dist/consts/*/index.d.ts",
+        "default": "./dist/consts/*/index.cjs"
+      },
+      "import": {
+        "types": "./dist/consts/*/index.d.ts",
+        "default": "./dist/consts/*/index.mjs"
+      }
+    },
+    "./types/*": {
+      "require": {
+        "types": "./dist/types/*/index.d.ts",
+        "default": "./dist/types/*/index.cjs"
+      },
+      "import": {
+        "types": "./dist/types/*/index.d.ts",
+        "default": "./dist/types/*/index.mjs"
+      }
     }
   }
 }

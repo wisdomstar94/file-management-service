@@ -2,7 +2,7 @@
 
 import type { ADMIN_ME_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import type { PermissionCode } from "@fms/common-utils/permissions/permission-code-registry";
+import type { PERMISSION_CODE_REGISTRY } from "@fms/consts/permissions/permission-code-registry";
 import { createContext, type ReactNode, useContext } from "react";
 
 const AdminSessionContext = createContext<ResBody<typeof ADMIN_ME_API>["data"] | null>(null);
@@ -16,6 +16,6 @@ export function useAdminSession() {
   if (!me) {
     throw new Error("AdminSessionProvider 안에서만 쓸 수 있습니다.");
   }
-  const hasPermission = (code: PermissionCode) => me.permissionCodes.includes(code);
+  const hasPermission = (code: keyof typeof PERMISSION_CODE_REGISTRY) => me.permissionCodes.includes(code);
   return { me, hasPermission };
 }

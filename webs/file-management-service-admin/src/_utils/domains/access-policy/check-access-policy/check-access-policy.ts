@@ -1,5 +1,5 @@
 import { ADMIN_ACCESS_CHECK_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import type { NextRequest } from "next/server";
 import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";

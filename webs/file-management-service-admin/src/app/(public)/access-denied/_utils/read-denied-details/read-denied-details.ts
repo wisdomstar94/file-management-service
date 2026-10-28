@@ -1,6 +1,6 @@
-import { ADMIN_ACCESS_TOKEN_COOKIE } from "@fms/common-utils/cookies/admin-auth-cookie-names";
-import type { AccessPolicyDeniedDetails } from "@fms/common-utils/errors/api-error-code";
-import type { ApiFailBody } from "@fms/common-utils/responses/api-response-body";
+import { ADMIN_ACCESS_TOKEN_COOKIE } from "@fms/consts/cookies/admin-auth-cookie-names";
+import type { AccessPolicyDeniedDetails } from "@fms/types/errors/access-policy-denied-details";
+import type { ApiFailBody } from "@fms/types/responses/api-response-body";
 import { cookies, headers } from "next/headers";
 import { webEnv } from "@/consts/web-env";
 import { buildApiForwardHeaders } from "@/utils/commons/build-api-forward-headers";

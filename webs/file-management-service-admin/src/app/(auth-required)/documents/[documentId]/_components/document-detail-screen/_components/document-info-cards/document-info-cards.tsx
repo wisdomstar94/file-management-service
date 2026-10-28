@@ -6,8 +6,7 @@ import { VersionBadge } from "@fms/web-ui/components/version-badge";
 import { formatDateTime } from "@fms/web-utils/formats/format-date-time";
 import { SelectInput } from "@/components/commons/select-input";
 import { useToast } from "@/providers/toast-provider";
-
-const LATEST = "latest";
+import { LATEST } from "./_consts/latest";
 
 export function DocumentInfoCards(props: {
   document: ResBody<typeof DOCUMENT_DETAIL_API>["data"];

@@ -1,12 +1,6 @@
-import type { ApiSuccessBody } from "@fms/common-utils/responses/api-response-body";
+import type { ApiSuccessBody } from "@fms/types/responses/api-response-body";
 import { type ApiSchema, typeOf } from "../../types/api-schema/index.js";
-
-type AdminToken = {
-  accessToken: string;
-  accessTokenExpiresAt: string;
-  refreshToken: string;
-  refreshTokenExpiresAt: string;
-};
+import type { AdminToken } from "./_types/admin-token/index.js";
 
 /** 로그인하면 api 가 토큰을 httpOnly 쿠키로 심는다. */
 export const ADMIN_LOGIN_API = {

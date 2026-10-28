@@ -4,15 +4,11 @@ import type {
   ADMIN_SHORT_TIME_TOKEN_API,
 } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import { ADMIN_REFRESH_TOKEN_COOKIE } from "@fms/common-utils/cookies/admin-auth-cookie-names";
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
-import type { PermissionCode } from "@fms/common-utils/permissions/permission-code-registry";
+import { ADMIN_REFRESH_TOKEN_COOKIE } from "@fms/consts/cookies/admin-auth-cookie-names";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import { AdminRefreshTokenEntity } from "@fms/database-entities/entities/admin-refresh-token-entity";
-import {
-  ADMIN_SHORT_TIME_TOKEN_EXPIRES_IN_SECONDS,
-  type AdminShortTimeTokenTarget,
-  signAdminShortTimeToken,
-} from "@fms/jwt-handler/tokens/admin-short-time-token";
+import { ADMIN_SHORT_TIME_TOKEN_EXPIRES_IN_SECONDS } from "@fms/jwt-handler/consts/admin-short-time-token-expires-in-seconds";
+import { signAdminShortTimeToken } from "@fms/jwt-handler/tokens/admin-short-time-token";
 import { Router } from "express";
 import { HttpError } from "#/classes/http-error/index.js";
 import { apiEnv } from "#/consts/api-env/index.js";
@@ -28,6 +24,7 @@ import {
   adminRefreshTokenRequestSchema,
   adminShortTimeTokenRequestSchema,
 } from "#/validators/admin-auth-validators/index.js";
+import { SHORT_TIME_TOKEN_PERMISSION_CODES } from "./_consts/short-time-token-permission-codes/index.js";
 import { loginAdmin } from "./_services/login-admin/index.js";
 import { refreshAdminTokens } from "./_services/refresh-admin-tokens/index.js";
 import { clearAdminTokenCookies } from "./_utils/domains/admin-auth-cookie/clear-admin-token-cookies/index.js";
@@ -75,13 +72,6 @@ router.get("/me", adminAuthMiddleware, accessPolicyMiddleware, (req, res) => {
   };
   res.json(generateCommonRes(body));
 });
-
-/** short-time token 으로 할 동작에 필요한 권한. 실제 업로드 · 다운로드 요청에서도 다시 확인한다. */
-const SHORT_TIME_TOKEN_PERMISSION_CODES: Record<AdminShortTimeTokenTarget["purpose"], PermissionCode> = {
-  UPLOAD_DOCUMENT: "file.list.create",
-  UPLOAD_DOCUMENT_VERSION: "file.detail.version.create",
-  DOWNLOAD_DOCUMENT_VERSION: "file.detail.access",
-};
 
 // 브라우저가 api 를 직접 호출하는 업로드 · 다운로드용 단기 토큰. 지정한 동작 · 대상에만 쓸 수 있다.
 router.post("/short-time-token", adminAuthMiddleware, accessPolicyMiddleware, async (req, res) => {

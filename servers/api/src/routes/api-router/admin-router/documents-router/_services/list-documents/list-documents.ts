@@ -1,9 +1,10 @@
 import { DocumentEntity } from "@fms/database-entities/entities/document-entity";
+import type { z } from "zod";
 import { appDataSource } from "#/singleton-classes/app-data-source/index.js";
-import type { ParsedDocumentListQuery } from "#/validators/document-validators/index.js";
-import type { DocumentWithVersions } from "../find-document-or-throw/index.js";
+import type { documentListQuerySchema } from "#/validators/document-validators/index.js";
+import type { DocumentWithVersions } from "../../_types/document-with-versions/index.js";
 
-export async function listDocuments(query: ParsedDocumentListQuery) {
+export async function listDocuments(query: z.infer<typeof documentListQuerySchema>) {
   const builder = appDataSource
     .getRepository(DocumentEntity)
     .createQueryBuilder("document")

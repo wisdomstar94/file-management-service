@@ -1,25 +1,11 @@
-import type { ApiSuccessBody } from "@fms/common-utils/responses/api-response-body";
+import type { ApiSuccessBody } from "@fms/types/responses/api-response-body";
 import type { ApiSchema } from "../../types/api-schema/index.js";
 import { typeOf } from "../../types/api-schema/index.js";
 import type { ResBody } from "../../types/api-schema-utils/index.js";
 import type { PERMISSION_DETAIL_API } from "../permission-api-schemas/index.js";
-
-type PermissionGroupSummary = {
-  id: string;
-  name: string;
-  permissionCount: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type PermissionGroupDetail = PermissionGroupSummary & {
-  permissions: ResBody<typeof PERMISSION_DETAIL_API>["data"][];
-};
-
-type CreatePermissionGroupBody = {
-  name: string;
-  permissionIds?: string[];
-};
+import type { CreatePermissionGroupBody } from "./_types/create-permission-group-body/index.js";
+import type { PermissionGroupDetail } from "./_types/permission-group-detail/index.js";
+import type { PermissionGroupSummary } from "./_types/permission-group-summary/index.js";
 
 export const PERMISSION_GROUP_LIST_API = {
   url: "/api/admin/permission-groups",

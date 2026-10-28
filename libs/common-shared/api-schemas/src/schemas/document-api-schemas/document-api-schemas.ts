@@ -1,44 +1,7 @@
-import type { ApiSuccessBody } from "@fms/common-utils/responses/api-response-body";
+import type { ApiSuccessBody } from "@fms/types/responses/api-response-body";
 import { type ApiSchema, typeOf } from "../../types/api-schema/index.js";
-
-type DocumentVersion = {
-  id: string;
-  seq: number;
-  versionName: string;
-  fileName: string;
-  fileSize: number;
-  mimeType: string;
-  isLatest: boolean;
-  isDefault: boolean;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type DocumentVersionSummary = { id: string; versionName: string };
-
-type DocumentSummary = {
-  id: string;
-  name: string;
-  versionCount: number;
-  latestVersion: DocumentVersionSummary;
-  /** 목록의 파일 형식 아이콘을 고르는 데 쓴다. */
-  latestVersionFileName: string;
-  /** `null` 이면 최신 버전을 따른다. */
-  fixedDefaultVersion: DocumentVersionSummary | null;
-  createdAt: string;
-  latestVersionCreatedAt: string;
-};
-
-type DocumentDetail = {
-  id: string;
-  name: string;
-  /** `null` 이면 최신 버전을 따른다. */
-  defaultVersionId: string | null;
-  latestVersion: DocumentVersion;
-  versions: DocumentVersion[];
-  createdAt: string;
-  updatedAt: string;
-};
+import type { DocumentDetail } from "./_types/document-detail/index.js";
+import type { DocumentSummary } from "./_types/document-summary/index.js";
 
 export const DOCUMENT_LIST_API = {
   url: "/api/admin/documents",

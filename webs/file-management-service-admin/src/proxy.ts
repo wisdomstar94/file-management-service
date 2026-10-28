@@ -1,7 +1,4 @@
-import {
-  ADMIN_ACCESS_TOKEN_COOKIE,
-  ADMIN_REFRESH_TOKEN_COOKIE,
-} from "@fms/common-utils/cookies/admin-auth-cookie-names";
+import { ADMIN_ACCESS_TOKEN_COOKIE, ADMIN_REFRESH_TOKEN_COOKIE } from "@fms/consts/cookies/admin-auth-cookie-names";
 import { type NextRequest, NextResponse } from "next/server";
 import { checkAccessPolicy } from "./_utils/domains/access-policy/check-access-policy";
 import { nextWithAccessToken } from "./_utils/domains/admin-auth/next-with-access-token";

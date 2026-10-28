@@ -1,7 +1,4 @@
-import type {
-  AccessPolicyHeaderMatchType,
-  AccessPolicyIpMode,
-} from "@fms/common-utils/access-policies/access-policy-node";
+import type { AccessPolicyHeaderMatchType, AccessPolicyIpMode } from "@fms/types/access-policies/access-policy-node";
 
 export type HeaderRow = { key: string; name: string; matchType: AccessPolicyHeaderMatchType; value: string };
 
@@ -13,5 +10,3 @@ export type EditorBlock =
   | { kind: "GROUP"; key: string; operator: "AND" | "OR"; children: EditorBlock[] }
   | { kind: "IP"; key: string; mode: AccessPolicyIpMode; cidrs: string[] }
   | { kind: "HEADERS"; key: string; rows: HeaderRow[] };
-
-export type EditorGroup = Extract<EditorBlock, { kind: "GROUP" }>;

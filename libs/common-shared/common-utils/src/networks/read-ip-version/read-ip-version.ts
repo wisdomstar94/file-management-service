@@ -1,4 +1,4 @@
-const IPV4_PATTERN = /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/;
+import { IPV4_PATTERN } from "./_consts/ipv4-pattern/index.js";
 
 /**
  * IP 문자열의 버전을 판정합니다. 올바른 IP 가 아니면 `0` 입니다.

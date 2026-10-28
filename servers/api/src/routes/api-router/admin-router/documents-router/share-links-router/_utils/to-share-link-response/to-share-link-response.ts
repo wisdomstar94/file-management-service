@@ -3,7 +3,7 @@ import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import type { ShareLinkEntity } from "@fms/database-entities/entities/share-link-entity";
 import { resolveDefaultVersion } from "#/utils/domains/document-version/resolve-default-version/index.js";
 import { readShareLinkAvailability } from "#/utils/domains/share-link/read-share-link-availability/index.js";
-import type { DocumentWithVersions } from "../../../_services/find-document-or-throw/index.js";
+import type { DocumentWithVersions } from "../../../_types/document-with-versions/index.js";
 
 export function toShareLinkResponse(
   link: ShareLinkEntity,

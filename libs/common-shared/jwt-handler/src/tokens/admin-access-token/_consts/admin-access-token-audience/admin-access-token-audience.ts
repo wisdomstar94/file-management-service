@@ -1,0 +1,1 @@
+export const ADMIN_ACCESS_TOKEN_AUDIENCE = "fms-admin-access";

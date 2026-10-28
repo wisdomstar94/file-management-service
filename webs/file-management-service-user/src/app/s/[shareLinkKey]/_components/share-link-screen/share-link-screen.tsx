@@ -11,12 +11,10 @@ import { ShareBlockedNotice } from "../share-blocked-notice";
 import { ShareNotFoundNotice } from "../share-not-found-notice";
 import { ShareDocumentView } from "./_components/share-document-view";
 import { SharePasswordForm } from "./_components/share-password-form";
+import { DOWNLOAD_ERROR_VISIBLE_MS } from "./_consts/download-error-visible-ms";
 import type { ShareDetailState } from "./_types/share-detail-state";
 import { buildClientApiUrl } from "./_utils/build-client-api-url";
 import { toShareDetailState } from "./_utils/to-share-detail-state";
-
-/** 다운로드 실패 문구를 띄우는 시간(ms). 이 시간이 지난 뒤 새로고침하면 문구가 보이지 않는다. */
-const DOWNLOAD_ERROR_VISIBLE_MS = 5000;
 
 /**
  * 비밀번호 → 자료 순서로 확인한다. 잠금 해제 토큰은 api 의 httpOnly 쿠키에 있어 브라우저가 api 를 직접 호출한다.

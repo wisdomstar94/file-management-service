@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { AccessPolicyNode } from "@fms/common-utils/access-policies/access-policy-node";
+import type { AccessPolicyNode } from "@fms/types/access-policies/access-policy-node";
 import { api } from "../api-client";
 
 export function uniqueName(prefix: string) {

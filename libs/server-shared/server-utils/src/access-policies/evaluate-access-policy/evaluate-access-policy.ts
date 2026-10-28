@@ -1,10 +1,7 @@
-import type { AccessPolicyNode } from "@fms/common-utils/access-policies/access-policy-node";
+import type { AccessPolicyNode } from "@fms/types/access-policies/access-policy-node";
+import type { AccessPolicyRequest } from "../../types/access-policy-request/index.js";
+import type { AccessPolicyResult } from "./_types/access-policy-result/index.js";
 import { collectFailedReasons } from "./_utils/collect-failed-reasons/index.js";
-import type { RequestHeaders } from "./_utils/evaluate-header-node/index.js";
-
-export type AccessPolicyRequest = { ip: string; headers: RequestHeaders };
-
-export type AccessPolicyResult = { isAllowed: boolean; failedReasons: string[] };
 
 /**
  * 접근 정책 트리를 요청 IP · 헤더로 평가합니다. 트리가 `null` 이면 항상 허용합니다.

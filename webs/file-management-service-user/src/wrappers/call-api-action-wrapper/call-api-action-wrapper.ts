@@ -2,7 +2,7 @@
 
 import type { ApiSchema } from "@fms/api-schemas/types/api-schema";
 import type { ApiRequest, ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import type { CommonError } from "@fms/error-provider/errors/common-error";
+import type { CommonError } from "@fms/error-provider/types/common-error";
 import { fetchServerWrapper } from "../fetch-server-wrapper";
 import { serverActionWrapper } from "../server-action-wrapper";
 import { assertCallableSchema } from "./_utils/assert-callable-schema";

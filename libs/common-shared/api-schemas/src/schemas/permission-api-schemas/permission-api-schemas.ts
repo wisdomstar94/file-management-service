@@ -1,15 +1,6 @@
-import type { ApiSuccessBody } from "@fms/common-utils/responses/api-response-body";
+import type { ApiSuccessBody } from "@fms/types/responses/api-response-body";
 import { type ApiSchema, typeOf } from "../../types/api-schema/index.js";
-
-type Permission = {
-  id: string;
-  category: string;
-  name: string;
-  code: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import type { Permission } from "./_types/permission/index.js";
 
 export const PERMISSION_LIST_API = {
   url: "/api/admin/permissions",

@@ -1,8 +1,7 @@
 import { PermissionEntity } from "@fms/database-entities/entities/permission-entity";
 import { PermissionGroupEntity } from "@fms/database-entities/entities/permission-group-entity";
 import type { EntityManager } from "typeorm";
-
-export const DEFAULT_PERMISSION_GROUP_NAME = "최고 관리자";
+import { DEFAULT_PERMISSION_GROUP_NAME } from "./_consts/default-permission-group-name/index.js";
 
 /** 권한 그룹이 하나도 없을 때만 모든 권한을 가진 기본 그룹을 만든다. */
 export async function seedDefaultPermissionGroup(manager: EntityManager): Promise<PermissionGroupEntity> {

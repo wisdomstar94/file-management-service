@@ -4,7 +4,7 @@ import type {
   PUBLIC_SHARE_LINK_UNLOCK_API,
 } from "@fms/api-schemas/schemas/public-share-link-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import { verifyPassword } from "@fms/password-handler/passwords/verify-password";
 import { Router } from "express";
 import { HttpError } from "#/classes/http-error/index.js";

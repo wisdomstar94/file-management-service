@@ -1,23 +1,10 @@
 import type { Response } from "supertest";
+import { BASE_SHARE_LINK } from "./_consts/base-share-link";
+import { USER_WEB_ORIGIN } from "./_consts/user-web-origin";
 import { api } from "./_utils/api-client";
 import { addTestVersion, createTestDocument } from "./_utils/create-test-document";
 import { loginAsInitialAdmin } from "./_utils/login-as";
 import { readSetCookie } from "./_utils/read-set-cookie";
-
-const USER_WEB_ORIGIN = process.env.USER_WEB_ORIGIN ?? "http://localhost:3001";
-
-const baseLink: Record<string, unknown> = {
-  accessPolicyGroupId: null,
-  password: null,
-  maxDownloadCount: null,
-  availableFrom: null,
-  availableUntil: null,
-  defaultVersionMode: "FOLLOW_DOCUMENT",
-  fixedVersionId: null,
-  isShowOtherVersions: false,
-  isAllowOtherVersionDownload: false,
-  isShowDownloadStatus: true,
-};
 
 describe("외부 공개 링크", () => {
   let adminToken: string;
@@ -32,7 +19,7 @@ describe("외부 공개 링크", () => {
   const createLink = async (body: Record<string, unknown>) => {
     const res = await api({ token: adminToken })
       .post(`/api/admin/documents/${document.id}/share-links`)
-      .send({ ...baseLink, ...body });
+      .send({ ...BASE_SHARE_LINK, ...body });
     expect(res.status).toBe(201);
     return res.body.data as { id: string; shareLinkKey: string; availability: string };
   };
@@ -178,7 +165,7 @@ describe("외부 공개 링크", () => {
       (
         await api({ token: adminToken })
           .post(`/api/admin/documents/${document.id}/share-links`)
-          .send({ ...baseLink, defaultVersionMode: "FIXED" })
+          .send({ ...BASE_SHARE_LINK, defaultVersionMode: "FIXED" })
       ).status,
     ).toBe(400);
   });

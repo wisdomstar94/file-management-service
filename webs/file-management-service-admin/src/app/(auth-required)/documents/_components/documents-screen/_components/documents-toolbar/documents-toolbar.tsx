@@ -3,12 +3,7 @@
 import { Button } from "@fms/web-ui/components/button";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { SubmitEvent } from "react";
-
-const PERIODS = [
-  { value: "", label: "등록일 전체" },
-  { value: "7", label: "최근 7일" },
-  { value: "30", label: "최근 30일" },
-];
+import { PERIODS } from "./_consts/periods";
 
 export function DocumentsToolbar(props: { selectedCount: number; canDelete: boolean; onBulkDelete: () => void }) {
   const { selectedCount, canDelete, onBulkDelete } = props;

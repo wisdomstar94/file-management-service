@@ -10,8 +10,7 @@ import {
 import type { AccessPolicyGroupEntity } from "../access-policy-group-entity/index.js";
 import type { DocumentEntity } from "../document-entity/index.js";
 import type { DocumentVersionEntity } from "../document-version-entity/index.js";
-
-export type ShareLinkDefaultVersionMode = "FOLLOW_DOCUMENT" | "FIXED";
+import type { ShareLinkDefaultVersionMode } from "./_types/share-link-default-version-mode/index.js";
 
 @Entity("share_link")
 export class ShareLinkEntity {

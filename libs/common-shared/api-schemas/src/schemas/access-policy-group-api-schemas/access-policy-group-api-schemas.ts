@@ -1,24 +1,8 @@
-import type { AccessPolicyNode } from "@fms/common-utils/access-policies/access-policy-node";
-import type { ApiSuccessBody } from "@fms/common-utils/responses/api-response-body";
+import type { ApiSuccessBody } from "@fms/types/responses/api-response-body";
 import { type ApiSchema, typeOf } from "../../types/api-schema/index.js";
-
-type AccessPolicyGroupSummary = {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type AccessPolicyGroupDetail = AccessPolicyGroupSummary & {
-  ruleTree: AccessPolicyNode | null;
-  usedAccountCount: number;
-  usedShareLinkCount: number;
-};
-
-type CreateAccessPolicyGroupBody = {
-  name: string;
-  ruleTree: AccessPolicyNode | null;
-};
+import type { AccessPolicyGroupDetail } from "./_types/access-policy-group-detail/index.js";
+import type { AccessPolicyGroupSummary } from "./_types/access-policy-group-summary/index.js";
+import type { CreateAccessPolicyGroupBody } from "./_types/create-access-policy-group-body/index.js";
 
 export const ACCESS_POLICY_GROUP_LIST_API = {
   url: "/api/admin/access-policy-groups",

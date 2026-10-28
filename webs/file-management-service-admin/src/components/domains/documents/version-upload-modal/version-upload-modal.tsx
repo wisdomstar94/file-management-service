@@ -15,19 +15,10 @@ import { type SubmitEvent, useState } from "react";
 import { FormField } from "@/components/commons/form-field";
 import { Modal } from "@/components/commons/modal";
 import { useToast } from "@/providers/toast-provider";
+import type { VersionUploadMode } from "@/types/version-upload-mode";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { FileDropZone } from "./_components/file-drop-zone";
-
-export type VersionUploadMode =
-  | { kind: "new-document" }
-  | { kind: "new-version"; documentId: string }
-  | {
-      kind: "edit-version";
-      documentId: string;
-      version: ResBody<typeof DOCUMENT_DETAIL_API>["data"]["versions"][number];
-    };
-
-const TITLES = { "new-document": "새 자료 등록", "new-version": "새 버전 등록", "edit-version": "버전 수정" };
+import { TITLES } from "./_consts/titles";
 
 /** 새 자료 등록 · 새 버전 등록 · 버전명 수정을 같은 모달로 처리한다. 버전 수정은 파일을 바꾸지 않는다. */
 export function VersionUploadModal(props: {

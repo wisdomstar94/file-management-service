@@ -171,7 +171,7 @@ yarn e2e:webs
 ## 권한 코드 추가
 
 - 권한은 관리자 화면에서 만들 수 없습니다. 관리자는 분류 · 권한명 · 설명만 바꿀 수 있습니다.
-- 새 권한은 `libs/common-shared/common-utils/src/permissions/permission-code-registry` 에 코드를 추가하고, api 의 `requirePermission(<코드>)` · 관리자 웹의 `hasPermission(<코드>)` 에서 사용합니다.
+- 새 권한은 `libs/common-shared/consts/src/permissions/permission-code-registry` 에 코드를 추가하고, api 의 `requirePermission(<코드>)` · 관리자 웹의 `hasPermission(<코드>)` 에서 사용합니다.
 - DB 에는 `yarn workspace @fms/database-manager seed` 가 레지스트리에 있는데 DB 에 없는 권한만 추가합니다.
 
 ## 운영 시 주의

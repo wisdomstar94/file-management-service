@@ -3,13 +3,7 @@ import type { ApiRequest, ResBody } from "@fms/api-schemas/types/api-schema-util
 import { buildApiUrl } from "@/utils/commons/build-api-url";
 import { createApiCommonError } from "../_utils/create-api-common-error";
 import { toRequestBody } from "../_utils/to-request-body";
-
-export type FetchClientWrapperOptions = {
-  /** schema url 앞에 붙일 api 주소(`API_PUBLIC_URL`). 없으면 같은 origin 기준 상대 경로 */
-  baseUrl?: string;
-  /** api 가 심은 httpOnly 쿠키(공개 링크 잠금 해제)를 주고받으려면 `include` */
-  credentials?: RequestCredentials;
-};
+import type { FetchClientWrapperOptions } from "./_types/fetch-client-wrapper-options";
 
 /** 브라우저에서 api 를 직접 호출한다. 400~500 대 응답은 `CommonError` 로 throw 한다. */
 export async function fetchClientWrapper<S extends ApiSchema>(

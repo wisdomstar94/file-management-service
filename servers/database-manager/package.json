@@ -21,7 +21,7 @@
     "e2e": "node --env-file-if-exists=../../.env.local ../../node_modules/jest/bin/jest.js --config ./e2e/jest.config.cjs --runInBand"
   },
   "dependencies": {
-    "@fms/common-utils": "workspace:^",
+    "@fms/consts": "workspace:^",
     "@fms/database-entities": "workspace:^",
     "@fms/password-handler": "workspace:^",
     "@fms/server-utils": "workspace:^",

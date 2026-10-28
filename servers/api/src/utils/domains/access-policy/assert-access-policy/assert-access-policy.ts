@@ -1,6 +1,7 @@
-import { type AccessPolicyDeniedDetails, API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import type { AccessPolicyGroupEntity } from "@fms/database-entities/entities/access-policy-group-entity";
 import { evaluateAccessPolicy } from "@fms/server-utils/access-policies/evaluate-access-policy";
+import type { AccessPolicyDeniedDetails } from "@fms/types/errors/access-policy-denied-details";
 import type { Request } from "express";
 import { HttpError } from "#/classes/http-error/index.js";
 import { readAccessPolicyRequest } from "#/utils/domains/access-policy/read-access-policy-request/index.js";

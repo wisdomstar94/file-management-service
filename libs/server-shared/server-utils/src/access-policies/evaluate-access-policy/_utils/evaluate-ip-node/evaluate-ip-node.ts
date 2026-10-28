@@ -1,4 +1,4 @@
-import type { AccessPolicyIpNode } from "@fms/common-utils/access-policies/access-policy-node";
+import type { AccessPolicyIpNode } from "@fms/types/access-policies/access-policy-node";
 import { isIpInCidr } from "../../../../networks/is-ip-in-cidr/index.js";
 
 export function evaluateIpNode(node: AccessPolicyIpNode, ip: string): string | null {

@@ -1,26 +1,7 @@
-import type { ApiSuccessBody } from "@fms/common-utils/responses/api-response-body";
+import type { ApiSuccessBody } from "@fms/types/responses/api-response-body";
 import { type ApiSchema, typeOf } from "../../types/api-schema/index.js";
-
-type AdminAccount = {
-  id: string;
-  loginId: string;
-  nickname: string;
-  memo: string;
-  permissionGroup: { id: string; name: string };
-  accessPolicyGroup: { id: string; name: string };
-  lastAccessedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type CreateAdminAccountBody = {
-  loginId: string;
-  password: string;
-  nickname: string;
-  memo?: string;
-  permissionGroupId: string;
-  accessPolicyGroupId: string;
-};
+import type { AdminAccount } from "./_types/admin-account/index.js";
+import type { CreateAdminAccountBody } from "./_types/create-admin-account-body/index.js";
 
 export const ADMIN_ACCOUNT_LIST_API = {
   url: "/api/admin/accounts",

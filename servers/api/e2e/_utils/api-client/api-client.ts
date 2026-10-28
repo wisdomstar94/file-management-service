@@ -1,6 +1,5 @@
 import request from "supertest";
-
-export const API_BASE_URL = process.env.API_BASE_URL ?? `http://127.0.0.1:${process.env.API_PORT ?? 4000}`;
+import { API_BASE_URL } from "./_consts/api-base-url";
 
 /** 테스트 러너 → api 요청. `ip` 를 주면 X-Forwarded-For 로 요청 IP 를 바꾼다(api 의 trust proxy 가 러너를 신뢰해야 함). */
 export function api(props: { token?: string; ip?: string; headers?: Record<string, string> } = {}) {

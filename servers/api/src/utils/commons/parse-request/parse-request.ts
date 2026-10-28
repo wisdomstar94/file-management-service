@@ -1,4 +1,4 @@
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import type { z } from "zod";
 import { HttpError } from "#/classes/http-error/index.js";
 

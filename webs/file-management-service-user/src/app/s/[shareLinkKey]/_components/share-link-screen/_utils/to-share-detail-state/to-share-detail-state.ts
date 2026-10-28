@@ -1,8 +1,8 @@
 import type { PUBLIC_SHARE_LINK_DETAIL_API } from "@fms/api-schemas/schemas/public-share-link-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
-import type { CommonError } from "@fms/error-provider/errors/common-error";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
+import type { CommonError } from "@fms/error-provider/types/common-error";
 import { readAccessPolicyDeniedDetails } from "@/utils/domains/access-policy/read-access-policy-denied-details";
 import type { ShareDetailState } from "../../_types/share-detail-state";
 

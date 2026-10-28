@@ -39,6 +39,3 @@ export const createDocumentVersionRequestSchema = z.object({
 export const updateDocumentVersionRequestSchema = z.object({
   versionName: versionNameSchema,
 }) satisfies z.ZodType<ReqBody<typeof UPDATE_DOCUMENT_VERSION_API>>;
-
-/** 기본값이 채워진 검증 결과 */
-export type ParsedDocumentListQuery = z.infer<typeof documentListQuerySchema>;

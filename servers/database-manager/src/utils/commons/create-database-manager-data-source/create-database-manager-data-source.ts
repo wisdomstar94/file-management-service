@@ -1,10 +1,8 @@
 import "reflect-metadata";
-import { fileURLToPath } from "node:url";
 import { createDataSourceOptions } from "@fms/database-entities/data-sources/create-data-source-options";
 import { readRequiredEnv } from "@fms/server-utils/envs/read-required-env";
 import { DataSource } from "typeorm";
-
-const MIGRATIONS_GLOB = fileURLToPath(new URL("../../../migrations/*.js", import.meta.url));
+import { MIGRATIONS_GLOB } from "./_consts/migrations-glob/index.js";
 
 export function createDatabaseManagerDataSource(): DataSource {
   return new DataSource(

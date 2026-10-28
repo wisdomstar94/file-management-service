@@ -14,10 +14,12 @@
     "lint:check": "biome check",
     "lint:format": "biome check --write"
   },
+  "dependencies": {
+    "@fms/types": "workspace:^"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
     "@fms/biome-config": "workspace:^",
-    "@fms/common-utils": "workspace:^",
     "@types/node": "26.6.4",
     "typescript": "7.0.2",
     "vite": "8.3.2"
@@ -51,6 +53,16 @@
       "import": {
         "types": "./dist/access-policies/*/index.d.ts",
         "default": "./dist/access-policies/*/index.mjs"
+      }
+    },
+    "./types/*": {
+      "require": {
+        "types": "./dist/types/*/index.d.ts",
+        "default": "./dist/types/*/index.cjs"
+      },
+      "import": {
+        "types": "./dist/types/*/index.d.ts",
+        "default": "./dist/types/*/index.mjs"
       }
     }
   }

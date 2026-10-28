@@ -1,7 +1,7 @@
 "use client";
 
 import { ADMIN_LOGIN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { BrandMark } from "@fms/web-ui/components/brand-mark";
 import { Button } from "@fms/web-ui/components/button";

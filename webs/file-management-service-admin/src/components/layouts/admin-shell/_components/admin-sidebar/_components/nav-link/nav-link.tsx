@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { AdminNavItem } from "../../../../_consts/admin-nav-items";
+import type { AdminNavItem } from "../../../../_types/admin-nav-item";
 import { isActivePath } from "../../_utils/is-active-path";
 
 export function NavLink(props: {

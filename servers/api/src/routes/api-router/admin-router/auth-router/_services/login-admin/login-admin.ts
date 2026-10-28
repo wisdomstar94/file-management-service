@@ -1,6 +1,6 @@
 import type { ADMIN_LOGIN_API, ADMIN_REFRESH_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { ReqBody, ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
+import { API_ERROR_CODE } from "@fms/consts/errors/api-error-code";
 import { AdminAccountEntity } from "@fms/database-entities/entities/admin-account-entity";
 import { verifyPassword } from "@fms/password-handler/passwords/verify-password";
 import type { Request } from "express";

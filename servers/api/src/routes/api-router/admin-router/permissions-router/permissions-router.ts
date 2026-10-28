@@ -1,6 +1,6 @@
 import type { PERMISSION_LIST_API } from "@fms/api-schemas/schemas/permission-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import { PERMISSION_CODES } from "@fms/common-utils/permissions/permission-code-registry";
+import { PERMISSION_CODE_REGISTRY } from "@fms/consts/permissions/permission-code-registry";
 import { Router } from "express";
 import { requirePermission } from "#/middlewares/require-permission-middleware/index.js";
 import { generateCommonRes } from "#/utils/commons/generate-common-res/index.js";
@@ -17,7 +17,7 @@ router.get("/", requirePermission("perm.access"), async (_, res) => {
   const storedCodes = new Set(permissions.map((permission) => permission.code));
   const body: ResBody<typeof PERMISSION_LIST_API>["data"] = {
     items: permissions.map(toPermissionResponse),
-    codeOnlyPermissionCodes: PERMISSION_CODES.filter((code) => !storedCodes.has(code)),
+    codeOnlyPermissionCodes: Object.keys(PERMISSION_CODE_REGISTRY).filter((code) => !storedCodes.has(code)),
   };
   res.json(generateCommonRes(body));
 });

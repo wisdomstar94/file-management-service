@@ -1,15 +1,8 @@
+import { ADMIN_SHORT_TIME_TOKEN_EXPIRES_IN_SECONDS } from "../../consts/admin-short-time-token-expires-in-seconds/index.js";
+import type { AdminShortTimeTokenTarget } from "../../types/admin-short-time-token-target/index.js";
 import { signJwt } from "../sign-jwt/index.js";
 import { verifyJwt } from "../verify-jwt/index.js";
-
-const ADMIN_SHORT_TIME_TOKEN_AUDIENCE = "fms-admin-short-time";
-
-export const ADMIN_SHORT_TIME_TOKEN_EXPIRES_IN_SECONDS = 10;
-
-/** 브라우저가 api 를 직접 호출하는 업로드 · 다운로드에서 이 토큰으로 허용할 동작과 대상 */
-export type AdminShortTimeTokenTarget =
-  | { purpose: "UPLOAD_DOCUMENT" }
-  | { purpose: "UPLOAD_DOCUMENT_VERSION"; documentId: string }
-  | { purpose: "DOWNLOAD_DOCUMENT_VERSION"; documentId: string; versionId: string };
+import { ADMIN_SHORT_TIME_TOKEN_AUDIENCE } from "./_consts/admin-short-time-token-audience/index.js";
 
 export function signAdminShortTimeToken(props: {
   adminAccountId: string;

@@ -1,7 +1,7 @@
 import type { DOCUMENT_LIST_API } from "@fms/api-schemas/schemas/document-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { findLatestVersion } from "#/utils/domains/document-version/find-latest-version/index.js";
-import type { DocumentWithVersions } from "../../_services/find-document-or-throw/index.js";
+import type { DocumentWithVersions } from "../../_types/document-with-versions/index.js";
 import { toVersionSummary } from "./_utils/to-version-summary/index.js";
 
 export function toDocumentSummaryResponse(

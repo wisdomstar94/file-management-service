@@ -16,9 +16,10 @@ import { useState } from "react";
 import { Card } from "@/components/commons/card";
 import { ConfirmDialog } from "@/components/commons/confirm-dialog";
 import { BodyCell, DataTable, HeadCell } from "@/components/commons/data-table";
-import { VersionUploadModal, type VersionUploadMode } from "@/components/domains/documents/version-upload-modal";
+import { VersionUploadModal } from "@/components/domains/documents/version-upload-modal";
 import { useAdminSession } from "@/providers/admin-session-provider";
 import { usePublicEnv } from "@/providers/public-env-provider";
+import type { VersionUploadMode } from "@/types/version-upload-mode";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { buildClientApiUrl } from "./_utils/build-client-api-url";
 

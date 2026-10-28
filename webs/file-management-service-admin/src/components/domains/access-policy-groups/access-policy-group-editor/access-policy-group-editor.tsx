@@ -6,8 +6,8 @@ import {
   UPDATE_ACCESS_POLICY_GROUP_API,
 } from "@fms/api-schemas/schemas/access-policy-group-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
-import { ACCESS_POLICY_TREE_MAX_DEPTH } from "@fms/common-utils/access-policies/access-policy-node";
 import { describeAccessPolicyNode } from "@fms/common-utils/access-policies/describe-access-policy-node";
+import { ACCESS_POLICY_TREE_MAX_DEPTH } from "@fms/consts/access-policies/access-policy-tree-max-depth";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";

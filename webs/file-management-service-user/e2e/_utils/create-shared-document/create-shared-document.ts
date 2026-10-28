@@ -1,20 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { type APIRequestContext, expect } from "@playwright/test";
-
-const API_BASE_URL = process.env.API_BASE_URL ?? `http://127.0.0.1:${process.env.API_PORT ?? 4000}`;
-
-const DEFAULT_LINK = {
-  accessPolicyGroupId: null,
-  password: null,
-  maxDownloadCount: null,
-  availableFrom: null,
-  availableUntil: null,
-  defaultVersionMode: "FOLLOW_DOCUMENT",
-  fixedVersionId: null,
-  isShowOtherVersions: false,
-  isAllowOtherVersionDownload: false,
-  isShowDownloadStatus: true,
-};
+import { API_BASE_URL } from "./_consts/api-base-url";
+import { DEFAULT_LINK } from "./_consts/default-share-link";
 
 async function loginAsInitialAdmin(request: APIRequestContext) {
   const res = await request.post(`${API_BASE_URL}/api/admin/auth/login`, {

@@ -1,4 +1,4 @@
-import type { AccessPolicyHeaderNode } from "@fms/common-utils/access-policies/access-policy-node";
+import type { AccessPolicyHeaderNode } from "@fms/types/access-policies/access-policy-node";
 
 export function matchHeader(node: AccessPolicyHeaderNode, actual: string | undefined): boolean {
   if (node.matchType === "EXISTS") {

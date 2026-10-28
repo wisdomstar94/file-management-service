@@ -1,19 +1,7 @@
-import { PERMISSION_CODES } from "@fms/common-utils/permissions/permission-code-registry";
+import { PERMISSION_CODE_REGISTRY } from "@fms/consts/permissions/permission-code-registry";
+import { APP_TABLES } from "./_consts/app-tables";
 import { createIsolatedDatabase } from "./_utils/create-isolated-database";
 import { runDatabaseManagerCommand } from "./_utils/run-database-manager-command";
-
-const APP_TABLES = [
-  "access_policy_group",
-  "admin_account",
-  "admin_refresh_token",
-  "document",
-  "document_version",
-  "permission",
-  "permission_group",
-  "permission_group_permission",
-  "share_link",
-  "share_link_download_log",
-];
 
 describe("database-manager 마이그레이션 · 시드", () => {
   let database: Awaited<ReturnType<typeof createIsolatedDatabase>>;
@@ -50,8 +38,8 @@ describe("database-manager 마이그레이션 · 시드", () => {
         (SELECT count(*) FROM admin_account WHERE login_id = '${process.env.INITIAL_ADMIN_ID}') AS admin
     `);
     expect(counts.rows[0]).toEqual({
-      permission: String(PERMISSION_CODES.length),
-      group_permission: String(PERMISSION_CODES.length),
+      permission: String(Object.keys(PERMISSION_CODE_REGISTRY).length),
+      group_permission: String(Object.keys(PERMISSION_CODE_REGISTRY).length),
       admin: "1",
     });
   });
