@@ -10,6 +10,11 @@ export const apiEnv = {
   refreshTokenDays: Number(process.env.ADMIN_REFRESH_TOKEN_DAYS ?? 14),
   /** 공개 링크 비밀번호를 한 번 맞히면 다시 묻지 않는 시간(초). */
   shareLinkUnlockExpiresInSeconds: Number(process.env.SHARE_LINK_UNLOCK_EXPIRES_IN_SECONDS ?? 600),
+  /** 토큰 쿠키를 함께 쓸 상위 도메인. 비우면 api 호스트 한정이다. 쿠키는 포트를 구분하지 않아 로컬은 비워도 된다. */
+  cookieDomain: process.env.COOKIE_DOMAIN || undefined,
+  isSecureCookie: process.env.API_SECURE_COOKIE === "true",
+  /** 공개 링크 다운로드에 실패하면 돌려보낼 공개 링크 화면의 origin */
+  userWebOrigin: process.env.USER_WEB_ORIGIN ?? "http://localhost:3001",
   storageDir: readRequiredEnv("STORAGE_DIR"),
   maxUploadSizeMb: Number(process.env.MAX_UPLOAD_SIZE_MB ?? 1024),
 };

@@ -3,8 +3,9 @@
 import { BrandMark } from "@fms/web-ui/components/brand-mark";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { logoutAction } from "@/actions/logout-action";
 import { useAdminSession } from "@/providers/admin-session-provider";
+import { usePublicEnv } from "@/providers/public-env-provider";
+import { requestAdminLogout } from "@/utils/request-admin-logout";
 import { ADMIN_NAV_ITEMS, type AdminNavItem } from "../../_consts/admin-nav-items";
 
 const isActivePath = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
@@ -34,9 +35,10 @@ export function AdminSidebar() {
   const { me, hasPermission } = useAdminSession();
   const pathname = usePathname();
   const router = useRouter();
+  const { apiPublicUrl } = usePublicEnv();
 
   async function logout() {
-    await logoutAction();
+    await requestAdminLogout(apiPublicUrl);
     router.replace("/login");
     router.refresh();
   }

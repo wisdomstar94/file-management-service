@@ -1,5 +1,6 @@
 "use client";
 
+import { ADMIN_LOGIN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { BrandMark } from "@fms/web-ui/components/brand-mark";
@@ -7,12 +8,15 @@ import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
-import { loginAction } from "@/actions/login-action";
 import { FormField } from "@/components/commons/form-field";
+import { usePublicEnv } from "@/providers/public-env-provider";
 import { readCommonErrorMessage } from "@/utils/read-common-error-message";
+import { createOtherCommonError, DEFAULT_ERROR_MESSAGE } from "@/wrappers/_utils/create-common-error";
+import { fetchClientWrapper } from "@/wrappers/fetch-client-wrapper";
 
 export function LoginForm(props: { nextPath: string }) {
   const router = useRouter();
+  const { apiPublicUrl } = usePublicEnv();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
 
@@ -21,10 +25,14 @@ export function LoginForm(props: { nextPath: string }) {
     const form = new FormData(event.currentTarget);
     setIsPending(true);
     setErrorMessage(null);
-    const result = await loginAction({
-      loginId: String(form.get("loginId") ?? ""),
-      password: String(form.get("password") ?? ""),
-    });
+    // 토큰은 api 가 httpOnly 쿠키로 심고, 이후 관리자 웹 서버가 그 쿠키를 읽는다.
+    const result = await fetchClientWrapper(
+      ADMIN_LOGIN_API,
+      { body: { loginId: String(form.get("loginId") ?? ""), password: String(form.get("password") ?? "") } },
+      { baseUrl: apiPublicUrl, credentials: "include" },
+    ).catch((error: unknown) =>
+      isCommonError(error) ? error : createOtherCommonError({ message: DEFAULT_ERROR_MESSAGE }),
+    );
     setIsPending(false);
     if (!isCommonError(result)) {
       router.replace(props.nextPath);

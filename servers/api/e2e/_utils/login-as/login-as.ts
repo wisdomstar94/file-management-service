@@ -1,8 +1,18 @@
+import type { Response } from "supertest";
 import { api } from "../api-client";
+import { readSetCookie } from "../read-set-cookie";
 
 export async function loginAs(props: { loginId: string; password: string; ip?: string }) {
   const res = await api({ ip: props.ip }).post("/api/admin/auth/login").send(props);
   return res;
+}
+
+/** 로그인 응답은 토큰을 본문 대신 쿠키로 내려준다. */
+export function readLoginTokens(res: Response): { accessToken: string; refreshToken: string } {
+  return {
+    accessToken: readSetCookie(res, "fms_admin_at") ?? "",
+    refreshToken: readSetCookie(res, "fms_admin_rt") ?? "",
+  };
 }
 
 export async function loginAsInitialAdmin(): Promise<string> {
@@ -13,5 +23,5 @@ export async function loginAsInitialAdmin(): Promise<string> {
   if (res.status !== 200) {
     throw new Error(`최초 관리자 로그인 실패: ${res.status} ${JSON.stringify(res.body)}`);
   }
-  return res.body.data.accessToken;
+  return readLoginTokens(res).accessToken;
 }

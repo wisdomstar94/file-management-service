@@ -1,29 +1,11 @@
 # e2e 전용 격리 환경. DB 는 tmpfs 라 매번 빈 상태에서 시작한다. 실행은 scripts/run-e2e.sh 로 한다.
+# 환경변수는 모든 서비스가 루트 .env.e2e 에서 읽는다.
 name: fms-e2e
 
-x-api-env: &api-env
-  DB_HOST: postgres
-  DB_PORT: "5432"
-  DB_USER: fms
-  DB_PASSWORD: fms-e2e-password
-  DB_NAME: fms
-  API_PORT: "4000"
-  JWT_SECRET: e2e-jwt-secret-e2e-jwt-secret-e2e-jwt-secret
-  # 러너 · 웹 컨테이너가 X-Forwarded-For 로 요청 IP 를 넘기므로 e2e 네트워크 전체를 신뢰한다.
-  API_TRUST_PROXY: 172.31.250.0/24
-  # Playwright 브라우저가 api 를 직접 호출하는 web 의 origin 을 허용한다.
-  API_CORS_ORIGINS: http://admin-web:3000,http://user-web:3001
-  STORAGE_DIR: /data/storage
-  INITIAL_ADMIN_ID: admin
-  INITIAL_ADMIN_PASSWORD: admin1234!
+x-e2e-env-file: &e2e-env-file [../.env.e2e]
 
-x-web-env: &web-env
-  API_INTERNAL_URL: http://api:4000
-  # Playwright 브라우저도 e2e 네트워크 안에 있어 web 서버와 같은 주소로 닿는다.
-  API_PUBLIC_URL: http://api:4000
-  JWT_SECRET: e2e-jwt-secret-e2e-jwt-secret-e2e-jwt-secret
-  WEB_TRUSTED_PROXY_HOPS: "0"
-  USER_WEB_ORIGIN: http://user-web:3001
+# 도커 서비스 이름끼리는 서로 다른 사이트라 브라우저가 쿠키를 주고받지 못한다.
+# 그래서 api 와 web 에 fms.test 하위 별칭을 붙이고, .env.e2e 의 COOKIE_DOMAIN · 주소도 이 별칭으로 맞춘다.
 
 x-healthcheck: &http-healthcheck
   interval: 2s
@@ -40,10 +22,16 @@ services:
   postgres:
     image: postgres:18.6
     networks: [e2e]
-    environment: { POSTGRES_USER: fms, POSTGRES_PASSWORD: fms-e2e-password, POSTGRES_DB: fms }
+    env_file: *e2e-env-file
+    # postgres 이미지는 POSTGRES_* 이름만 읽어, 값은 .env.e2e 의 DB_* 에 두고 이름만 이어 준다.
+    # ${...} 는 scripts/run-e2e.sh 가 넘기는 --env-file .env.e2e 로 채워진다.
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     tmpfs: [/var/lib/postgresql]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U fms -d fms"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 2s
       timeout: 3s
       retries: 30
@@ -51,15 +39,16 @@ services:
   migrator:
     build: { context: .., dockerfile: dockers/Dockerfile, target: api }
     networks: [e2e]
-    environment: *api-env
+    env_file: *e2e-env-file
     command: ["sh", "/app/dockers/scripts/run-migrations.sh"]
     depends_on:
       postgres: { condition: service_healthy }
 
   api:
     build: { context: .., dockerfile: dockers/Dockerfile, target: api }
-    networks: [e2e]
-    environment: *api-env
+    networks:
+      e2e: { aliases: [api.fms.test] }
+    env_file: *e2e-env-file
     tmpfs: [/data/storage]
     healthcheck:
       <<: *http-healthcheck
@@ -69,8 +58,9 @@ services:
 
   admin-web:
     build: { context: .., dockerfile: dockers/Dockerfile, target: admin-web }
-    networks: [e2e]
-    environment: *web-env
+    networks:
+      e2e: { aliases: [admin.fms.test] }
+    env_file: *e2e-env-file
     healthcheck:
       <<: *http-healthcheck
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/forbidden').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
@@ -79,8 +69,9 @@ services:
 
   user-web:
     build: { context: .., dockerfile: dockers/Dockerfile, target: user-web }
-    networks: [e2e]
-    environment: *web-env
+    networks:
+      e2e: { aliases: [user.fms.test] }
+    env_file: *e2e-env-file
     healthcheck:
       <<: *http-healthcheck
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/s/healthcheck').then(()=>process.exit(0),()=>process.exit(1))"]
@@ -91,19 +82,11 @@ services:
     profiles: [runner]
     build: { context: .., dockerfile: dockers/Dockerfile, target: e2e-servers }
     networks: [e2e]
-    environment:
-      <<: *api-env
-      API_BASE_URL: http://api:4000
+    env_file: *e2e-env-file
 
   e2e-webs:
     profiles: [runner]
     build: { context: .., dockerfile: dockers/Dockerfile, target: e2e-webs }
     networks: [e2e]
     ipc: host
-    environment:
-      ADMIN_WEB_URL: http://admin-web:3000
-      USER_WEB_URL: http://user-web:3001
-      API_BASE_URL: http://api:4000
-      INITIAL_ADMIN_ID: admin
-      INITIAL_ADMIN_PASSWORD: admin1234!
-      CI: "true"
+    env_file: *e2e-env-file

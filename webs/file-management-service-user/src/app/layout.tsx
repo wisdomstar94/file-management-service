@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { PublicEnvProvider } from "@/providers/public-env-provider";
+import { webEnv } from "@/utils/web-env";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,7 +25,9 @@ export default function RootLayout(props: { children: ReactNode }) {
           href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
         />
       </head>
-      <body>{props.children}</body>
+      <body>
+        <PublicEnvProvider env={{ apiPublicUrl: webEnv.apiPublicUrl }}>{props.children}</PublicEnvProvider>
+      </body>
     </html>
   );
 }

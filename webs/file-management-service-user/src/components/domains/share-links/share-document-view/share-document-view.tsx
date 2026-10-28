@@ -4,7 +4,6 @@ import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { readFileIcon } from "@fms/web-utils/files/read-file-icon";
 import { formatDate } from "@fms/web-utils/formats/format-date-time";
 import { formatFileSize } from "@fms/web-utils/formats/format-file-size";
-import { DismissDownloadError } from "./_components/dismiss-download-error";
 import { DownloadLink } from "./_components/download-link";
 import { DownloadStatus } from "./_components/download-status";
 
@@ -32,11 +31,14 @@ function readPeriod(detail: ResBody<typeof PUBLIC_SHARE_LINK_DETAIL_API>["data"]
 }
 
 export function ShareDocumentView(props: {
-  token: string;
   detail: ResBody<typeof PUBLIC_SHARE_LINK_DETAIL_API>["data"];
   downloadError?: string;
+  /** 브라우저가 바로 이동할 api 다운로드 주소 */
+  downloadHref: (versionId: string) => string;
+  /** 다운로드를 시작하면 호출한다. 다운로드 현황을 다시 불러오는 데 쓴다. */
+  onDownload: () => void;
 }) {
-  const { token, detail, downloadError } = props;
+  const { detail, downloadError, downloadHref, onDownload } = props;
   const isAvailable = detail.availability === "ACTIVE";
   const fileIcon = readFileIcon(detail.defaultVersion.fileName);
   const period = readPeriod(detail);
@@ -49,7 +51,6 @@ export function ShareDocumentView(props: {
     }
     return false;
   })();
-  const downloadHref = (versionId: string) => `/s/${token}/download/${versionId}`;
   const notice =
     (downloadError && (DOWNLOAD_ERROR_MESSAGES[downloadError] ?? "다운로드하지 못했습니다.")) ||
     (detail.availability !== "ACTIVE" ? UNAVAILABLE_MESSAGES[detail.availability] : null);
@@ -62,7 +63,6 @@ export function ShareDocumentView(props: {
           <h1 className="m-0 text-[24px] font-bold tracking-[-0.01em]">{detail.documentName}</h1>
         </div>
         {isShowDownloadStatus && <DownloadStatus downloadStatus={detail.downloadStatus} period={period} />}
-        {downloadError && <DismissDownloadError token={token} />}
         {notice && (
           <div
             role="alert"
@@ -93,6 +93,7 @@ export function ShareDocumentView(props: {
           <DownloadLink
             href={downloadHref(detail.defaultVersion.id)}
             isDisabled={!isAvailable}
+            onDownload={onDownload}
             className="inline-flex h-11 items-center gap-[7px] rounded-[9px] border border-transparent bg-primary px-[18px] text-[14px] font-semibold text-white"
           >
             <i className="ti ti-download text-[17px]" aria-hidden />
@@ -115,6 +116,7 @@ export function ShareDocumentView(props: {
                 <DownloadLink
                   href={downloadHref(version.id)}
                   isDisabled={!isAvailable}
+                  onDownload={onDownload}
                   className="inline-flex h-8 items-center gap-[5px] rounded-[7px] border border-line-input bg-white px-3 text-[12.5px] font-medium text-ink-2"
                 >
                   <i className="ti ti-download text-[15px]" aria-hidden />

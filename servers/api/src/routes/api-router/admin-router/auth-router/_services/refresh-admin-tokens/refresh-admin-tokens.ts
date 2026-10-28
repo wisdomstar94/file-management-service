@@ -1,4 +1,4 @@
-import type { ADMIN_LOGIN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import type { ADMIN_REFRESH_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { AdminRefreshTokenEntity } from "@fms/database-entities/entities/admin-refresh-token-entity";
@@ -12,7 +12,7 @@ import { hashRefreshToken, issueAdminTokens } from "../issue-admin-tokens/index.
 export async function refreshAdminTokens(
   req: Request,
   refreshToken: string,
-): Promise<ResBody<typeof ADMIN_LOGIN_API>["data"]> {
+): Promise<ResBody<typeof ADMIN_REFRESH_TOKEN_API>["data"]> {
   return appDataSource.transaction(async (manager) => {
     const repository = manager.getRepository(AdminRefreshTokenEntity);
     const stored = await repository.findOne({

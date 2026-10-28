@@ -1,7 +1,7 @@
 import { api } from "./_utils/api-client";
 import { createTestAccount, uniqueName } from "./_utils/create-test-account";
 import { addTestVersion, createTestDocument } from "./_utils/create-test-document";
-import { loginAs, loginAsInitialAdmin } from "./_utils/login-as";
+import { loginAs, loginAsInitialAdmin, readLoginTokens } from "./_utils/login-as";
 
 const binary = (res: { body: Buffer }) => res.body.toString();
 
@@ -93,7 +93,7 @@ describe("자료 · 버전", () => {
 
   test("새 자료 등록 권한이 없으면 403, 파일 없이 등록하면 400", async () => {
     const account = await createTestAccount(adminToken, { permissionCodes: ["file.list.access"] });
-    const token = (await loginAs(account)).body.data.accessToken;
+    const token = readLoginTokens(await loginAs(account)).accessToken;
     const denied = await api({ token })
       .post("/api/admin/documents")
       .field("name", "x")

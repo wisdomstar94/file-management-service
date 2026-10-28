@@ -71,6 +71,16 @@
         "types": "./dist/responses/*/index.d.ts",
         "default": "./dist/responses/*/index.mjs"
       }
+    },
+    "./cookies/*": {
+      "require": {
+        "types": "./dist/cookies/*/index.d.ts",
+        "default": "./dist/cookies/*/index.cjs"
+      },
+      "import": {
+        "types": "./dist/cookies/*/index.d.ts",
+        "default": "./dist/cookies/*/index.mjs"
+      }
     }
   }
 }

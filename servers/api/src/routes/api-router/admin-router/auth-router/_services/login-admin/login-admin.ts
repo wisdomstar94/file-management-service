@@ -1,4 +1,4 @@
-import type { ADMIN_LOGIN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import type { ADMIN_LOGIN_API, ADMIN_REFRESH_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { ReqBody, ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import { AdminAccountEntity } from "@fms/database-entities/entities/admin-account-entity";
@@ -12,7 +12,7 @@ import { issueAdminTokens } from "../issue-admin-tokens/index.js";
 export async function loginAdmin(
   req: Request,
   body: ReqBody<typeof ADMIN_LOGIN_API>,
-): Promise<ResBody<typeof ADMIN_LOGIN_API>["data"]> {
+): Promise<ResBody<typeof ADMIN_REFRESH_TOKEN_API>["data"]> {
   const account = await appDataSource.getRepository(AdminAccountEntity).findOne({
     where: { loginId: body.loginId },
     relations: { accessPolicyGroup: true },

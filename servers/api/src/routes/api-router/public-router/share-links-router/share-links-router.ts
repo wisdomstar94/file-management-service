@@ -7,7 +7,7 @@ import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import type { DocumentVersionEntity } from "@fms/database-entities/entities/document-version-entity";
 import { verifyPassword } from "@fms/password-handler/passwords/verify-password";
-import { type Request, Router } from "express";
+import { type Request, type Response, Router } from "express";
 import { apiEnv } from "../../../../utils/api-env/index.js";
 import { generateCommonRes } from "../../../../utils/generate-common-res/index.js";
 import { HttpError } from "../../../../utils/http-error/index.js";
@@ -21,11 +21,8 @@ import { unlockShareLinkRequestSchema } from "../../../../validators/share-link-
 import { consumeDownload } from "./_services/consume-download/index.js";
 import { findOpenShareLinkOrThrow } from "./_services/find-open-share-link-or-throw/index.js";
 import { resolveShareLinkDefaultVersion } from "./_services/resolve-share-link-default-version/index.js";
-import {
-  isShareLinkUnlocked,
-  SHARE_LINK_UNLOCK_TOKEN_HEADER,
-  signShareLinkUnlockToken,
-} from "./_utils/share-link-unlock-token/index.js";
+import { readShareLinkUnlockCookie, writeShareLinkUnlockCookie } from "./_utils/share-link-unlock-cookie/index.js";
+import { isShareLinkUnlocked, signShareLinkUnlockToken } from "./_utils/share-link-unlock-token/index.js";
 
 const router = Router();
 
@@ -41,8 +38,7 @@ const toPublicVersion = (
 /** 접근 정책 → 비밀번호 순서로 통과해야 자료 정보를 연다. */
 async function findUnlockedShareLinkOrThrow(req: Request) {
   const opened = await findOpenShareLinkOrThrow(req);
-  const token = req.headers[SHARE_LINK_UNLOCK_TOKEN_HEADER];
-  if (!(await isShareLinkUnlocked(opened.link, typeof token === "string" ? token : undefined))) {
+  if (!(await isShareLinkUnlocked(opened.link, readShareLinkUnlockCookie(req, opened.link.token)))) {
     throw new HttpError(401, API_ERROR_CODE.UNAUTHORIZED, "비밀번호가 필요합니다.");
   }
   return { ...opened, defaultVersion: resolveShareLinkDefaultVersion(opened.link, opened.document, opened.versions) };
@@ -63,10 +59,9 @@ router.post("/:token/unlock", async (req, res) => {
   if (!isValid) {
     throw new HttpError(401, API_ERROR_CODE.INVALID_CREDENTIALS, "비밀번호가 올바르지 않습니다.");
   }
-  const body: ResBody<typeof PUBLIC_SHARE_LINK_UNLOCK_API>["data"] = {
-    unlockToken: await signShareLinkUnlockToken(link),
-    expiresAt: new Date(Date.now() + apiEnv.shareLinkUnlockExpiresInSeconds * 1000).toISOString(),
-  };
+  const expiresAt = new Date(Date.now() + apiEnv.shareLinkUnlockExpiresInSeconds * 1000);
+  writeShareLinkUnlockCookie(res, { token: link.token, unlockToken: await signShareLinkUnlockToken(link), expiresAt });
+  const body: ResBody<typeof PUBLIC_SHARE_LINK_UNLOCK_API>["data"] = { expiresAt: expiresAt.toISOString() };
   res.json(generateCommonRes(body));
 });
 
@@ -89,18 +84,38 @@ router.get("/:token/detail", async (req, res) => {
   res.json(generateCommonRes(body));
 });
 
-router.get("/:token/versions/:versionId/download", async (req, res) => {
-  const { link, versions, defaultVersion } = await findUnlockedShareLinkOrThrow(req);
-  const versionId = readUuidParam(req, "versionId");
-  const version = versions.find((item) => item.id === versionId);
-  const isAllowedVersion =
-    version?.id === defaultVersion.id || (link.isShowOtherVersions && link.isAllowOtherVersionDownload);
-  if (!version || !isAllowedVersion) {
-    throw notFoundError("버전");
+/**
+ * 받을 수 없으면 브라우저가 이동해 온 주소라 JSON 대신 공개 링크 화면으로 돌려보낸다.
+ * 잠금 해제가 만료된 것이면 화면이 비밀번호 입력을 띄우면 충분하고, 그 외에는 실패 사유와 시각을 쿼리로 넘긴다.
+ */
+function redirectToShareLinkPage(res: Response, token: string, error: HttpError) {
+  const url = new URL(`/s/${encodeURIComponent(token)}`, apiEnv.userWebOrigin);
+  if (error.code !== API_ERROR_CODE.UNAUTHORIZED) {
+    url.searchParams.set("downloadError", error.code);
+    url.searchParams.set("timestamp", String(Date.now()));
   }
+  res.redirect(303, url.toString());
+}
 
-  await consumeDownload({ linkId: link.id, versionId: version.id, ip: readAccessPolicyRequest(req).ip });
-  sendVersionFile(res, version);
+router.get("/:token/versions/:versionId/download", async (req, res) => {
+  try {
+    const { link, versions, defaultVersion } = await findUnlockedShareLinkOrThrow(req);
+    const versionId = readUuidParam(req, "versionId");
+    const version = versions.find((item) => item.id === versionId);
+    const isAllowedVersion =
+      version?.id === defaultVersion.id || (link.isShowOtherVersions && link.isAllowOtherVersionDownload);
+    if (!version || !isAllowedVersion) {
+      throw notFoundError("버전");
+    }
+
+    await consumeDownload({ linkId: link.id, versionId: version.id, ip: readAccessPolicyRequest(req).ip });
+    sendVersionFile(res, version);
+  } catch (error) {
+    if (!(error instanceof HttpError)) {
+      throw error;
+    }
+    redirectToShareLinkPage(res, String(req.params.token), error);
+  }
 });
 
 export const publicShareLinksRouter = router;

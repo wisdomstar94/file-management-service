@@ -16,28 +16,27 @@ cd file-management-service
 
 ### 실행
 
+샘플 env 파일을 복사한 뒤 그 파일로 실행합니다. 컨테이너에 넣을 파일은 `FMS_ENV_FILE` 로, postgres 계정 설정에 쓸 파일은 `--env-file` 로 넘기며 둘 다 같은 파일이어야 합니다.
+
 #### macOS · Linux
 
 ```bash
-JWT_SECRET="$(openssl rand -base64 48)" docker compose -p fms-quickstart -f dockers/compose.yml up -d --build
+cp .env.local-sample .env.local
+FMS_ENV_FILE=.env.local docker compose --env-file .env.local -p fms-quickstart -f dockers/compose.yml up -d --build
 ```
-
-- `openssl` 이 없으면 `JWT_SECRET` 에 32자 이상의 아무 문자열을 넣어도 됩니다.
 
 #### Windows (PowerShell)
 
 ```powershell
-$b = New-Object byte[] 48; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); $env:JWT_SECRET = [Convert]::ToBase64String($b)
+Copy-Item .env.local-sample .env.local
+$env:FMS_ENV_FILE = '.env.local'
+docker compose --env-file .env.local -p fms-quickstart -f dockers/compose.yml up -d --build
 ```
 
-```powershell
-docker compose -p fms-quickstart -f dockers/compose.yml up -d --build
-```
-
-- Git Bash · WSL 에서는 macOS · Linux 명령을 그대로 쓰면 됩니다.
+- cmd 에서는 `copy .env.local-sample .env.local` · `set FMS_ENV_FILE=.env.local` 을 먼저 실행한 뒤 같은 `docker compose` 명령을 씁니다.
+- PowerShell · cmd 에서 지정한 `FMS_ENV_FILE` 은 그 창을 닫으면 사라집니다. 새 창에서 종료할 때는 다시 지정하세요.
+- `.env.local` 의 `JWT_SECRET` 은 저장소에 공개된 로컬용 값입니다. 둘러보기 용도면 그대로 써도 되고, 외부에 열어 둘 거라면 32자 이상의 임의 문자열로 바꾸세요.
 - `migrator` 가 `exit 2` 로 실패했다면 `git pull` 로 최신 코드를 받은 뒤 같은 명령으로 다시 실행하세요. 셸 스크립트 줄바꿈(CRLF) 문제로, 최신 코드에서 고쳐졌습니다.
-- cmd 에서는 `set JWT_SECRET=<32자 이상 임의 문자열>` 을 먼저 실행한 뒤 같은 `docker compose` 명령을 씁니다.
-- 새 창에서 다시 실행하면 새 `JWT_SECRET` 이 만들어져 기존 로그인이 풀립니다. 다시 로그인하면 됩니다.
 
 #### 실행 후
 
@@ -59,27 +58,13 @@ docker compose -p fms-quickstart -f dockers/compose.yml up -d --build
 
 ### 종료
 
-#### macOS · Linux
-
 ```bash
-JWT_SECRET=unused docker compose -p fms-quickstart -f dockers/compose.yml down      # 컨테이너만 정리 (데이터 유지)
-JWT_SECRET=unused docker compose -p fms-quickstart -f dockers/compose.yml down -v   # 업로드 파일 · DB 데이터까지 삭제
+FMS_ENV_FILE=.env.local docker compose --env-file .env.local -p fms-quickstart -f dockers/compose.yml down      # 컨테이너만 정리 (데이터 유지)
+FMS_ENV_FILE=.env.local docker compose --env-file .env.local -p fms-quickstart -f dockers/compose.yml down -v   # 업로드 파일 · DB 데이터까지 삭제
 ```
 
-#### Windows (PowerShell)
+- PowerShell · cmd 에서는 실행할 때처럼 `FMS_ENV_FILE` 을 먼저 지정한 뒤 `docker compose ...` 부분만 실행합니다.
 
-실행할 때 쓴 창에서 그대로 실행합니다.
-
-```powershell
-docker compose -p fms-quickstart -f dockers/compose.yml down      # 컨테이너만 정리 (데이터 유지)
-docker compose -p fms-quickstart -f dockers/compose.yml down -v   # 업로드 파일 · DB 데이터까지 삭제
-```
-
-- `$env:JWT_SECRET` 은 그 PowerShell 창을 닫으면 사라집니다. 새 창에서 종료할 때는 `$env:JWT_SECRET = 'unused'` 를 먼저 실행하세요.
-
-#### 종료 시 참고
-
-- compose 파일이 `JWT_SECRET` 을 필수로 요구해 종료할 때도 값이 있어야 합니다. 종료에는 쓰이지 않으므로 아무 값이나 넣으면 됩니다.
 - `-p fms-quickstart` 는 로컬 개발용 DB(`fms` 프로젝트)와 볼륨을 나누기 위한 옵션입니다. 실행과 종료에 같은 값을 넣어야 합니다.
 
 ## 구성
@@ -125,19 +110,7 @@ yarn workspace @fms/database-manager migration:revert
 
 ## 도커
 
-```bash
-JWT_SECRET='<32자 이상 임의 문자열>' yarn docker:up    # postgres + migrator + api + admin-web + user-web 를 각각의 컨테이너로
-```
-
-`JWT_SECRET` 은 필수입니다. 넘기지 않으면 compose 가 실행되지 않습니다. 매번 같은 값을 넘겨야 기존 로그인이 유지됩니다.
-
-DB 계정 · 최초 관리자 계정도 실행할 때 덮어쓸 수 있습니다. 넘기지 않은 값은 compose 의 로컬용 기본값을 씁니다.
-
-```bash
-JWT_SECRET='<32자 이상 임의 문자열>' INITIAL_ADMIN_ID=owner INITIAL_ADMIN_PASSWORD='<비밀번호>' yarn docker:up
-```
-
-값을 env 파일에 모아 두었다면 환경별 명령으로 실행합니다. 각 명령은 저장소 루트의 env 파일을 `--env-file` 로 넘깁니다.
+postgres + migrator + api + admin-web + user-web 를 각각의 컨테이너로 띄웁니다. 환경별로 저장소 루트의 env 파일을 골라 실행합니다.
 
 ```bash
 yarn docker:up:local          # .env.local
@@ -145,24 +118,14 @@ yarn docker:up:development    # .env.development
 yarn docker:up:production     # .env.production
 ```
 
-- env 파일은 저장소에 올라가지 않습니다(`.gitignore`). `.env.development` · `.env.production` 은 `.env.local-sample` 을 복사해 값을 바꿔 만드세요.
-- env 파일 값 중 아래 표의 변수와 `API_CORS_ORIGINS` · `API_PUBLIC_URL` · `SHARE_LINK_DOWNLOAD_ERROR_COOKIE_MAX_AGE_SECONDS` 만 컨테이너에 반영됩니다. `DB_HOST` · `DB_PORT` · `API_PORT` · `API_INTERNAL_URL` · `STORAGE_DIR` · `API_TRUST_PROXY` 는 compose 가 컨테이너용 값으로 고정합니다.
+- 각 명령은 `FMS_ENV_FILE` 로 컨테이너에 넣을 env 파일을 고르고, 같은 파일을 `--env-file` 로도 넘깁니다(postgres 계정 설정용). `docker compose` 를 직접 실행할 때도 `FMS_ENV_FILE` 은 필수이며, 빠지면 compose 가 실행되지 않습니다.
+- env 파일은 저장소에 올라가지 않습니다(`.gitignore`). `.env.development` · `.env.production` 은 `.env.local-sample` 을 복사해 값을 바꿔 만드세요. 맨 위 `APP_ENV` 도 `development` · `production` 으로 바꿉니다.
+- env 파일의 변수는 모두 컨테이너에 그대로 들어갑니다. 변수를 새로 추가해도 compose 는 고치지 않아도 됩니다.
+- 단, `DB_HOST` · `DB_PORT` · `API_PORT` · `STORAGE_DIR` · `API_TRUST_PROXY` · `API_INTERNAL_URL` 은 컨테이너 안에서 값이 달라야 해서 `dockers/compose.yml` 이 고정하고, env 파일 값보다 우선합니다.
+- `JWT_SECRET` 은 필수이고, 매번 같은 값이어야 기존 로그인이 유지됩니다. 운영에서는 32자 이상의 임의 문자열로 바꾸세요.
 - `API_TRUST_PROXY` 는 웹 컨테이너의 고정 IP(`172.31.240.10` · `172.31.240.11`)만 신뢰합니다. 웹이 넘긴 `X-Forwarded-For` 만 믿고, 브라우저가 api 에 직접 보낸 헤더는 무시해 IP 정책을 위조로 우회할 수 없게 하기 위해서입니다. 이 대역(`172.31.240.0/24`)이 사내망과 겹치면 `dockers/compose.yml` 의 `web-api` 네트워크와 `API_TRUST_PROXY` 를 함께 바꾸세요.
-- 셸 환경변수가 env 파일보다 우선합니다. 같은 이름의 변수가 셸에 남아 있으면 env 파일 값이 무시됩니다.
-
-PowerShell 에서는 `$env:<변수> = '<값>'` 으로 먼저 지정한 뒤 실행합니다. 지정한 값은 그 창을 닫을 때까지 유지됩니다.
-
-```powershell
-$env:JWT_SECRET = '<32자 이상 임의 문자열>'; $env:INITIAL_ADMIN_ID = 'owner'; $env:INITIAL_ADMIN_PASSWORD = '<비밀번호>'
-yarn docker:up
-```
-
-| 변수 | 용도 |
-| --- | --- |
-| `DB_USER` · `DB_PASSWORD` · `DB_NAME` | postgres 계정 · DB 이름 |
-| `JWT_SECRET` | 관리자 토큰 서명 키 (**필수**) |
-| `INITIAL_ADMIN_ID` · `INITIAL_ADMIN_PASSWORD` · `INITIAL_ADMIN_NICKNAME` | 최초 관리자 계정 |
-| `WEB_TRUSTED_PROXY_HOPS` · `WEB_SECURE_COOKIE` · `USER_WEB_ORIGIN` | 웹 설정 |
+- 관리자 로그인 · 로그아웃과 공개 링크 비밀번호 확인 · 다운로드는 브라우저가 api 를 직접 호출하고, api 가 httpOnly 쿠키를 심습니다. 그래서 **api 와 웹은 같은 사이트(같은 상위 도메인)에 있어야 합니다.** 예) `admin.example.com` · `files.example.com` · `api.example.com` 이면 `COOKIE_DOMAIN=.example.com`. 같은 호스트에 포트만 다르게 띄우면(`localhost`) 비워 둡니다.
+- 셸에 `DB_USER` · `DB_PASSWORD` · `DB_NAME` 이 남아 있으면 postgres 계정만 그 값으로 만들어집니다(compose 의 `${...}` 는 셸 값이 우선). 실행 전에 셸에서 지우세요.
 
 ## 검사 · 테스트
 

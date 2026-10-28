@@ -67,7 +67,7 @@ test.describe("외부 공개 링크 페이지", () => {
     await expect(page.getByRole("alert").filter({ hasText: "다운로드" })).toHaveCount(0);
   });
 
-  test("다운로드 실패 문구는 한 번만 보이고 새로고침하면 사라진다", async ({ page, request }) => {
+  test("다운로드 실패 문구는 실패 직후 5초 동안만 보이고, 그 뒤 새로고침하면 사라진다", async ({ page, request }) => {
     const { token } = await createSharedDocument(request, { link: { maxDownloadCount: 1 } });
     await page.goto(`/s/${token}`);
     const downloadLink = page.getByRole("link", { name: "v2 다운로드" });
@@ -76,17 +76,16 @@ test.describe("외부 공개 링크 페이지", () => {
     await downloadLink.click();
     await downloadPromise;
 
-    const dismissPromise = page.waitForResponse(
-      (res) => res.url().endsWith(`/s/${token}/download-error`) && res.request().method() === "DELETE",
-    );
+    // api 다운로드 주소로 다시 가면 api 가 실패 사유 · 시각을 쿼리에 담아 링크 화면으로 돌려보낸다.
     await page.goto(`${downloadHref}`);
+    await expect(page).toHaveURL(new RegExp(`/s/${token}\\?downloadError=CONFLICT&timestamp=\\d+$`));
     await expect(page.getByRole("alert").filter({ hasText: "다운로드" })).toHaveText(
       "다운로드 가능 기간이 아니거나 허용 횟수를 모두 사용했습니다.",
     );
-    await dismissPromise;
-    expect(new URL(page.url()).search).toBe("");
 
-    await page.reload();
+    const expiredUrl = new URL(page.url());
+    expiredUrl.searchParams.set("timestamp", String(Date.now() - 6000));
+    await page.goto(expiredUrl.toString());
     await expect(page.getByRole("alert").filter({ hasText: "다운로드" })).toHaveText(
       "다운로드 허용 횟수를 모두 사용했습니다.",
     );

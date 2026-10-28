@@ -7,6 +7,8 @@ import { toRequestBody } from "../_utils/to-request-body";
 export type FetchClientWrapperOptions = {
   /** schema url 앞에 붙일 주소. api 를 직접 호출하면 `API_PUBLIC_URL`. 기본은 웹 자체 route 용 빈 문자열 */
   baseUrl?: string;
+  /** api 가 심는 httpOnly 쿠키(로그인 토큰)를 주고받으려면 `include` */
+  credentials?: RequestCredentials;
 };
 
 /** 브라우저에서 바로 열 url (다운로드 링크 등) */
@@ -20,7 +22,7 @@ export function buildClientApiUrl<S extends ApiSchema>(
 }
 
 /**
- * 브라우저에서 api 를 직접 호출한다. admin 에서는 transfer token 을 쓰는 업로드 전용이다.
+ * 브라우저에서 api 를 직접 호출한다. admin 에서는 로그인 · 로그아웃과 transfer token 을 쓰는 업로드에 쓴다.
  * 400~500 대 응답은 `CommonError` 로 throw 한다.
  */
 export async function fetchClientWrapper<S extends ApiSchema>(
@@ -32,7 +34,12 @@ export async function fetchClientWrapper<S extends ApiSchema>(
   const url = `${options.baseUrl ?? ""}${buildApiUrl({ url: schema.url, params, query })}`;
   const headers = new Headers(requestHeaders as Record<string, string> | undefined);
 
-  const res = await fetch(url, { method: schema.method, headers, body: toRequestBody(body, headers) });
+  const res = await fetch(url, {
+    method: schema.method,
+    headers,
+    body: toRequestBody(body, headers),
+    credentials: options.credentials,
+  });
   if (res.ok) {
     if (schema.responseType === "stream") {
       return res as ResBody<S>;

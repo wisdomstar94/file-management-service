@@ -1,5 +1,10 @@
-import type { ADMIN_ME_API, ADMIN_TRANSFER_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import type {
+  ADMIN_LOGIN_API,
+  ADMIN_ME_API,
+  ADMIN_TRANSFER_TOKEN_API,
+} from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
+import { ADMIN_REFRESH_TOKEN_COOKIE } from "@fms/common-utils/cookies/admin-auth-cookie-names";
 import { API_ERROR_CODE } from "@fms/common-utils/errors/api-error-code";
 import type { PermissionCode } from "@fms/common-utils/permissions/permission-code-registry";
 import { AdminRefreshTokenEntity } from "@fms/database-entities/entities/admin-refresh-token-entity";
@@ -17,6 +22,7 @@ import { generateCommonRes } from "../../../../utils/generate-common-res/index.j
 import { HttpError } from "../../../../utils/http-error/index.js";
 import { parseRequest } from "../../../../utils/parse-request/index.js";
 import { readAdmin } from "../../../../utils/read-admin/index.js";
+import { readCookie } from "../../../../utils/read-cookie/index.js";
 import {
   adminLoginRequestSchema,
   adminRefreshTokenRequestSchema,
@@ -25,11 +31,15 @@ import {
 import { hashRefreshToken } from "./_services/issue-admin-tokens/index.js";
 import { loginAdmin } from "./_services/login-admin/index.js";
 import { refreshAdminTokens } from "./_services/refresh-admin-tokens/index.js";
+import { clearAdminTokenCookies, writeAdminTokenCookies } from "./_utils/admin-auth-cookies/index.js";
 
 const router = Router();
 
+// 토큰은 httpOnly 쿠키로만 내려주고 브라우저 스크립트에는 돌려주지 않는다.
 router.post("/login", async (req, res) => {
-  res.json(generateCommonRes(await loginAdmin(req, parseRequest(adminLoginRequestSchema, req.body))));
+  writeAdminTokenCookies(res, await loginAdmin(req, parseRequest(adminLoginRequestSchema, req.body)));
+  const body: ResBody<typeof ADMIN_LOGIN_API>["data"] = { isLoggedIn: true };
+  res.json(generateCommonRes(body));
 });
 
 router.post("/refresh", async (req, res) => {
@@ -37,9 +47,13 @@ router.post("/refresh", async (req, res) => {
   res.json(generateCommonRes(await refreshAdminTokens(req, refreshToken)));
 });
 
+// 쿠키에 refresh token 이 없어도 쿠키는 지운다.
 router.post("/logout", async (req, res) => {
-  const { refreshToken } = parseRequest(adminRefreshTokenRequestSchema, req.body);
-  await appDataSource.getRepository(AdminRefreshTokenEntity).delete({ tokenHash: hashRefreshToken(refreshToken) });
+  const refreshToken = readCookie(req, ADMIN_REFRESH_TOKEN_COOKIE);
+  if (refreshToken) {
+    await appDataSource.getRepository(AdminRefreshTokenEntity).delete({ tokenHash: hashRefreshToken(refreshToken) });
+  }
+  clearAdminTokenCookies(res);
   res.status(204).end();
 });
 

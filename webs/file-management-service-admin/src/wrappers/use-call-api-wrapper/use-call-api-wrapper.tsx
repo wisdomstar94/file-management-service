@@ -22,11 +22,13 @@ export type UseCallApiWrapperOptions = {
   refreshOnSuccess?: boolean;
   /** 실패하면 오류 토스트를 띄운다. 기본 `true` */
   showErrorToast?: boolean;
+  /** `via: "client"` 에서 api 가 심는 쿠키(로그인 토큰)를 주고받으려면 `include` */
+  credentials?: RequestCredentials;
 };
 
 /** 클라이언트 컴포넌트에서 api schema 로 api 를 호출한다. `fetchApi` 는 throw 하지 않고 `CommonError` 를 돌려준다. */
 export function useCallApiWrapper<S extends ApiSchema>(schema: S, options: UseCallApiWrapperOptions = {}) {
-  const { via = "action", successMessage, refreshOnSuccess = true, showErrorToast = true } = options;
+  const { via = "action", successMessage, refreshOnSuccess = true, showErrorToast = true, credentials } = options;
   const router = useRouter();
   const showToast = useToast();
   const { apiPublicUrl } = usePublicEnv();
@@ -38,7 +40,7 @@ export function useCallApiWrapper<S extends ApiSchema>(schema: S, options: UseCa
     setIsLoading(true);
     setError(null);
     const result = await (via === "client"
-      ? fetchClientWrapper(schema, request, { baseUrl: apiPublicUrl })
+      ? fetchClientWrapper(schema, request, { baseUrl: apiPublicUrl, credentials })
       : callApiActionWrapper(schema, request)
     ).catch((caught: unknown) =>
       isCommonError(caught)

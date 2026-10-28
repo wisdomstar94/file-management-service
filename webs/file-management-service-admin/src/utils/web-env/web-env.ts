@@ -8,5 +8,7 @@ export const webEnv = {
   /** admin-web 앞단에 있는 신뢰할 수 있는 프록시 수. X-Forwarded-For 의 오른쪽에서 이만큼 건너뛴 값을 요청 IP 로 본다. */
   trustedProxyHops: Number(process.env.WEB_TRUSTED_PROXY_HOPS ?? 0),
   isSecureCookie: process.env.WEB_SECURE_COOKIE === "true",
+  /** 토큰 쿠키를 api 와 함께 쓸 상위 도메인. api 의 `COOKIE_DOMAIN` 과 같은 값이어야 한다. 비우면 호스트 한정 */
+  cookieDomain: process.env.COOKIE_DOMAIN || undefined,
   userWebOrigin: process.env.USER_WEB_ORIGIN ?? "http://localhost:3001",
 };

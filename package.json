@@ -19,10 +19,9 @@
     "e2e": "sh scripts/run-e2e.sh",
     "e2e:servers": "sh scripts/run-e2e.sh servers",
     "e2e:webs": "sh scripts/run-e2e.sh webs",
-    "docker:up": "docker compose -f dockers/compose.yml up -d --build",
-    "docker:up:local": "docker compose --env-file .env.local -f dockers/compose.yml up -d --build",
-    "docker:up:development": "docker compose --env-file .env.development -f dockers/compose.yml up -d --build",
-    "docker:up:production": "docker compose --env-file .env.production -f dockers/compose.yml up -d --build"
+    "docker:up:local": "FMS_ENV_FILE=.env.local docker compose --env-file .env.local -f dockers/compose.yml up -d --build",
+    "docker:up:development": "FMS_ENV_FILE=.env.development docker compose --env-file .env.development -f dockers/compose.yml up -d --build",
+    "docker:up:production": "FMS_ENV_FILE=.env.production docker compose --env-file .env.production -f dockers/compose.yml up -d --build"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",

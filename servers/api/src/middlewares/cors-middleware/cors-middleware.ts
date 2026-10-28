@@ -14,6 +14,8 @@ export function corsMiddleware(props: { app: Express }) {
         }
         callback(null, true);
       },
+      // 로그인 · 공개 링크 잠금 해제 쿠키를 브라우저가 직접 주고받는다.
+      credentials: true,
       exposedHeaders: ["Content-Disposition"],
     }),
   );

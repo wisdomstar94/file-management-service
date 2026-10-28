@@ -1,6 +1,10 @@
+import type { Response } from "supertest";
 import { api } from "./_utils/api-client";
 import { addTestVersion, createTestDocument } from "./_utils/create-test-document";
 import { loginAsInitialAdmin } from "./_utils/login-as";
+import { readSetCookie } from "./_utils/read-set-cookie";
+
+const USER_WEB_ORIGIN = process.env.USER_WEB_ORIGIN ?? "http://localhost:3001";
 
 const baseLink: Record<string, unknown> = {
   accessPolicyGroupId: null,
@@ -33,6 +37,14 @@ describe("외부 공개 링크", () => {
     return res.body.data as { id: string; token: string; availability: string };
   };
   const publicApi = (ip = "198.51.100.10", headers: Record<string, string> = {}) => api({ ip, headers });
+  /** 다운로드에 실패하면 실패 사유 · 시각을 쿼리로 담아 링크 화면으로 303 리다이렉트한다. */
+  const expectDownloadErrorRedirect = (res: Response, token: string, code: string) => {
+    expect(res.status).toBe(303);
+    const location = new URL(res.headers.location ?? "");
+    expect(`${location.origin}${location.pathname}`).toBe(`${USER_WEB_ORIGIN}/s/${token}`);
+    expect(location.searchParams.get("downloadError")).toBe(code);
+    expect(Math.abs(Date.now() - Number(location.searchParams.get("timestamp")))).toBeLessThan(60_000);
+  };
   const v1 = () => document.versions.find((v) => v.versionName === "v1")?.id ?? "";
   const v2 = () => document.versions.find((v) => v.versionName === "v2")?.id ?? "";
 
@@ -45,7 +57,11 @@ describe("외부 공개 링크", () => {
     expect(detail.body.data.otherVersions).toBeNull();
 
     await publicApi().get(`/api/public/share-links/${link.token}/versions/${v2()}/download`).expect(200);
-    expect((await publicApi().get(`/api/public/share-links/${link.token}/versions/${v1()}/download`)).status).toBe(404);
+    expectDownloadErrorRedirect(
+      await publicApi().get(`/api/public/share-links/${link.token}/versions/${v1()}/download`),
+      link.token,
+      "NOT_FOUND",
+    );
     const after = await publicApi().get(`/api/public/share-links/${link.token}/detail`).expect(200);
     expect(after.body.data.downloadStatus).toEqual({ downloadCount: 1, maxDownloadCount: null });
   });
@@ -58,8 +74,18 @@ describe("외부 공개 링크", () => {
     expect((await publicApi().post(`${base}/unlock`).send({ password: "wrong" })).status).toBe(401);
 
     const unlocked = await publicApi().post(`${base}/unlock`).send({ password: "share1234" }).expect(200);
-    const withToken = publicApi("198.51.100.10", { "X-Share-Link-Unlock-Token": unlocked.body.data.unlockToken });
+    expect(unlocked.body.data).toEqual({ expiresAt: expect.any(String) });
+    const unlockCookieName = `fms_share_unlock_${link.token}`;
+    expect(unlocked.headers["set-cookie"]).toEqual(
+      expect.arrayContaining([expect.stringMatching(new RegExp(`^${unlockCookieName}=.+; Path=${base};.*HttpOnly`))]),
+    );
+    const unlockToken = readSetCookie(unlocked, unlockCookieName) ?? "";
+    const withToken = publicApi("198.51.100.10", { Cookie: `${unlockCookieName}=${unlockToken}` });
     expect((await withToken.get(`${base}/detail`)).status).toBe(200);
+    expect((await withToken.get(`${base}/versions/${v2()}/download`)).status).toBe(200);
+    // 잠금 해제 없이 다운로드 주소로 오면 실패 사유 없이 링크 화면으로 돌려보내 비밀번호를 다시 받는다.
+    const locked = await publicApi().get(`${base}/versions/${v2()}/download`).expect(303);
+    expect(locked.headers.location).toBe(`${USER_WEB_ORIGIN}/s/${link.token}`);
 
     await api({ token: adminToken })
       .patch(`/api/admin/documents/${document.id}/share-links/${link.id}`)
@@ -68,25 +94,33 @@ describe("외부 공개 링크", () => {
     expect((await withToken.get(`${base}/detail`)).status).toBe(401);
   });
 
-  test("다운로드 허용 수를 넘으면 409, 동시에 요청해도 허용 수만큼만 성공한다", async () => {
+  test("다운로드 허용 수를 넘으면 CONFLICT 로 돌려보내고, 동시에 요청해도 허용 수만큼만 성공한다", async () => {
     const link = await createLink({ maxDownloadCount: 3 });
     const url = `/api/public/share-links/${link.token}/versions/${v2()}/download`;
     const results = await Promise.all(Array.from({ length: 8 }, () => publicApi().get(url)));
     expect(results.filter((res) => res.status === 200)).toHaveLength(3);
-    expect(results.filter((res) => res.status === 409)).toHaveLength(5);
+    const rejected = results.filter((res) => res.status !== 200);
+    expect(rejected).toHaveLength(5);
+    for (const res of rejected) {
+      expectDownloadErrorRedirect(res, link.token, "CONFLICT");
+    }
 
     const detail = await publicApi().get(`/api/public/share-links/${link.token}/detail`).expect(200);
     expect(detail.body.data.availability).toBe("EXHAUSTED");
   });
 
-  test("기간이 지난 링크는 열리지만 다운로드는 409", async () => {
+  test("기간이 지난 링크는 열리지만 다운로드는 CONFLICT 로 돌려보낸다", async () => {
     const link = await createLink({
       availableFrom: "2020-01-01T00:00:00+09:00",
       availableUntil: "2020-12-31T23:59:59+09:00",
     });
     const detail = await publicApi().get(`/api/public/share-links/${link.token}/detail`).expect(200);
     expect(detail.body.data.availability).toBe("EXPIRED");
-    expect((await publicApi().get(`/api/public/share-links/${link.token}/versions/${v2()}/download`)).status).toBe(409);
+    expectDownloadErrorRedirect(
+      await publicApi().get(`/api/public/share-links/${link.token}/versions/${v2()}/download`),
+      link.token,
+      "CONFLICT",
+    );
   });
 
   test("링크의 접근 정책에 막히면 403 ACCESS_POLICY_DENIED", async () => {

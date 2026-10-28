@@ -1,17 +1,20 @@
 import { api } from "./_utils/api-client";
-import { loginAs } from "./_utils/login-as";
+import { loginAs, readLoginTokens } from "./_utils/login-as";
 
 const credentials = { loginId: process.env.INITIAL_ADMIN_ID ?? "", password: process.env.INITIAL_ADMIN_PASSWORD ?? "" };
 
 describe("관리자 인증", () => {
-  test("올바른 아이디 · 비밀번호면 토큰을 발급하고 /me 로 권한 코드를 돌려준다", async () => {
+  test("올바른 아이디 · 비밀번호면 토큰을 httpOnly 쿠키로만 발급하고 /me 로 권한 코드를 돌려준다", async () => {
     const login = await loginAs(credentials);
     expect(login.status).toBe(200);
-    expect(login.body.data).toEqual(
-      expect.objectContaining({ accessToken: expect.any(String), refreshToken: expect.any(String) }),
+    expect(login.body.data).toEqual({ isLoggedIn: true });
+    const tokens = readLoginTokens(login);
+    expect(tokens).toEqual({ accessToken: expect.any(String), refreshToken: expect.any(String) });
+    expect(login.headers["set-cookie"]).toEqual(
+      expect.arrayContaining([expect.stringMatching(/^fms_admin_at=.+; .*HttpOnly/)]),
     );
 
-    const me = await api({ token: login.body.data.accessToken }).get("/api/admin/auth/me").expect(200);
+    const me = await api({ token: tokens.accessToken }).get("/api/admin/auth/me").expect(200);
     expect(me.body.data.loginId).toBe(credentials.loginId);
     expect(me.body.data.permissionCodes).toEqual(expect.arrayContaining(["account.access", "perm.update"]));
   });
@@ -29,20 +32,25 @@ describe("관리자 인증", () => {
   });
 
   test("refresh 는 새 토큰을 발급하고, 이미 쓴 refresh token 은 다시 쓸 수 없다", async () => {
-    const login = await loginAs(credentials);
-    const refreshed = await api().post("/api/admin/auth/refresh").send({ refreshToken: login.body.data.refreshToken });
+    const { refreshToken } = readLoginTokens(await loginAs(credentials));
+    const refreshed = await api().post("/api/admin/auth/refresh").send({ refreshToken });
     expect(refreshed.status).toBe(200);
-    expect(refreshed.body.data.refreshToken).not.toBe(login.body.data.refreshToken);
+    expect(refreshed.body.data.refreshToken).not.toBe(refreshToken);
 
-    const reused = await api().post("/api/admin/auth/refresh").send({ refreshToken: login.body.data.refreshToken });
+    const reused = await api().post("/api/admin/auth/refresh").send({ refreshToken });
     expect(reused.status).toBe(401);
   });
 
-  test("logout 한 refresh token 은 더 이상 쓸 수 없다", async () => {
-    const login = await loginAs(credentials);
-    await api().post("/api/admin/auth/logout").send({ refreshToken: login.body.data.refreshToken }).expect(204);
+  test("logout 은 쿠키의 refresh token 을 폐기하고 토큰 쿠키를 지운다", async () => {
+    const { refreshToken } = readLoginTokens(await loginAs(credentials));
+    const logout = await api({ headers: { Cookie: `fms_admin_rt=${encodeURIComponent(refreshToken)}` } })
+      .post("/api/admin/auth/logout")
+      .expect(204);
+    expect(logout.headers["set-cookie"]).toEqual(
+      expect.arrayContaining([expect.stringMatching(/^fms_admin_at=;/), expect.stringMatching(/^fms_admin_rt=;/)]),
+    );
 
-    const res = await api().post("/api/admin/auth/refresh").send({ refreshToken: login.body.data.refreshToken });
+    const res = await api().post("/api/admin/auth/refresh").send({ refreshToken });
     expect(res.status).toBe(401);
   });
 });

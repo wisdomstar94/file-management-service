@@ -1,18 +1,17 @@
 "use client";
 
+import { PUBLIC_SHARE_LINK_UNLOCK_API } from "@fms/api-schemas/schemas/public-share-link-api-schemas";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { Button } from "@fms/web-ui/components/button";
 import { TextInput } from "@fms/web-ui/components/text-input";
-import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
-import { SHARE_LINK_UNLOCK_ROUTE } from "@/api-schemas/share-link-route-schemas";
 import { readCommonErrorMessage } from "@/utils/read-common-error-message";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 
-export function SharePasswordForm(props: { token: string }) {
-  const router = useRouter();
+/** 비밀번호가 맞으면 api 가 잠금 해제 쿠키를 심고, `onUnlocked` 로 자료 정보를 다시 불러온다. */
+export function SharePasswordForm(props: { token: string; onUnlocked: () => void }) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const unlockApi = useCallApiWrapper(SHARE_LINK_UNLOCK_ROUTE, { via: "client", refreshOnSuccess: false });
+  const unlockApi = useCallApiWrapper(PUBLIC_SHARE_LINK_UNLOCK_API, { via: "client", refreshOnSuccess: false });
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -22,7 +21,7 @@ export function SharePasswordForm(props: { token: string }) {
       body: { password: String(new FormData(event.currentTarget).get("password") ?? "") },
     });
     if (!isCommonError(result)) {
-      router.refresh();
+      props.onUnlocked();
       return;
     }
     setErrorMessage(readCommonErrorMessage(result));

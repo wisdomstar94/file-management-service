@@ -1,8 +1,7 @@
 import type { ApiSchema } from "@fms/api-schemas/types/api-schema";
 import type { ApiRequest, ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { buildApiForwardHeaders } from "@fms/web-utils/requests/build-api-forward-headers";
-import { cookies, headers } from "next/headers";
-import { readUnlockCookieName } from "@/utils/share-link-unlock-cookie";
+import { headers } from "next/headers";
 import { webEnv } from "@/utils/web-env";
 import { buildApiUrl } from "../_utils/build-api-url";
 import { createApiCommonError } from "../_utils/create-common-error";
@@ -10,7 +9,7 @@ import { toRequestBody } from "../_utils/to-request-body";
 
 /**
  * 서버(서버 컴포넌트 · 서버 액션 · route handler)에서 api 를 호출한다. 400~500 대 응답은 `CommonError` 로 throw 한다.
- * 원래 요청 IP · 헤더와, 경로에 공개 링크 `token` 이 있으면 그 링크의 잠금 해제 토큰을 함께 넘긴다.
+ * 원래 요청 IP · 헤더를 함께 넘긴다.
  */
 export async function fetchServerWrapper<S extends ApiSchema>(schema: S, request: ApiRequest<S>): Promise<ResBody<S>> {
   const { params, query, headers: requestHeaders, body } = request as Partial<ApiSchema["request"]>;
@@ -21,10 +20,6 @@ export async function fetchServerWrapper<S extends ApiSchema>(schema: S, request
   const forwardHeaders = buildApiForwardHeaders(await headers(), { trustedProxyHops: webEnv.trustedProxyHops });
   for (const [name, value] of forwardHeaders) {
     finalHeaders.set(name, value);
-  }
-  const unlockToken = params?.token ? (await cookies()).get(readUnlockCookieName(params.token))?.value : undefined;
-  if (unlockToken) {
-    finalHeaders.set("x-share-link-unlock-token", unlockToken);
   }
 
   const res = await fetch(url, {

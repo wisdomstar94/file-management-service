@@ -1,7 +1,7 @@
 import { api } from "./_utils/api-client";
 import { createTestAccount, uniqueName } from "./_utils/create-test-account";
 import { createTestDocument } from "./_utils/create-test-document";
-import { loginAs, loginAsInitialAdmin } from "./_utils/login-as";
+import { loginAs, loginAsInitialAdmin, readLoginTokens } from "./_utils/login-as";
 
 async function issueTransferToken(adminToken: string, target: Record<string, string>) {
   const res = await api({ token: adminToken }).post("/api/admin/auth/transfer-token").send(target).expect(200);
@@ -51,7 +51,7 @@ describe("업로드 · 다운로드용 transfer token", () => {
 
   test("해당 동작 권한이 없으면 토큰을 발급하지 않는다", async () => {
     const account = await createTestAccount(adminToken, { permissionCodes: ["file.list.access"] });
-    const token = (await loginAs(account)).body.data.accessToken;
+    const token = readLoginTokens(await loginAs(account)).accessToken;
     const res = await api({ token }).post("/api/admin/auth/transfer-token").send({ purpose: "UPLOAD_DOCUMENT" });
     expect(res.status).toBe(403);
     expect(res.body.error.code).toBe("PERMISSION_DENIED");

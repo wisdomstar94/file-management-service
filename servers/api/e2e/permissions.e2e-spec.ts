@@ -1,7 +1,7 @@
 import { Client } from "pg";
 import { api } from "./_utils/api-client";
 import { createTestAccount, uniqueName } from "./_utils/create-test-account";
-import { loginAs, loginAsInitialAdmin } from "./_utils/login-as";
+import { loginAs, loginAsInitialAdmin, readLoginTokens } from "./_utils/login-as";
 
 describe("권한 · 권한 그룹", () => {
   let adminToken: string;
@@ -12,7 +12,7 @@ describe("권한 · 권한 그룹", () => {
 
   test("권한 그룹에 없는 권한의 API 는 403 PERMISSION_DENIED", async () => {
     const account = await createTestAccount(adminToken, { permissionCodes: ["perm.access"] });
-    const token = (await loginAs(account)).body.data.accessToken;
+    const token = readLoginTokens(await loginAs(account)).accessToken;
 
     expect((await api({ token }).get("/api/admin/permissions")).status).toBe(200);
     const denied = await api({ token }).get("/api/admin/accounts");
@@ -42,9 +42,9 @@ describe("권한 · 권한 그룹", () => {
       (p: { code: string }) => p.code === "file.list.access",
     );
     const readOnly = await createTestAccount(adminToken, { permissionCodes: ["perm.access"] });
-    const readOnlyToken = (await loginAs(readOnly)).body.data.accessToken;
+    const readOnlyToken = readLoginTokens(await loginAs(readOnly)).accessToken;
     const editor = await createTestAccount(adminToken, { permissionCodes: ["perm.access", "perm.update"] });
-    const editorToken = (await loginAs(editor)).body.data.accessToken;
+    const editorToken = readLoginTokens(await loginAs(editor)).accessToken;
 
     await api({ token: readOnlyToken }).patch(`/api/admin/permissions/${linked.id}`).send({ name: "x" }).expect(403);
     await api({ token: editorToken })

@@ -8,6 +8,7 @@ type AdminToken = {
   refreshTokenExpiresAt: string;
 };
 
+/** 로그인하면 api 가 토큰을 httpOnly 쿠키로 심는다. */
 export const ADMIN_LOGIN_API = {
   url: "/api/admin/auth/login",
   method: "POST",
@@ -17,10 +18,12 @@ export const ADMIN_LOGIN_API = {
     body: typeOf<{ loginId: string; password: string }>(),
     query: typeOf<undefined>(),
   },
-  response: typeOf<ApiSuccessBody<AdminToken>>(),
+  /** 토큰은 api 가 httpOnly 쿠키로만 내려주고 본문에는 담지 않는다. */
+  response: typeOf<ApiSuccessBody<{ isLoggedIn: true }>>(),
   tags: ["admin-auth"],
 } as const satisfies ApiSchema;
 
+/** 관리자 웹 서버가 토큰을 갱신할 때 호출한다. 서버 간 호출이라 토큰을 본문으로 주고받는다. */
 export const ADMIN_REFRESH_TOKEN_API = {
   url: "/api/admin/auth/refresh",
   method: "POST",
@@ -34,13 +37,14 @@ export const ADMIN_REFRESH_TOKEN_API = {
   tags: ["admin-auth"],
 } as const satisfies ApiSchema;
 
+/** 쿠키의 refresh token 을 폐기하고 토큰 쿠키를 지운다. */
 export const ADMIN_LOGOUT_API = {
   url: "/api/admin/auth/logout",
   method: "POST",
   request: {
     params: typeOf<undefined>(),
     headers: typeOf<undefined>(),
-    body: typeOf<{ refreshToken: string }>(),
+    body: typeOf<undefined>(),
     query: typeOf<undefined>(),
   },
   response: typeOf<null>(),

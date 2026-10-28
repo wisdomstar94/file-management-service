@@ -1,6 +1,6 @@
 import { api } from "./_utils/api-client";
 import { createTestAccount } from "./_utils/create-test-account";
-import { loginAs, loginAsInitialAdmin } from "./_utils/login-as";
+import { loginAs, loginAsInitialAdmin, readLoginTokens } from "./_utils/login-as";
 
 describe("접근 정책", () => {
   let adminToken: string;
@@ -67,7 +67,7 @@ describe("접근 정책", () => {
   test("이미 로그인된 상태에서도 정책이 바뀌면 다음 요청부터 차단된다", async () => {
     const account = await createTestAccount(adminToken, { permissionCodes: [] });
     const login = await loginAs({ ...account, ip: "198.51.100.1" });
-    const token = login.body.data.accessToken;
+    const token = readLoginTokens(login).accessToken;
     await api({ token, ip: "198.51.100.1" }).get("/api/admin/auth/access-check").expect(200);
 
     await api({ token: adminToken })

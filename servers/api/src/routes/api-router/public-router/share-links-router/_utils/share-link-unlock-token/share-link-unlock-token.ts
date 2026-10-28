@@ -5,7 +5,6 @@ import { verifyJwt } from "@fms/jwt-handler/tokens/verify-jwt";
 import { apiEnv } from "../../../../../../utils/api-env/index.js";
 
 const AUDIENCE = "fms-share-link-unlock";
-export const SHARE_LINK_UNLOCK_TOKEN_HEADER = "x-share-link-unlock-token";
 
 // 비밀번호를 바꾸면 이전에 발급한 잠금 해제 토큰이 무효가 되도록 해시의 지문을 담는다.
 function readPasswordFingerprint(link: ShareLinkEntity): string {

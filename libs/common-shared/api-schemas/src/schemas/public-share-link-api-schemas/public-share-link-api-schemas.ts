@@ -27,7 +27,8 @@ export const PUBLIC_SHARE_LINK_UNLOCK_API = {
     body: typeOf<{ password: string }>(),
     query: typeOf<undefined>(),
   },
-  response: typeOf<ApiSuccessBody<{ unlockToken: string; expiresAt: string }>>(),
+  /** 잠금 해제 토큰은 api 가 그 링크 경로 한정 httpOnly 쿠키로 심고 본문에는 담지 않는다. */
+  response: typeOf<ApiSuccessBody<{ expiresAt: string }>>(),
   tags: ["public-share-links"],
 } as const satisfies ApiSchema;
 
@@ -67,6 +68,7 @@ export const PUBLIC_SHARE_LINK_DOWNLOAD_API = {
     body: typeOf<undefined>(),
     query: typeOf<undefined>(),
   },
+  /** 브라우저가 바로 이동하는 주소. 받을 수 없으면 공개 링크 화면으로 303 리다이렉트한다. */
   response: typeOf<Response>(),
   responseType: "stream",
   tags: ["public-share-links"],

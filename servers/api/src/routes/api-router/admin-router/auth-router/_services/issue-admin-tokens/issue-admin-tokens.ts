@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "node:crypto";
-import type { ADMIN_LOGIN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
+import type { ADMIN_REFRESH_TOKEN_API } from "@fms/api-schemas/schemas/admin-auth-api-schemas";
 import type { ResBody } from "@fms/api-schemas/types/api-schema-utils";
 import { AdminAccountEntity } from "@fms/database-entities/entities/admin-account-entity";
 import { AdminRefreshTokenEntity } from "@fms/database-entities/entities/admin-refresh-token-entity";
@@ -18,7 +18,7 @@ export function hashRefreshToken(refreshToken: string): string {
 export async function issueAdminTokens(
   manager: EntityManager,
   adminAccountId: string,
-): Promise<ResBody<typeof ADMIN_LOGIN_API>["data"]> {
+): Promise<ResBody<typeof ADMIN_REFRESH_TOKEN_API>["data"]> {
   const now = Date.now();
   const refreshToken = randomBytes(32).toString("base64url");
   const refreshTokenExpiresAt = new Date(now + apiEnv.refreshTokenDays * 24 * 60 * 60 * 1000);

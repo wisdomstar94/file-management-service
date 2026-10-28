@@ -4,7 +4,7 @@
 #   sh scripts/run-e2e.sh webs      # webs 의 playwright e2e
 #   sh scripts/run-e2e.sh           # 둘 다
 set -u
-COMPOSE="docker compose -f $(dirname "$0")/../dockers/compose.e2e.yml"
+COMPOSE="docker compose --env-file $(dirname "$0")/../.env.e2e -f $(dirname "$0")/../dockers/compose.e2e.yml"
 TARGETS="${1:-all}"
 
 $COMPOSE --profile runner build

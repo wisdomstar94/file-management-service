@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { PublicEnvProvider } from "@/providers/public-env-provider";
+import { webEnv } from "@/utils/web-env";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,7 +25,10 @@ export default function RootLayout(props: { children: ReactNode }) {
           href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
         />
       </head>
-      <body>{props.children}</body>
+      <body>
+        {/* 로그인 · 차단 화면도 api 를 직접 호출하므로 모든 화면에 내려준다. */}
+        <PublicEnvProvider env={{ apiPublicUrl: webEnv.apiPublicUrl }}>{props.children}</PublicEnvProvider>
+      </body>
     </html>
   );
 }

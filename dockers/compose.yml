@@ -1,42 +1,34 @@
 # 단독 컨테이너 실행용. postgres 는 compose.postgres.yml 에서 가져온다.
-#   JWT_SECRET=<비밀키> docker compose -f dockers/compose.yml up -d --build
+#   yarn docker:up:local · docker:up:development · docker:up:production (README 의 도커 절 참고)
+#
+# 컨테이너 환경변수는 루트 env 파일을 그대로 넘긴다. 파일은 FMS_ENV_FILE 로 고르며 필수다.
+# compose.postgres.yml 의 ${DB_*} 는 --env-file 로 채우므로 --env-file 에도 같은 파일을 넘겨야 한다.
 name: fms
 
 include:
   - compose.postgres.yml
 
+x-env-file: &env-file
+  - ../${FMS_ENV_FILE:?FMS_ENV_FILE 에 env 파일 이름을 지정하세요. README 의 도커 절 참고}
+
+# 아래 environment 는 컨테이너 안에서 값이 달라야 하는 것만 고정한다. 같은 이름이면 env 파일 값보다 우선한다.
 x-api-env: &api-env
   DB_HOST: postgres
   DB_PORT: "5432"
-  DB_USER: ${DB_USER:-fms}
-  DB_PASSWORD: ${DB_PASSWORD:-fms-local-password}
-  DB_NAME: ${DB_NAME:-fms}
   API_PORT: "4000"
-  JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 을 지정하세요. README 의 도커 절 참고}
+  STORAGE_DIR: /data/storage
   # web 컨테이너가 넘긴 X-Forwarded-For 만 믿는다. 브라우저가 api 에 직접 보낸 헤더는 무시해야 해서
   # 사설 대역 전체가 아니라 web 컨테이너의 고정 IP 만 지정한다. (아래 web-api 네트워크 참고)
   API_TRUST_PROXY: 172.31.240.10, 172.31.240.11
-  # 브라우저에서 api 를 직접 호출하는 web 의 origin 을 허용해야 한다.
-  API_CORS_ORIGINS: ${API_CORS_ORIGINS:-http://localhost:3000,http://localhost:3001}
-  STORAGE_DIR: /data/storage
-  INITIAL_ADMIN_ID: ${INITIAL_ADMIN_ID:-admin}
-  INITIAL_ADMIN_PASSWORD: ${INITIAL_ADMIN_PASSWORD:-admin1234!}
-  INITIAL_ADMIN_NICKNAME: ${INITIAL_ADMIN_NICKNAME:-최초 관리자}
 
 x-web-env: &web-env
   # web 서버가 api 를 호출할 주소. 컨테이너끼리는 도커 서비스 이름으로 닿는다.
   API_INTERNAL_URL: http://api:4000
-  # 브라우저가 api 를 직접 호출할 주소. 호스트 브라우저는 서비스 이름 api 를 모르므로 따로 둔다.
-  API_PUBLIC_URL: ${API_PUBLIC_URL:-http://localhost:4000}
-  JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 을 지정하세요. README 의 도커 절 참고}
-  WEB_TRUSTED_PROXY_HOPS: ${WEB_TRUSTED_PROXY_HOPS:-0}
-  WEB_SECURE_COOKIE: ${WEB_SECURE_COOKIE:-false}
-  SHARE_LINK_DOWNLOAD_ERROR_COOKIE_MAX_AGE_SECONDS: ${SHARE_LINK_DOWNLOAD_ERROR_COOKIE_MAX_AGE_SECONDS:-10}
-  USER_WEB_ORIGIN: ${USER_WEB_ORIGIN:-http://localhost:3001}
 
 services:
   migrator:
     build: { context: .., dockerfile: dockers/Dockerfile, target: api }
+    env_file: *env-file
     environment: *api-env
     command: ["sh", "/app/dockers/scripts/run-migrations.sh"]
     depends_on:
@@ -44,6 +36,7 @@ services:
 
   api:
     build: { context: .., dockerfile: dockers/Dockerfile, target: api }
+    env_file: *env-file
     environment: *api-env
     networks: [default, web-api]
     ports: ["4000:4000"]
@@ -54,6 +47,7 @@ services:
 
   admin-web:
     build: { context: .., dockerfile: dockers/Dockerfile, target: admin-web }
+    env_file: *env-file
     environment: *web-env
     networks:
       web-api: { ipv4_address: 172.31.240.10 }
@@ -62,6 +56,7 @@ services:
 
   user-web:
     build: { context: .., dockerfile: dockers/Dockerfile, target: user-web }
+    env_file: *env-file
     environment: *web-env
     networks:
       web-api: { ipv4_address: 172.31.240.11 }

@@ -6,12 +6,16 @@ import type { CommonError } from "@fms/error-provider/errors/common-error";
 import { isCommonError } from "@fms/error-provider/errors/is-common-error";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { usePublicEnv } from "@/providers/public-env-provider";
 import { createOtherCommonError, DEFAULT_ERROR_MESSAGE } from "../_utils/create-common-error";
 import { callApiActionWrapper } from "../call-api-action-wrapper";
 import { fetchClientWrapper } from "../fetch-client-wrapper";
 
 export type UseCallApiWrapperOptions = {
-  /** `action` 은 서버 액션(`callApiActionWrapper`), `client` 는 브라우저에서 직접 호출(`fetchClientWrapper`). 기본 `action` */
+  /**
+   * `action` 은 서버 액션(`callApiActionWrapper`), `client` 는 브라우저에서 api 직접 호출(`fetchClientWrapper`). 기본 `action`
+   * `client` 는 api 가 심은 쿠키(공개 링크 잠금 해제)를 주고받도록 `credentials: "include"` 로 호출한다.
+   */
   via?: "action" | "client";
   /** 성공하면 서버 컴포넌트를 다시 불러온다. 기본 `true` */
   refreshOnSuccess?: boolean;
@@ -21,6 +25,7 @@ export type UseCallApiWrapperOptions = {
 export function useCallApiWrapper<S extends ApiSchema>(schema: S, options: UseCallApiWrapperOptions = {}) {
   const { via = "action", refreshOnSuccess = true } = options;
   const router = useRouter();
+  const { apiPublicUrl } = usePublicEnv();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<ResBody<S> | null>(null);
   const [error, setError] = useState<CommonError | null>(null);
@@ -29,7 +34,7 @@ export function useCallApiWrapper<S extends ApiSchema>(schema: S, options: UseCa
     setIsLoading(true);
     setError(null);
     const result = await (via === "client"
-      ? fetchClientWrapper(schema, request)
+      ? fetchClientWrapper(schema, request, { baseUrl: apiPublicUrl, credentials: "include" })
       : callApiActionWrapper(schema, request)
     ).catch((caught: unknown) =>
       isCommonError(caught)
