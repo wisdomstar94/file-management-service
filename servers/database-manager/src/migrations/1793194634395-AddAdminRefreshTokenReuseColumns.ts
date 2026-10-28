@@ -1,8 +1,8 @@
 import type { MigrationInterface, QueryRunner } from "typeorm";
 
 /** 기존 refresh token 은 행마다 따로 로그인한 것으로 보고 계열을 새로 채운다. */
-export class AddAdminRefreshTokenReuseColumns1791001400000 implements MigrationInterface {
-  name = "AddAdminRefreshTokenReuseColumns1791001400000";
+export class AddAdminRefreshTokenReuseColumns1793194634395 implements MigrationInterface {
+  name = "AddAdminRefreshTokenReuseColumns1793194634395";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(

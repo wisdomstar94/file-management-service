@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "---------------------- lint & type check ----------------------": "",
-    "lint:check": "biome check && node scripts/check-tailwind-classes.mjs",
+    "lint:check": "biome check && node scripts/check-tailwind-classes.mjs && node scripts/check-migrations.mjs",
     "lint:format": "biome check --write && node scripts/check-tailwind-classes.mjs --write",
     "type:check": "yarn workspaces foreach -A --exclude file-management-service run type:check",
     "---------------------- libs ----------------------": "",

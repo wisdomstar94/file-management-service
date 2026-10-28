@@ -29,8 +29,8 @@ const REGISTERED_PERMISSION_CODES = [
 ];
 
 /** 권한 생성 기능을 없애면서, 그 전에 관리자가 만든 코드 미연동 권한을 지운다. 지운 행은 되살릴 수 없어 down 은 비워 둔다. */
-export class DeleteUnlinkedPermissions1791001300000 implements MigrationInterface {
-  name = "DeleteUnlinkedPermissions1791001300000";
+export class DeleteUnlinkedPermissions1791007486979 implements MigrationInterface {
+  name = "DeleteUnlinkedPermissions1791007486979";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DELETE FROM "permission" WHERE NOT ("code" = ANY($1))`, [REGISTERED_PERMISSION_CODES]);

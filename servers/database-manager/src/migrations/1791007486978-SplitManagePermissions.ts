@@ -34,8 +34,8 @@ const MANAGE_SPLITS: ManageSplit[] = [
 ];
 
 /** `*.manage` 를 동작별 권한으로 나누고, 기존에 `*.manage` 를 가진 권한 그룹에는 나눈 권한을 모두 부여한다. */
-export class SplitManagePermissions1791001200000 implements MigrationInterface {
-  name = "SplitManagePermissions1791001200000";
+export class SplitManagePermissions1791007486978 implements MigrationInterface {
+  name = "SplitManagePermissions1791007486978";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     for (const { manageCode, splits } of MANAGE_SPLITS) {

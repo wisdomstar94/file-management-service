@@ -111,16 +111,18 @@ yarn node:up:user-web:local       # libs · 공개 링크 웹 빌드 → 실행 
 - 포그라운드로 실행되므로 서비스마다 터미널을 따로 씁니다. 종료는 `Ctrl+C` 입니다.
 - DB 는 띄우지 않습니다. env 파일의 `DB_*` 가 가리키는 DB 가 먼저 떠 있어야 합니다.
 
-## 마이그레이션
+## DB 마이그레이션
 
 ```bash
 yarn workspace @fms/database-manager migration:generate src/migrations/<이름>   # 엔티티 변경 감지 → 마이그레이션 생성
+yarn workspace @fms/database-manager migration:create src/migrations/<이름>     # 직접 작성할 빈 DB 마이그레이션 생성
 yarn workspace @fms/database-manager build
 yarn workspace @fms/database-manager migration:run
 yarn workspace @fms/database-manager migration:revert
 ```
 
 - 엔티티는 `libs/server-shared/database-entities` 에 있습니다. 엔티티를 고친 뒤 `yarn libs:build` 를 먼저 실행하세요.
+- DB 마이그레이션은 위 두 명령으로만 만들고 파일명의 timestamp 를 직접 짓지 않습니다. `yarn lint:check` 가 검사합니다.
 
 ## 도커
 
