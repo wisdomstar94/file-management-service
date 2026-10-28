@@ -1,4 +1,4 @@
-import { LoginForm } from "@/components/domains/auth/login-form";
+import { LoginForm } from "./_components/login-form";
 
 export default async function LoginPage(props: PageProps<"/login">) {
   const { next } = await props.searchParams;

@@ -16,11 +16,11 @@ import { useState } from "react";
 import { Card } from "@/components/commons/card";
 import { ConfirmDialog } from "@/components/commons/confirm-dialog";
 import { BodyCell, DataTable, HeadCell } from "@/components/commons/data-table";
+import { VersionUploadModal, type VersionUploadMode } from "@/components/domains/documents/version-upload-modal";
 import { useAdminSession } from "@/providers/admin-session-provider";
 import { usePublicEnv } from "@/providers/public-env-provider";
 import { buildClientApiUrl } from "@/wrappers/fetch-client-wrapper";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
-import { VersionUploadModal, type VersionUploadMode } from "../../../version-upload-modal";
 
 export function VersionTable(props: { document: ResBody<typeof DOCUMENT_DETAIL_API>["data"] }) {
   const { document } = props;

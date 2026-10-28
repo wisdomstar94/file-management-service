@@ -3,10 +3,10 @@ import {
   SHARE_LINK_ASSIGNABLE_ACCESS_POLICY_GROUPS_API,
   SHARE_LINK_LIST_API,
 } from "@fms/api-schemas/schemas/share-link-api-schemas";
-import { DocumentDetailScreen } from "@/components/domains/documents/document-detail-screen";
 import { requirePagePermission } from "@/utils/require-page-permission";
 import { webEnv } from "@/utils/web-env";
 import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
+import { DocumentDetailScreen } from "./_components/document-detail-screen";
 
 export default async function DocumentDetailPage(props: PageProps<"/documents/[documentId]">) {
   const me = await requirePagePermission("file.detail.access");

@@ -15,9 +15,9 @@ import { ConfirmDialog } from "@/components/commons/confirm-dialog";
 import { BodyCell, DataTable, EmptyRow, HeadCell } from "@/components/commons/data-table";
 import { PageHeading } from "@/components/commons/page-heading";
 import { Pagination } from "@/components/commons/pagination";
+import { VersionUploadModal } from "@/components/domains/documents/version-upload-modal";
 import { useAdminSession } from "@/providers/admin-session-provider";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
-import { VersionUploadModal } from "../version-upload-modal";
 import { DocumentsToolbar } from "./_components/documents-toolbar";
 
 export function DocumentsScreen(props: { documents: ResBody<typeof DOCUMENT_LIST_API>["data"] }) {

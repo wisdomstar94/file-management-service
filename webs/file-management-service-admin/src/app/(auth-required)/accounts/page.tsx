@@ -2,10 +2,10 @@ import {
   ADMIN_ACCOUNT_ASSIGNABLE_GROUPS_API,
   ADMIN_ACCOUNT_LIST_API,
 } from "@fms/api-schemas/schemas/admin-account-api-schemas";
-import { AccountsScreen } from "@/components/domains/accounts/accounts-screen";
 import { readPageParam } from "@/utils/read-page-param";
 import { requirePagePermission } from "@/utils/require-page-permission";
 import { fetchServerWrapper } from "@/wrappers/fetch-server-wrapper";
+import { AccountsScreen } from "./_components/accounts-screen";
 
 export default async function AccountsPage(props: PageProps<"/accounts">) {
   await requirePagePermission("account.access");

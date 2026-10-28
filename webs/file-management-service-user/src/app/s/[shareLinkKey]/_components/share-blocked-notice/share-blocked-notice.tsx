@@ -1,6 +1,6 @@
 import type { AccessPolicyDeniedDetails } from "@fms/common-utils/errors/api-error-code";
 import { formatDateTime } from "@fms/web-utils/formats/format-date-time";
-import { ShareNoticeCard } from "../share-notice-card";
+import { ShareNoticeCard } from "@/components/domains/share-links/share-notice-card";
 
 export function ShareBlockedNotice(props: { details: AccessPolicyDeniedDetails }) {
   const { details } = props;

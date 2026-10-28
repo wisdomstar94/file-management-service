@@ -15,9 +15,9 @@ import { readAccessPolicyDeniedDetails } from "@/utils/read-access-policy-denied
 import { buildClientApiUrl } from "@/wrappers/fetch-client-wrapper";
 import { useCallApiWrapper } from "@/wrappers/use-call-api-wrapper";
 import { ShareBlockedNotice } from "../share-blocked-notice";
-import { ShareDocumentView } from "../share-document-view";
 import { ShareNotFoundNotice } from "../share-not-found-notice";
-import { SharePasswordForm } from "../share-password-form";
+import { ShareDocumentView } from "./_components/share-document-view";
+import { SharePasswordForm } from "./_components/share-password-form";
 
 /** 다운로드 실패 문구를 띄우는 시간(ms). 이 시간이 지난 뒤 새로고침하면 문구가 보이지 않는다. */
 const DOWNLOAD_ERROR_VISIBLE_MS = 5000;

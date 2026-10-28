@@ -1,4 +1,4 @@
-import { ShareNoticeCard } from "../share-notice-card";
+import { ShareNoticeCard } from "@/components/domains/share-links/share-notice-card";
 
 export function ShareNotFoundNotice() {
   return (
