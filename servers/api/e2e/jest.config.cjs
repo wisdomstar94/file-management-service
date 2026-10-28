@@ -1,7 +1,7 @@
 /** @type {import('jest').Config} */
 module.exports = {
   rootDir: ".",
-  testMatch: ["<rootDir>/**/*.e2e-spec.ts"],
+  testMatch: ["<rootDir>/**/*-e2e.spec.ts"],
   testEnvironment: "node",
   testTimeout: 120000,
   transform: {
