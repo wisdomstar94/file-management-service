@@ -159,12 +159,12 @@ flowchart LR
   H -- "via: client" --> C -- "브라우저가 직접" --> API
 ```
 
-| 래퍼 | 쓰는 곳 | 하는 일 |
+| 래퍼 | 쓰는 곳 (용도) | 하는 일 |
 | --- | --- | --- |
 | `fetchServerWrapper` | 서버 컴포넌트 · 서버 액션 · `proxy.ts` | 쿠키의 access token 과 요청 IP 전달 헤더를 붙여 api 를 호출합니다. 401 · 접근 정책 거부 · 권한 없음 · 404 는 로그인 · 거부 · forbidden · not-found 화면으로 이동시킵니다 |
 | `serverActionWrapper` | 모든 서버 액션 | 던져진 에러를 `CommonError` 로 바꿔 **return** 합니다. `redirect()` · `notFound()` 는 다시 던져 이동이 동작하게 합니다 |
-| `callApiActionWrapper` | 클라이언트 → 서버 액션 | 클라이언트 컴포넌트가 schema 로 api 를 호출하는 서버 액션입니다. 화면 이동 대신 에러를 돌려줘 호출한 쪽이 메시지로 보여줍니다 |
-| `fetchClientWrapper` | 브라우저 → api 직접 | 웹 서버를 거치지 않고 api 를 호출합니다 |
+| `callApiActionWrapper` | 브라우저 → 서버 액션 → api | 클라이언트 컴포넌트가 넘긴 schema 로 api 를 호출하는 서버 액션입니다. `serverActionWrapper` 로 감싸 에러를 `CommonError` 로 돌려주고, 권한 없음 · 404 에도 화면을 옮기지 않아 호출한 쪽이 메시지로 보여줍니다 |
+| `fetchClientWrapper` | 브라우저 → api | 웹 서버를 거치지 않고 브라우저에서 바로 api 를 호출합니다 |
 | `useCallApiWrapper` | 클라이언트 컴포넌트 | 위 두 경로를 `via` 로 고르고, 로딩 · 에러 토스트 · 성공 메시지 · `router.refresh()` 를 한 곳에서 처리합니다 |
 
 이렇게 나눈 이유는 다음과 같습니다.
